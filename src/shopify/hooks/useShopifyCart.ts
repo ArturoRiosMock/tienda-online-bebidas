@@ -107,6 +107,28 @@ export const useShopifyCart = () => {
     }
   };
 
+  // Vaciar carrito (remover todas las líneas)
+  const removeAllItems = async (lineIds: string[]) => {
+    if (!isShopifyConfigured() || !cart || lineIds.length === 0) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const updatedCart = await removeFromShopifyCart(cart.id, lineIds);
+      if (updatedCart) {
+        setCart(updatedCart);
+      } else {
+        setError('No se pudo vaciar el carrito');
+      }
+    } catch (err) {
+      console.error('Error clearing cart:', err);
+      setError('Error al vaciar carrito');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Ir al checkout
   const goToCheckout = () => {
     if (!cart?.checkoutUrl) {
@@ -140,6 +162,7 @@ export const useShopifyCart = () => {
     addItem,
     updateItem,
     removeItem,
+    removeAllItems,
     goToCheckout,
     getTotalItems,
     getSubtotal,

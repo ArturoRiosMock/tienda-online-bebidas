@@ -213,6 +213,58 @@ export const GET_COLLECTIONS = `
   }
 `;
 
+// Query para obtener un carrito por ID
+export const GET_CART = `
+  query GetCart($id: ID!) {
+    cart(id: $id) {
+      id
+      checkoutUrl
+      cost {
+        subtotalAmount {
+          amount
+          currencyCode
+        }
+        totalAmount {
+          amount
+          currencyCode
+        }
+        totalTaxAmount {
+          amount
+          currencyCode
+        }
+      }
+      lines(first: 100) {
+        edges {
+          node {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                id
+                title
+                product {
+                  id
+                  title
+                  handle
+                }
+                image {
+                  url
+                  altText
+                }
+                price {
+                  amount
+                  currencyCode
+                }
+              }
+            }
+          }
+        }
+      }
+      totalQuantity
+    }
+  }
+`;
+
 // Mutation para crear un carrito
 export const CREATE_CART = `
   mutation CreateCart($input: CartInput!) {

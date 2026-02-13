@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowUp, Play } from 'lucide-react';
+import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -13,9 +14,11 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Left Column - About */}
           <div className="space-y-4">
-            <h3 className="text-[#0c3c1f] text-2xl font-bold">
-              MR. BROWN
-            </h3>
+            <img
+              src={PLACEHOLDER_IMAGES.logo}
+              alt="Mr. Brown"
+              className="h-12"
+            />
             <p className="text-[#212121] text-sm leading-relaxed">
               Desde hace más de 18 años, Mr. Brown es referencia cuando el tema es excelencia, 
               variedad y procedencia en el mundo de las bebidas. Somos el mayor e-commerce de 

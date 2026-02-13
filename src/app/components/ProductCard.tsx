@@ -20,10 +20,8 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const creditPrice = product.price * 0.95; // 5% discount for credit
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent triggering onClick
-    for (let i = 0; i < quantity; i++) {
-      addToCart(product);
-    }
+    e.stopPropagation();
+    addToCart(product, quantity);
     setQuantity(1);
   };
 

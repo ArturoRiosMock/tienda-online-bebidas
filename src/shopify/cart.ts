@@ -1,4 +1,4 @@
-import { shopifyClient, CREATE_CART, ADD_TO_CART, UPDATE_CART_LINES, REMOVE_FROM_CART } from './queries';
+import { shopifyClient, GET_CART, CREATE_CART, ADD_TO_CART, UPDATE_CART_LINES, REMOVE_FROM_CART } from './queries';
 import type { ShopifyCart } from './types';
 
 /**
@@ -107,24 +107,31 @@ export const removeFromShopifyCart = async (
   }
 };
 
+// Obtener carrito por ID
+export const getCart = async (cartId: string): Promise<ShopifyCart | null> => {
+  try {
+    const data: any = await shopifyClient.request(GET_CART, { id: cartId });
+    return data.cart;
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    return null;
+  }
+};
+
 // Obtener o crear un carrito
 export const getOrCreateCart = async (): Promise<ShopifyCart | null> => {
-  // Intentar obtener el cartId del localStorage
   const existingCartId = localStorage.getItem('shopifyCartId');
-  
+
   if (existingCartId) {
-    // Si existe un cartId, podríamos validar que aún existe en Shopify
-    // Por ahora, asumimos que es válido
-    return { id: existingCartId } as ShopifyCart;
+    const fullCart = await getCart(existingCartId);
+    if (fullCart) return fullCart;
+    localStorage.removeItem('shopifyCartId');
   }
 
-  // Si no existe, crear un nuevo carrito
   const newCart = await createCart();
-  
   if (newCart) {
     localStorage.setItem('shopifyCartId', newCart.id);
   }
-
   return newCart;
 };
 

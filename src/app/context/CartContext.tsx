@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
+import { useShopifyCart } from '@/shopify/hooks/useShopifyCart';
+import { isShopifyConfigured } from '@/shopify/config';
 
 export interface Product {
   id: number;
@@ -7,81 +9,137 @@ export interface Product {
   image: string;
   category: string;
   description: string;
+  variantId?: string;
+  originalPrice?: number;
 }
 
-export interface CartItem extends Product {
+export interface CartItem extends Omit<Product, 'id'> {
+  id: number | string;
   quantity: number;
+  /** Id de la línea en el carrito de Shopify (para update/remove) */
+  lineId?: string;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: Product) => void;
-  removeFromCart: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  addToCart: (product: Product, quantity?: number) => void;
+  removeFromCart: (id: number | string) => void;
+  updateQuantity: (id: number | string, quantity: number) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
   getTotalItems: () => number;
+  goToCheckout?: () => void;
+  isShopifyCart: boolean;
+  cartLoading: boolean;
+  cartError: string | null;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+function mapShopifyCartToItems(cart: { lines: { edges: Array<{ node: { id: string; quantity: number; merchandise: { product: { title: string }; image: { url: string } | null; price: { amount: string } } } }> }; } | null): CartItem[] {
+  if (!cart?.lines?.edges) return [];
+  return cart.lines.edges.map(({ node }) => ({
+    id: node.id,
+    name: node.merchandise.product.title,
+    price: parseFloat(node.merchandise.price.amount),
+    image: node.merchandise.image?.url ?? '',
+    category: '',
+    description: '',
+    quantity: node.quantity,
+    lineId: node.id,
+  }));
+}
 
-  const addToCart = (product: Product) => {
-    setCartItems(prev => {
-      const existingItem = prev.find(item => item.id === product.id);
-      if (existingItem) {
+export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const [localCartItems, setLocalCartItems] = useState<CartItem[]>([]);
+  const shopify = useShopifyCart();
+
+  const isShopify = isShopifyConfigured() && shopify.isConfigured;
+
+  const cartItems: CartItem[] = useMemo(() => {
+    if (isShopify && shopify.cart) {
+      return mapShopifyCartToItems(shopify.cart);
+    }
+    return localCartItems;
+  }, [isShopify, shopify.cart, localCartItems]);
+
+  const addToCart = (product: Product, quantity: number = 1) => {
+    if (isShopify && product.variantId) {
+      shopify.addItem(product.variantId, quantity);
+      return;
+    }
+    setLocalCartItems(prev => {
+      const existing = prev.find(item => item.id === product.id && !item.lineId);
+      if (existing) {
         return prev.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+          item.id === product.id && !item.lineId
+            ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...product, quantity }];
     });
   };
 
-  const removeFromCart = (id: number) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
+  const removeFromCart = (id: number | string) => {
+    if (isShopify && typeof id === 'string') {
+      shopify.removeItem(id);
+      return;
+    }
+    setLocalCartItems(prev => prev.filter(item => item.id !== id && item.lineId !== id));
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: number | string, quantity: number) => {
     if (quantity <= 0) {
       removeFromCart(id);
       return;
     }
-    setCartItems(prev =>
+    if (isShopify && typeof id === 'string') {
+      shopify.updateItem(id, quantity);
+      return;
+    }
+    setLocalCartItems(prev =>
       prev.map(item =>
-        item.id === id ? { ...item, quantity } : item
+        (item.lineId ? item.lineId === id : item.id === id) ? { ...item, quantity } : item
       )
     );
   };
 
   const clearCart = () => {
-    setCartItems([]);
+    if (isShopify && shopify.cart?.lines?.edges?.length) {
+      const lineIds = shopify.cart.lines.edges.map(({ node }) => node.id);
+      shopify.removeAllItems(lineIds);
+      return;
+    }
+    setLocalCartItems([]);
   };
 
-  const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const getTotalPrice = (): number => {
+    if (isShopify) return shopify.getSubtotal();
+    return localCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  const getTotalItems = () => {
-    return cartItems.reduce((total, item) => total + item.quantity, 0);
+  const getTotalItems = (): number => {
+    if (isShopify) return shopify.getTotalItems();
+    return localCartItems.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const value: CartContextType = {
+    cartItems,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    getTotalPrice,
+    getTotalItems,
+    goToCheckout: isShopify ? shopify.goToCheckout : undefined,
+    isShopifyCart: isShopify,
+    cartLoading: shopify.loading,
+    cartError: shopify.error,
   };
 
   return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-        getTotalPrice,
-        getTotalItems,
-      }}
-    >
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   );
