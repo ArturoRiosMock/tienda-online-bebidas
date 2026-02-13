@@ -80,7 +80,7 @@ export const useShopifySearch = (query: string) => {
       }
     };
 
-    const timeoutId = setTimeout(searchProductsAsync, 500);
+    const timeoutId = setTimeout(searchProductsAsync, 300);
     return () => clearTimeout(timeoutId);
   }, [query]);
 

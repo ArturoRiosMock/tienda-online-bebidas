@@ -4,6 +4,7 @@ import { useCart } from '@/app/context/CartContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
+import { SearchBar } from '@/app/components/SearchBar';
 
 const logo = PLACEHOLDER_IMAGES.logo;
 
@@ -29,6 +30,7 @@ export const Header = ({ onCartClick, onCategoryClick }: HeaderProps) => {
   const [zipCode, setZipCode] = useState('');
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const navScrollRef = useRef<HTMLDivElement>(null);
 
   // Filtrar colecciones: excluir la colección de ofertas relámpago del menú principal
@@ -126,22 +128,21 @@ export const Header = ({ onCartClick, onCategoryClick }: HeaderProps) => {
               <span className="text-sm font-medium">Rastreo</span>
             </button>
 
-            {/* Search Bar */}
+            {/* Search Bar - Desktop */}
             <div className="flex-1 max-w-xl hidden md:block">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="¿Qué estás buscando?"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]/30 text-sm"
-                />
-                <button className="absolute right-2 top-1/2 -translate-y-1/2 text-[#0c3c1f]">
-                  <Search className="w-5 h-5" />
-                </button>
-              </div>
+              <SearchBar collections={menuCollections} variant="desktop" />
             </div>
 
             {/* Right Icons */}
             <div className="flex items-center gap-3">
+              <button
+                type="button"
+                className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors text-[#212121]"
+                onClick={() => setMobileSearchOpen(true)}
+                aria-label="Abrir búsqueda"
+              >
+                <Search className="w-6 h-6" />
+              </button>
               <button className="hidden lg:block p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <MessageCircle className="w-6 h-6 text-[#212121]" />
               </button>
@@ -246,17 +247,18 @@ export const Header = ({ onCartClick, onCategoryClick }: HeaderProps) => {
             className="lg:hidden border-t border-gray-200 overflow-hidden"
           >
             <nav className="container mx-auto px-4 py-4 space-y-1">
-              {/* Mobile Search */}
-              <div className="relative mb-4">
-                <input
-                  type="text"
-                  placeholder="¿Qué estás buscando?"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]/30 text-sm"
-                />
-                <button className="absolute right-2 top-1/2 -translate-y-1/2 text-[#0c3c1f]">
-                  <Search className="w-5 h-5" />
-                </button>
-              </div>
+              {/* Mobile Search - opens fullscreen from header icon; here just a shortcut */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setMobileSearchOpen(true);
+                }}
+                className="flex items-center gap-2 w-full text-left text-[#212121] py-2 px-4 hover:bg-gray-100 rounded transition-colors font-medium mb-2 border border-gray-200 rounded-lg"
+              >
+                <Search className="w-5 h-5 text-[#0c3c1f]" />
+                Buscar productos
+              </button>
 
               {/* "Todos" */}
               <button
@@ -284,6 +286,25 @@ export const Header = ({ onCartClick, onCategoryClick }: HeaderProps) => {
                 ))
               )}
             </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile fullscreen search overlay */}
+      <AnimatePresence>
+        {mobileSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 bg-white lg:hidden flex flex-col min-h-screen"
+          >
+            <SearchBar
+              collections={menuCollections}
+              variant="mobile"
+              onClose={() => setMobileSearchOpen(false)}
+            />
           </motion.div>
         )}
       </AnimatePresence>
