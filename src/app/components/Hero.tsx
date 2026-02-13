@@ -71,7 +71,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
   useEffect(() => {
     const timer = setInterval(() => {
       handleNext();
-    }, 5000);
+    }, 8000);
 
     return () => clearInterval(timer);
   }, [currentSlide]);
@@ -119,8 +119,8 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
             animate="center"
             exit="exit"
             transition={{
-              x: { type: "spring", stiffness: 300, damping: 30 },
-              opacity: { duration: 0.2 }
+              x: { type: "tween", duration: 0.8, ease: "easeInOut" },
+              opacity: { duration: 0.6 }
             }}
             className="absolute inset-0"
           >
