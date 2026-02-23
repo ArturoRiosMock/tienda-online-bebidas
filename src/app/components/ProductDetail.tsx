@@ -379,9 +379,9 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
           <div className="bg-white rounded-lg p-3 sm:p-6 shadow-sm mt-6 max-w-5xl mx-auto">
             <div className="flex items-center justify-between mb-4 sm:mb-6 gap-2">
               <h2 className="text-[#0c3c1f] text-base sm:text-xl font-bold">Productos similares</h2>
-              <button onClick={onBack} className="text-white bg-[#0c3c1f] px-4 sm:px-6 py-1.5 sm:py-2 rounded-full hover:bg-[#0c3c1f]/90 text-xs sm:text-sm shrink-0">
+              <Link to="/" className="text-white bg-[#0c3c1f] px-4 sm:px-6 py-1.5 sm:py-2 rounded-full hover:bg-[#0c3c1f]/90 text-xs sm:text-sm shrink-0">
                 Ver Todos
-              </button>
+              </Link>
             </div>
 
             {/* Móvil: scroll horizontal con 2 productos visibles */}
