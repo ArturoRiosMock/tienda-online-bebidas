@@ -11,6 +11,7 @@ export interface Product {
   description: string;
   variantId?: string;
   originalPrice?: number;
+  handle?: string;
 }
 
 export interface CartItem extends Omit<Product, 'id'> {
@@ -64,6 +65,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [isShopify, shopify.cart, localCartItems]);
 
   const addToCart = (product: Product, quantity: number = 1) => {
+    window.dispatchEvent(new CustomEvent('cart:item-added', {
+      detail: { name: product.name, image: product.image, price: product.price }
+    }));
+
     if (isShopify && product.variantId) {
       shopify.addItem(product.variantId, quantity);
       return;

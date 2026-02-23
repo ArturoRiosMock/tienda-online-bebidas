@@ -22,6 +22,7 @@ export const convertShopifyProductToAppProduct = (shopifyProduct: ShopifyProduct
     originalPrice: compareAtPrice || undefined,
     category: shopifyProduct.productType || 'General',
     description: shopifyProduct.description,
+    descriptionHtml: shopifyProduct.descriptionHtml || undefined,
     image: firstImage?.url || '',
     shopifyId: shopifyProduct.id,
     variantId: firstVariant?.id,

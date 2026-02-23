@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Heart, Star, Minus, Plus } from 'lucide-react';
 import { Product, useCart } from '@/app/context/CartContext';
+import { useWishlist } from '@/app/context/WishlistContext';
 
 interface ProductCardProps {
   product: Product;
@@ -10,14 +11,13 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const { addToCart } = useCart();
+  const { toggleItem, isInWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const isFavorite = isInWishlist(product.id);
 
   // Calculate discount and pricing
   const originalPrice = product.price * 1.35; // 35% markup to show discount
   const discountPercentage = Math.round(((originalPrice - product.price) / originalPrice) * 100);
-  const installmentPrice = product.price / 3;
-  const creditPrice = product.price * 0.95; // 5% discount for credit
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -37,7 +37,16 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsFavorite(!isFavorite);
+    toggleItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      originalPrice: product.originalPrice,
+      image: product.image,
+      category: product.category,
+      handle: product.handle,
+      variantId: product.variantId,
+    });
   };
 
   const handleQuantityInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,23 +69,23 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
       className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 relative cursor-pointer"
     >
       {/* Discount Badge */}
-      <div className="absolute top-3 left-3 z-10 bg-[#FF6B35] text-white rounded-full w-14 h-14 flex flex-col items-center justify-center shadow-lg">
-        <span className="text-sm font-bold leading-none">-{discountPercentage}%</span>
-        <span className="text-[10px] uppercase leading-none mt-0.5">OFF</span>
+      <div className="absolute top-2 left-2 z-10 bg-[#FF6B35] text-white rounded-full w-10 h-10 sm:w-14 sm:h-14 flex flex-col items-center justify-center shadow-lg">
+        <span className="text-[10px] sm:text-sm font-bold leading-none">-{discountPercentage}%</span>
+        <span className="text-[7px] sm:text-[10px] uppercase leading-none mt-0.5">OFF</span>
       </div>
 
       {/* Favorite Button */}
       <button
         onClick={handleFavoriteClick}
-        className="absolute top-3 right-3 z-10 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow"
+        className="absolute top-2 right-2 z-10 w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow"
       >
         <Heart
-          className={`w-4 h-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+          className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
         />
       </button>
 
       {/* Product Image */}
-      <div className="aspect-square overflow-hidden bg-gray-50 relative group p-4">
+      <div className="aspect-square overflow-hidden bg-gray-50 relative group p-2 sm:p-4">
         <img
           src={product.image}
           alt={product.name}
@@ -85,45 +94,35 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
       </div>
 
       {/* Product Info */}
-      <div className="p-4">
+      <div className="p-2 sm:p-4">
         {/* Rating */}
-        <div className="flex items-center gap-1 mb-2">
-          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-          <span className="text-sm font-medium text-[#212121]">
+        <div className="flex items-center gap-1 mb-1 sm:mb-2">
+          <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+          <span className="text-xs sm:text-sm font-medium text-[#212121]">
             {(4.5 + Math.random() * 0.5).toFixed(1)}
           </span>
         </div>
 
         {/* Product Name */}
-        <h3 className="text-[#0c3c1f] text-sm font-medium mb-3 line-clamp-2 min-h-[40px]">
+        <h3 className="text-[#0c3c1f] text-xs sm:text-sm font-medium mb-1.5 sm:mb-3 line-clamp-2 min-h-[28px] sm:min-h-[40px]">
           {product.name}
         </h3>
 
         {/* Pricing */}
-        <div className="mb-3">
-          <p className="text-xs text-[#717182] line-through mb-1">
-            De: ${originalPrice.toFixed(2)} MXN
+        <div className="mb-2 sm:mb-3">
+          <p className="text-[10px] sm:text-xs text-[#717182] line-through mb-0.5 sm:mb-1">
+            De: ${originalPrice.toFixed(2)}
           </p>
-          <div className="flex items-baseline gap-1 mb-2">
-            <span className="text-xs text-[#212121]">por:</span>
-            <span className="text-2xl font-bold text-[#0c3c1f]">
+          <div className="flex items-baseline gap-0.5 sm:gap-1 mb-1 sm:mb-2 flex-wrap">
+            <span className="text-[10px] sm:text-xs text-[#212121]">por:</span>
+            <span className="text-base sm:text-2xl font-bold text-[#0c3c1f]">
               ${product.price.toFixed(2)}
             </span>
-            <span className="text-xs text-[#717182]">MXN</span>
           </div>
-          <p className="text-xs text-[#212121] mb-1">
-            <span className="inline-flex items-center gap-1">
-              <span className="text-[#0c3c1f]">📦</span>
-              3x de <span className="font-semibold">${installmentPrice.toFixed(2)} MXN</span>
-            </span>
-          </p>
-          <p className="text-xs text-[#717182]">
-            ${creditPrice.toFixed(2)} MXN con crédito
-          </p>
         </div>
 
-        {/* Quantity Controls */}
-        <div className="flex items-center gap-2 mb-3">
+        {/* Quantity Controls - Desktop */}
+        <div className="hidden sm:flex items-center gap-2 mb-3">
           <button
             onClick={decrementQuantity}
             className="w-8 h-8 flex items-center justify-center border border-[#0c3c1f] text-[#0c3c1f] rounded hover:bg-[#0c3c1f] hover:text-white transition-colors"
@@ -143,8 +142,6 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
           >
             <Plus className="w-4 h-4" />
           </button>
-
-          {/* Buy Button */}
           <motion.button
             onClick={handleAddToCart}
             whileHover={{ scale: 1.02 }}
@@ -154,6 +151,15 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
             Comprar
           </motion.button>
         </div>
+
+        {/* Buy Button - Mobile */}
+        <motion.button
+          onClick={handleAddToCart}
+          whileTap={{ scale: 0.95 }}
+          className="sm:hidden w-full bg-[#0c3c1f] text-white py-1.5 px-2 rounded hover:bg-[#0a3019] transition-colors text-[11px] font-semibold uppercase"
+        >
+          Comprar
+        </motion.button>
       </div>
     </motion.div>
   );

@@ -3,6 +3,7 @@ export interface ShopifyProduct {
   id: string;
   title: string;
   description: string;
+  descriptionHtml: string;
   handle: string;
   productType: string;
   vendor: string;
@@ -138,6 +139,7 @@ export interface Product {
   originalPrice?: number;
   category: string;
   description: string;
+  descriptionHtml?: string;
   image: string;
   shopifyId?: string;
   variantId?: string;

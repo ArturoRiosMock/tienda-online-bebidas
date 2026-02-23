@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ShoppingCart, Menu, X, MapPin, Package, Search, MessageCircle, User, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShoppingCart, Menu, X, MapPin, Package, Search, MessageCircle, User, ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import { useCart } from '@/app/context/CartContext';
+import { useWishlist } from '@/app/context/WishlistContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
@@ -10,6 +11,7 @@ const logo = PLACEHOLDER_IMAGES.logo;
 
 interface HeaderProps {
   onCartClick: () => void;
+  onWishlistClick?: () => void;
   onCategoryClick: (collectionHandle: string) => void;
 }
 
@@ -21,8 +23,9 @@ const announcements = [
 
 const FLASH_DEALS_HANDLE = 'ofertas-relampago';
 
-export const Header = ({ onCartClick, onCategoryClick }: HeaderProps) => {
+export const Header = ({ onCartClick, onWishlistClick, onCategoryClick }: HeaderProps) => {
   const { getTotalItems } = useCart();
+  const { totalItems: wishlistCount } = useWishlist();
   const { collections, loading: collectionsLoading } = useShopifyCollections();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
@@ -82,7 +85,7 @@ export const Header = ({ onCartClick, onCategoryClick }: HeaderProps) => {
     <header className="bg-white text-[#212121] sticky top-0 z-40 shadow-md">
       {/* Announcement Bar */}
       <div className="bg-gradient-to-r from-[#FDB93A] to-[#FF8A00] py-2 overflow-hidden">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-3 sm:px-4 max-w-[100vw]">
           <AnimatePresence mode="wait">
             <motion.p
               key={currentAnnouncementIndex}
@@ -100,13 +103,13 @@ export const Header = ({ onCartClick, onCategoryClick }: HeaderProps) => {
 
       {/* Main Header */}
       <div className="border-b border-gray-200">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between py-4 gap-4">
+        <div className="container mx-auto px-3 sm:px-4 max-w-[100vw]">
+          <div className="flex items-center justify-between py-3 sm:py-4 gap-2 sm:gap-4 min-w-0">
             {/* Logo */}
             <img
               src={logo}
               alt="Mr. Brown"
-              className="h-10 md:h-12 flex-shrink-0 cursor-pointer"
+              className="h-9 sm:h-10 md:h-12 flex-shrink-0 cursor-pointer max-h-12 object-contain"
               onClick={() => handleCategoryClick('Todos')}
             />
 
@@ -150,7 +153,20 @@ export const Header = ({ onCartClick, onCategoryClick }: HeaderProps) => {
                 <User className="w-6 h-6 text-[#212121]" />
               </button>
               <button
+                onClick={onWishlistClick}
+                className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Favoritos"
+              >
+                <Heart className={`w-6 h-6 ${wishlistCount > 0 ? 'fill-red-500 text-red-500' : 'text-[#212121]'}`} />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold">
+                    {wishlistCount}
+                  </span>
+                )}
+              </button>
+              <button
                 onClick={onCartClick}
+                data-cart-icon
                 className="relative bg-[#0c3c1f] text-white p-2 rounded-lg hover:bg-[#0a3019] transition-colors"
               >
                 <ShoppingCart className="w-6 h-6" />

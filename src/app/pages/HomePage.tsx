@@ -25,8 +25,8 @@ export const HomePage: React.FC = () => {
       <FlashDeals />
 
       {/* Products Grid */}
-      <section ref={productsRef} className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-8">
+      <section ref={productsRef} className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 max-w-[100vw]">
+        <div className="flex items-center justify-between mb-6 sm:mb-8 gap-2 min-w-0">
           <h2 className="text-[#212121]">Todos los Productos</h2>
           {!loading && <p className="text-[#717182]">{products.length} productos</p>}
         </div>
@@ -38,13 +38,13 @@ export const HomePage: React.FC = () => {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="h-80 bg-gray-100 rounded-lg animate-pulse" />
+              <div key={i} className="h-60 sm:h-80 bg-gray-100 rounded-lg animate-pulse" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
             {products.map((product) => (
               <ProductCard
                 key={product.id}

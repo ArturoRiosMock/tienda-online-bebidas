@@ -5,6 +5,7 @@ import { Heart, Minus, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useCart } from '@/app/context/CartContext';
+import { useWishlist } from '@/app/context/WishlistContext';
 
 interface Brand {
   id: number;
@@ -220,11 +221,11 @@ const brands: Brand[] = [
 
 const ProductCarouselCard = ({ product }: { product: BrandProduct }) => {
   const { addToCart } = useCart();
+  const { toggleItem, isInWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const isFavorite = isInWishlist(product.id);
 
   const discountPercentage = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-  const installmentPrice = product.price / product.installments;
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
@@ -241,24 +242,24 @@ const ProductCarouselCard = ({ product }: { product: BrandProduct }) => {
   };
 
   return (
-    <div className="px-2">
-      <div className="bg-white rounded-lg border border-gray-200 p-4 h-full">
+    <div className="px-1 sm:px-2">
+      <div className="bg-white rounded-lg border border-gray-200 p-2 sm:p-4 h-full">
         {/* Discount Badge & Favorite */}
-        <div className="flex items-start justify-between mb-3">
-          <div className="bg-[#FF6B35] text-white rounded-full w-12 h-12 flex flex-col items-center justify-center shadow-md">
-            <span className="text-xs font-bold leading-none">-{discountPercentage}%</span>
-            <span className="text-[9px] uppercase leading-none mt-0.5">OFF</span>
+        <div className="flex items-start justify-between mb-2 sm:mb-3">
+          <div className="bg-[#FF6B35] text-white rounded-full w-9 h-9 sm:w-12 sm:h-12 flex flex-col items-center justify-center shadow-md">
+            <span className="text-[9px] sm:text-xs font-bold leading-none">-{discountPercentage}%</span>
+            <span className="text-[7px] sm:text-[9px] uppercase leading-none mt-0.5">OFF</span>
           </div>
           <button
-            onClick={() => setIsFavorite(!isFavorite)}
-            className="w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow border border-gray-200"
+            onClick={() => toggleItem({ id: product.id, name: product.name, price: product.price, originalPrice: product.originalPrice, image: product.image })}
+            className="w-6 h-6 sm:w-7 sm:h-7 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow border border-gray-200"
           >
-            <Heart className={`w-3.5 h-3.5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+            <Heart className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
           </button>
         </div>
 
         {/* Product Image */}
-        <div className="aspect-square mb-3 flex items-center justify-center">
+        <div className="aspect-square mb-2 sm:mb-3 flex items-center justify-center">
           <img
             src={product.image}
             alt={product.name}
@@ -267,38 +268,31 @@ const ProductCarouselCard = ({ product }: { product: BrandProduct }) => {
         </div>
 
         {/* Rating */}
-        <div className="flex items-center gap-1 mb-2">
-          <span className="text-yellow-400">★</span>
-          <span className="text-xs font-medium text-[#212121]">{product.rating}</span>
+        <div className="flex items-center gap-1 mb-1 sm:mb-2">
+          <span className="text-yellow-400 text-xs sm:text-sm">★</span>
+          <span className="text-[10px] sm:text-xs font-medium text-[#212121]">{product.rating}</span>
         </div>
 
         {/* Product Name */}
-        <h4 className="text-[#0c3c1f] text-xs font-medium mb-2 line-clamp-2 min-h-[32px]">
+        <h4 className="text-[#0c3c1f] text-[10px] sm:text-xs font-medium mb-1 sm:mb-2 line-clamp-2 min-h-[24px] sm:min-h-[32px]">
           {product.name}
         </h4>
 
         {/* Pricing */}
-        <div className="mb-3">
-          <p className="text-[10px] text-[#717182] line-through mb-0.5">
-            De: ${product.originalPrice.toFixed(2)} MXN
+        <div className="mb-2 sm:mb-3">
+          <p className="text-[9px] sm:text-[10px] text-[#717182] line-through mb-0.5">
+            De: ${product.originalPrice.toFixed(2)}
           </p>
-          <div className="flex items-baseline gap-1 mb-1">
-            <span className="text-[10px] text-[#212121]">por:</span>
-            <span className="text-lg font-bold text-[#0c3c1f]">
+          <div className="flex items-baseline gap-0.5 sm:gap-1 mb-1 flex-wrap">
+            <span className="text-[9px] sm:text-[10px] text-[#212121]">por:</span>
+            <span className="text-sm sm:text-lg font-bold text-[#0c3c1f]">
               ${product.price.toFixed(2)}
             </span>
-            <span className="text-[10px] text-[#717182]">MXN</span>
           </div>
-          <p className="text-[10px] text-[#212121] mb-0.5">
-            📦 {product.installments}x de <span className="font-semibold">${installmentPrice.toFixed(2)} MXN</span>
-          </p>
-          <p className="text-[10px] text-[#717182]">
-            ${product.creditPrice.toFixed(2)} MXN con crédito
-          </p>
         </div>
 
-        {/* Quantity & Buy */}
-        <div className="flex items-center gap-1.5">
+        {/* Quantity & Buy - Desktop */}
+        <div className="hidden sm:flex items-center gap-1.5">
           <button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
             className="w-7 h-7 flex items-center justify-center border border-[#0c3c1f] text-[#0c3c1f] rounded hover:bg-[#0c3c1f] hover:text-white transition-colors"
@@ -324,6 +318,14 @@ const ProductCarouselCard = ({ product }: { product: BrandProduct }) => {
             Comprar
           </button>
         </div>
+
+        {/* Buy Button - Mobile */}
+        <button
+          onClick={handleAddToCart}
+          className="sm:hidden w-full bg-[#0c3c1f] text-white py-1.5 px-2 rounded hover:bg-[#0a3019] transition-colors text-[10px] font-semibold uppercase"
+        >
+          Comprar
+        </button>
       </div>
     </div>
   );
@@ -354,20 +356,8 @@ export const BrandsSection = () => {
     prevArrow: <CustomArrow direction="prev" />,
     nextArrow: <CustomArrow direction="next" />,
     responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1
-        }
-      },
-      {
-        breakpoint: 640,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1
-        }
-      }
+      { breakpoint: 1280, settings: { slidesToShow: 3, slidesToScroll: 1 } },
+      { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 1 } }
     ],
     customPaging: () => (
       <div className="w-2 h-2 bg-gray-300 rounded-full hover:bg-[#0c3c1f] transition-colors mt-4" />
@@ -376,31 +366,31 @@ export const BrandsSection = () => {
   };
 
   return (
-    <section className="bg-gray-50 py-12">
-      <div className="container mx-auto px-4">
+    <section className="bg-gray-50 py-8 md:py-12 overflow-hidden">
+      <div className="container mx-auto px-3 sm:px-4 max-w-[100vw]">
         {/* Section Title */}
-        <h2 className="text-[#212121] mb-8">Grandes Marcas</h2>
+        <h2 className="text-[#212121] mb-6 sm:mb-8 text-lg sm:text-2xl">Grandes Marcas</h2>
 
-        {/* Brand Category Buttons */}
-        <div className="flex flex-wrap gap-4 mb-8">
+        {/* Brand Category Buttons - scroll horizontal en móvil */}
+        <div className="flex gap-2 sm:gap-4 mb-6 sm:mb-8 overflow-x-auto pb-2 -mx-3 px-3 sm:mx-0 sm:px-0 sm:flex-wrap brands-scroll">
           {brands.map((brand) => (
             <motion.button
               key={brand.id}
               onClick={() => setSelectedBrand(brand)}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className={`relative rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all ${
+              className={`relative rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all shrink-0 ${
                 selectedBrand.id === brand.id ? 'ring-2 ring-[#0c3c1f] ring-offset-2' : ''
               }`}
             >
-              <div className="relative w-40 h-24">
+              <div className="relative w-28 h-16 sm:w-40 sm:h-24">
                 <img
                   src={brand.image}
                   alt={brand.name}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-2">
-                  <span className="text-white text-sm font-semibold">{brand.name}</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-1.5 sm:pb-2">
+                  <span className="text-white text-xs sm:text-sm font-semibold">{brand.name}</span>
                 </div>
               </div>
             </motion.button>
@@ -415,42 +405,84 @@ export const BrandsSection = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-6"
           >
-            {/* Banner - Left Side */}
-            <div className="lg:col-span-3">
-              <div className="bg-gradient-to-br from-[#FDB93A] to-[#FF8A00] rounded-lg overflow-hidden h-full min-h-[400px] relative shadow-lg">
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                  <h3 className="text-white text-3xl font-bold mb-2">
-                    {selectedBrand.name.toUpperCase()}
-                  </h3>
-                  <p className="text-black text-lg font-semibold mb-4">
-                    Um Brinde para cada<br />CELEBRAÇÃO
-                  </p>
-                  <div className="mt-auto">
-                    <img
-                      src={selectedBrand.bannerImage}
-                      alt={selectedBrand.name}
-                      className="w-full max-w-[200px] object-contain drop-shadow-2xl"
-                    />
+            {/* Banner - en móvil compacto arriba */}
+            <div className="mb-4 md:hidden">
+              <div className="bg-gradient-to-r from-[#FDB93A] to-[#FF8A00] rounded-lg overflow-hidden h-40 relative shadow-lg">
+                <div className="absolute inset-0 flex items-center justify-between p-4">
+                  <div>
+                    <h3 className="text-white text-xl font-bold mb-1">
+                      {selectedBrand.name.toUpperCase()}
+                    </h3>
+                    <p className="text-black text-xs font-semibold">
+                      Un Brindis para cada<br />CELEBRACIÓN
+                    </p>
                   </div>
+                  <img
+                    src={selectedBrand.bannerImage}
+                    alt={selectedBrand.name}
+                    className="h-32 object-contain drop-shadow-2xl"
+                  />
                 </div>
               </div>
             </div>
 
-            {/* Product Carousel - Right Side */}
-            <div className="lg:col-span-9">
-              <div className="relative px-8">
-                <Slider {...sliderSettings}>
-                  {selectedBrand.products.map((product) => (
-                    <ProductCarouselCard key={product.id} product={product} />
-                  ))}
-                </Slider>
+            {/* Mobile: scroll horizontal con 2 productos visibles */}
+            <div className="md:hidden">
+              <div className="brands-product-scroll flex gap-2 overflow-x-auto pb-4 -mx-3 px-3 snap-x snap-mandatory">
+                {selectedBrand.products.map((product) => (
+                  <div
+                    key={product.id}
+                    className="shrink-0 snap-start"
+                    style={{ width: 'calc((100% - 8px) / 2)' }}
+                  >
+                    <ProductCarouselCard product={product} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop: banner lateral + carrusel */}
+            <div className="hidden md:grid grid-cols-12 gap-6">
+              <div className="col-span-3">
+                <div className="bg-gradient-to-br from-[#FDB93A] to-[#FF8A00] rounded-lg overflow-hidden h-full min-h-[400px] relative shadow-lg">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                    <h3 className="text-white text-3xl font-bold mb-2">
+                      {selectedBrand.name.toUpperCase()}
+                    </h3>
+                    <p className="text-black text-lg font-semibold mb-4">
+                      Un Brindis para cada<br />CELEBRACIÓN
+                    </p>
+                    <div className="mt-auto">
+                      <img
+                        src={selectedBrand.bannerImage}
+                        alt={selectedBrand.name}
+                        className="w-full max-w-[200px] object-contain drop-shadow-2xl"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-span-9">
+                <div className="relative px-8">
+                  <Slider {...sliderSettings}>
+                    {selectedBrand.products.map((product) => (
+                      <ProductCarouselCard key={product.id} product={product} />
+                    ))}
+                  </Slider>
+                </div>
               </div>
             </div>
           </motion.div>
         </AnimatePresence>
       </div>
+
+      <style>{`
+        .brands-scroll::-webkit-scrollbar,
+        .brands-product-scroll::-webkit-scrollbar { display: none; }
+        .brands-scroll,
+        .brands-product-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+      `}</style>
     </section>
   );
 };

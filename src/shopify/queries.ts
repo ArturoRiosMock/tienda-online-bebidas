@@ -18,6 +18,7 @@ export const GET_PRODUCTS = `
           id
           title
           description
+          descriptionHtml
           handle
           productType
           vendor
@@ -94,6 +95,7 @@ export const GET_PRODUCTS_BY_COLLECTION = `
             id
             title
             description
+            descriptionHtml
             handle
             productType
             vendor
@@ -142,6 +144,7 @@ export const GET_PRODUCT_BY_HANDLE = `
       id
       title
       description
+      descriptionHtml
       handle
       productType
       vendor
@@ -499,6 +502,7 @@ export const SEARCH_PRODUCTS = `
             id
             title
             description
+            descriptionHtml
             handle
             productType
             priceRange {
