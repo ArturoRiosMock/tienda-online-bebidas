@@ -15,6 +15,8 @@ export const convertShopifyProductToAppProduct = (shopifyProduct: ShopifyProduct
     ? parseFloat(firstVariant.compareAtPrice.amount) 
     : null;
 
+  const allImages = shopifyProduct.images.edges.map(e => e.node.url).filter(Boolean);
+
   return {
     id: parseInt(shopifyProduct.id.split('/').pop() || '0'),
     name: shopifyProduct.title,
@@ -24,6 +26,7 @@ export const convertShopifyProductToAppProduct = (shopifyProduct: ShopifyProduct
     description: shopifyProduct.description,
     descriptionHtml: shopifyProduct.descriptionHtml || undefined,
     image: firstImage?.url || '',
+    images: allImages.length > 0 ? allImages : undefined,
     shopifyId: shopifyProduct.id,
     variantId: firstVariant?.id,
     handle: shopifyProduct.handle

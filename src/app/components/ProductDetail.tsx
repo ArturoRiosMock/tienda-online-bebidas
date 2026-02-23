@@ -48,7 +48,9 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
     return () => observer.disconnect();
   }, []);
 
-  const images = product.image ? [product.image] : [];
+  const images = product.images && product.images.length > 0
+    ? product.images
+    : product.image ? [product.image] : [];
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
   const discountPercentage = hasDiscount
     ? Math.round(((product.originalPrice! - product.price) / product.originalPrice!) * 100)
@@ -127,13 +129,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
 
       {/* Sección Principal del Producto */}
       <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-8 max-w-[100vw]">
-        <div className="bg-white rounded-lg p-3 sm:p-6 shadow-sm">
+        <div className="bg-white rounded-lg p-3 sm:p-6 lg:p-8 shadow-sm max-w-5xl mx-auto">
 
           {/* === MOBILE LAYOUT === */}
           <div className="md:hidden">
-            {/* Fila: imagen + info esencial */}
             <div className="flex gap-3 mb-3">
-              {/* Imagen compacta a la izquierda */}
               <div className="relative shrink-0 w-[40%]">
                 {discountPercentage > 0 && (
                   <div className="absolute top-1 left-1 z-10 bg-purple-600 text-white rounded-full w-9 h-9 flex flex-col items-center justify-center shadow-lg">
@@ -150,9 +150,23 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
                     </div>
                   )}
                 </div>
+                {images.length > 1 && (
+                  <div className="flex gap-1 mt-1.5 overflow-x-auto">
+                    {images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedImage(idx)}
+                        className={`shrink-0 border-2 rounded p-0.5 w-10 h-10 flex items-center justify-center transition-colors ${
+                          selectedImage === idx ? 'border-[#0c3c1f]' : 'border-gray-200'
+                        }`}
+                      >
+                        <img src={img} alt={`Vista ${idx + 1}`} className="w-full h-full object-contain" />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Info a la derecha */}
               <div className="flex-1 min-w-0 flex flex-col justify-between">
                 <div>
                   <h1 className="text-[#0c3c1f] text-sm font-bold mb-1 line-clamp-2">{product.name}</h1>
@@ -167,8 +181,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
                     ))}
                   </div>
                 </div>
-
-                {/* Precio */}
                 <div>
                   {hasDiscount && (
                     <p className="text-[10px] text-[#717182] line-through">${product.originalPrice!.toFixed(2)}</p>
@@ -178,7 +190,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
               </div>
             </div>
 
-            {/* CTA inline - referencia para el IntersectionObserver */}
             <div ref={ctaRef} className="flex gap-2 mb-3">
               <div className="flex items-center border border-gray-300 rounded-lg shrink-0">
                 <button onClick={() => handleQuantityChange(-1)} className="p-2 hover:bg-gray-50" disabled={quantity <= 1}>
@@ -198,7 +209,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
               </button>
             </div>
 
-            {/* Acciones */}
             <div className="flex items-center gap-2 mb-3">
               <button
                 onClick={handleShare}
@@ -214,50 +224,65 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
           </div>
 
           {/* === DESKTOP LAYOUT === */}
-          <div className="hidden md:grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Columna Izquierda - Imágenes */}
+          <div className="hidden md:grid grid-cols-[1fr_1fr] gap-8 lg:gap-12 items-start">
+            {/* Columna Izquierda - Imágenes con thumbnails */}
             <div className="relative">
-              {discountPercentage > 0 && (
-                <div className="absolute top-4 left-4 z-10 bg-purple-600 text-white rounded-full w-16 h-16 flex flex-col items-center justify-center shadow-lg">
-                  <span className="text-lg font-bold">-{discountPercentage}%</span>
-                  <span className="text-xs uppercase">OFF</span>
-                </div>
-              )}
-
-              <div className="flex items-center justify-center bg-gray-50 rounded-lg p-8 mb-4 min-h-[400px]">
-                {images.length > 0 ? (
-                  <img src={images[selectedImage]} alt={product.name} className="max-h-[400px] object-contain" />
-                ) : (
-                  <div className="w-full h-[400px] bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">Sin imagen</div>
+              <div className={`flex gap-4 ${images.length > 1 ? '' : 'justify-center'}`}>
+                {/* Thumbnails verticales */}
+                {images.length > 1 && (
+                  <div className="flex flex-col gap-2 shrink-0 w-16">
+                    {images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedImage(idx)}
+                        className={`border-2 rounded-lg p-1.5 w-16 h-16 flex items-center justify-center transition-all ${
+                          selectedImage === idx
+                            ? 'border-[#0c3c1f] shadow-md'
+                            : 'border-gray-200 hover:border-gray-400'
+                        }`}
+                      >
+                        <img src={img} alt={`Vista ${idx + 1}`} className="w-full h-full object-contain" />
+                      </button>
+                    ))}
+                  </div>
                 )}
-              </div>
 
-              {images.length > 1 && (
-                <div className="flex gap-2 justify-center">
-                  {images.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedImage(idx)}
-                      className={`border-2 rounded-lg p-2 w-20 h-20 flex items-center justify-center ${
-                        selectedImage === idx ? 'border-[#0c3c1f]' : 'border-gray-200'
-                      }`}
-                    >
-                      <img src={img} alt={`Vista ${idx + 1}`} className="max-h-full object-contain" />
-                    </button>
-                  ))}
+                {/* Imagen principal */}
+                <div className="relative flex-1">
+                  {discountPercentage > 0 && (
+                    <div className="absolute top-3 left-3 z-10 bg-purple-600 text-white rounded-full w-14 h-14 flex flex-col items-center justify-center shadow-lg">
+                      <span className="text-sm font-bold">-{discountPercentage}%</span>
+                      <span className="text-[10px] uppercase">OFF</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-center bg-gray-50 rounded-xl p-6 min-h-[380px] max-h-[460px]">
+                    {images.length > 0 ? (
+                      <motion.img
+                        key={selectedImage}
+                        initial={{ opacity: 0.6, scale: 0.97 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.25 }}
+                        src={images[selectedImage]}
+                        alt={product.name}
+                        className="max-h-[400px] max-w-full object-contain"
+                      />
+                    ) : (
+                      <div className="w-full h-[380px] bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">Sin imagen</div>
+                    )}
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
 
             {/* Columna Derecha - Información */}
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
                 <h1 className="text-[#0c3c1f] text-2xl font-bold mb-2">{product.name}</h1>
-                <div className="flex items-center gap-4 text-sm text-[#717182]">
-                  {product.category && (
-                    <span>Categoría: <span className="text-[#0c3c1f] font-medium">{product.category}</span></span>
-                  )}
-                </div>
+                {product.category && (
+                  <p className="text-sm text-[#717182]">
+                    Categoría: <span className="text-[#0c3c1f] font-medium">{product.category}</span>
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center justify-between">
@@ -269,7 +294,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleShare}
-                    className="p-2 rounded-full bg-[rgb(12,60,31)] text-white hover:bg-green-600 transition-colors flex items-center gap-1"
+                    className="p-2 rounded-full bg-[rgb(12,60,31)] text-white hover:bg-green-600 transition-colors flex items-center gap-1.5"
                   >
                     <Share2 className="w-4 h-4" />
                     <span className="text-xs">Compartir</span>
@@ -280,7 +305,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
                 </div>
               </div>
 
-              <div className="bg-blue-50 rounded-lg p-4 space-y-2">
+              <div className="bg-blue-50 rounded-xl p-5 space-y-2">
                 {hasDiscount && (
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-[#717182]">De:</span>
@@ -300,11 +325,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
 
               <div ref={ctaRef} className="flex gap-3">
                 <div className="flex items-center border border-gray-300 rounded-lg shrink-0">
-                  <button onClick={() => handleQuantityChange(-1)} className="p-3 hover:bg-gray-50" disabled={quantity <= 1}>
+                  <button onClick={() => handleQuantityChange(-1)} className="p-3 hover:bg-gray-50 transition-colors" disabled={quantity <= 1}>
                     <Minus className="w-4 h-4" />
                   </button>
-                  <input type="text" value={quantity} readOnly className="w-16 text-center border-x border-gray-300" />
-                  <button onClick={() => handleQuantityChange(1)} className="p-3 hover:bg-gray-50" disabled={quantity >= 99}>
+                  <input type="text" value={quantity} readOnly className="w-14 text-center border-x border-gray-300 font-medium" />
+                  <button onClick={() => handleQuantityChange(1)} className="p-3 hover:bg-gray-50 transition-colors" disabled={quantity >= 99}>
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
@@ -322,7 +347,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
 
         {/* Descripción del producto - sección completa */}
         {(product.descriptionHtml || product.description) && (
-          <div className="bg-white rounded-lg p-6 shadow-sm mt-6">
+          <div className="bg-white rounded-lg p-6 shadow-sm mt-6 max-w-5xl mx-auto">
             <h2 className="text-[#0c3c1f] text-xl font-bold mb-4">Descripción del producto</h2>
             {product.descriptionHtml ? (
               <div
@@ -351,7 +376,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
 
         {/* Productos Similares */}
         {similarProducts.length > 0 && (
-          <div className="bg-white rounded-lg p-3 sm:p-6 shadow-sm mt-6">
+          <div className="bg-white rounded-lg p-3 sm:p-6 shadow-sm mt-6 max-w-5xl mx-auto">
             <div className="flex items-center justify-between mb-4 sm:mb-6 gap-2">
               <h2 className="text-[#0c3c1f] text-base sm:text-xl font-bold">Productos similares</h2>
               <button onClick={onBack} className="text-white bg-[#0c3c1f] px-4 sm:px-6 py-1.5 sm:py-2 rounded-full hover:bg-[#0c3c1f]/90 text-xs sm:text-sm shrink-0">

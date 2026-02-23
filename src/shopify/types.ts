@@ -141,6 +141,7 @@ export interface Product {
   description: string;
   descriptionHtml?: string;
   image: string;
+  images?: string[];
   shopifyId?: string;
   variantId?: string;
   handle?: string;
