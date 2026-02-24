@@ -8,6 +8,7 @@ import { WhatsAppButton } from '@/app/components/WhatsAppButton';
 import { Cart } from '@/app/components/Cart';
 import { WishlistDrawer } from '@/app/components/WishlistDrawer';
 import { AddToCartAnimation } from '@/app/components/AddToCartAnimation';
+import { AgeVerification } from '@/app/components/AgeVerification';
 
 export const MainLayout: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -27,26 +28,28 @@ export const MainLayout: React.FC = () => {
   }, []);
 
   return (
-    <CartProvider>
-      <WishlistProvider>
-        <div className="min-h-screen bg-gray-50 flex flex-col overflow-x-hidden max-w-[100vw]">
-          <Header
-            onCartClick={() => setIsCartOpen(true)}
-            onWishlistClick={() => setIsWishlistOpen(true)}
-            onCategoryClick={handleCategoryClick}
-          />
+    <AgeVerification>
+      <CartProvider>
+        <WishlistProvider>
+          <div className="min-h-screen bg-gray-50 flex flex-col overflow-x-hidden max-w-[100vw]">
+            <Header
+              onCartClick={() => setIsCartOpen(true)}
+              onWishlistClick={() => setIsWishlistOpen(true)}
+              onCategoryClick={handleCategoryClick}
+            />
 
-          <main className="flex-1">
-            <Outlet />
-          </main>
+            <main className="flex-1">
+              <Outlet />
+            </main>
 
-          <Footer />
-          <WhatsAppButton />
-          <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-          <WishlistDrawer isOpen={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
-          <AddToCartAnimation onAnimationComplete={handleCartAnimationComplete} />
-        </div>
-      </WishlistProvider>
-    </CartProvider>
+            <Footer />
+            <WhatsAppButton />
+            <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+            <WishlistDrawer isOpen={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
+            <AddToCartAnimation onAnimationComplete={handleCartAnimationComplete} />
+          </div>
+        </WishlistProvider>
+      </CartProvider>
+    </AgeVerification>
   );
 };
