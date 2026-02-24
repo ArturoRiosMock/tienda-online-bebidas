@@ -6,6 +6,7 @@ import Slider from 'react-slick';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
 import { FlashDeals } from '@/app/components/FlashDeals';
+import { AdBanner } from '@/app/components/AdBanner';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import type { Product } from '@/shopify/types';
@@ -374,6 +375,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
           </div>
         )}
 
+        <div className="mt-6 max-w-5xl mx-auto">
+          <AdBanner slotId="product-description-below" />
+        </div>
+
         {/* Productos Similares */}
         {similarProducts.length > 0 && (
           <div className="bg-white rounded-lg p-3 sm:p-6 shadow-sm mt-6 max-w-5xl mx-auto">
@@ -496,6 +501,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
           .similar-scroll::-webkit-scrollbar { display: none; }
           .similar-scroll { scrollbar-width: none; -ms-overflow-style: none; }
         `}</style>
+      </div>
+
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
+        <AdBanner slotId="product-similar-below" className="max-w-5xl mx-auto" />
       </div>
 
       {/* Sección de Ofertas Relámpago */}

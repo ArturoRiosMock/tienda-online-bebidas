@@ -7,6 +7,7 @@ import { Newsletter } from '@/app/components/Newsletter';
 import { About } from '@/app/components/About';
 import { FAQ } from '@/app/components/FAQ';
 import { ProductCard } from '@/app/components/ProductCard';
+import { AdBanner } from '@/app/components/AdBanner';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 
 export const HomePage: React.FC = () => {
@@ -21,6 +22,10 @@ export const HomePage: React.FC = () => {
   return (
     <>
       <Hero onShopNowClick={scrollToProducts} />
+
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
+        <AdBanner slotId="home-hero-below" />
+      </div>
 
       <FlashDeals />
 
@@ -44,22 +49,51 @@ export const HomePage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onClick={() => navigate(`/producto/${product.handle || product.id}`)}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
+              {products.slice(0, 8).map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onClick={() => navigate(`/producto/${product.handle || product.id}`)}
+                />
+              ))}
+            </div>
+
+            {products.length > 8 && (
+              <div className="my-4 sm:my-8">
+                <AdBanner slotId="home-products-mid" />
+              </div>
+            )}
+
+            {products.length > 8 && (
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
+                {products.slice(8).map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onClick={() => navigate(`/producto/${product.handle || product.id}`)}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </section>
 
       <BrandsSection />
+
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
+        <AdBanner slotId="home-brands-below" />
+      </div>
+
       <Newsletter />
       <About />
       <FAQ />
+
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
+        <AdBanner slotId="home-faq-below" />
+      </div>
 
       {/* Features Section */}
       <section className="bg-white py-16">

@@ -1,0 +1,68 @@
+{
+  "slots": {
+    "home-hero-below": {
+      "enabled": true,
+      "type": "image_text_cta",
+      "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&h=300&fit=crop",
+      "title": "Descubre las mejores marcas",
+      "description": "Ofertas exclusivas en whiskys premium y licores importados. Envio gratis en compras mayores a $500 MXN.",
+      "ctaText": "Ver ofertas",
+      "ctaLink": "/categorias/whisky",
+      "bgColor": "#0c3c1f",
+      "textColor": "#ffffff",
+      "targetBlank": false
+    },
+    "home-products-mid": {
+      "enabled": true,
+      "type": "image_link",
+      "image": "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=1200&h=250&fit=crop",
+      "link": "/categorias/vino",
+      "targetBlank": false
+    },
+    "home-brands-below": {
+      "enabled": true,
+      "type": "image_text_cta",
+      "image": "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&h=400&fit=crop",
+      "title": "Espacio publicitario disponible",
+      "description": "Coloca tu marca aqui y llega a miles de clientes. Contactanos para mas informacion.",
+      "ctaText": "Contactar",
+      "ctaLink": "https://wa.me/5215512345678",
+      "bgColor": "#1a1a2e",
+      "textColor": "#ffffff",
+      "targetBlank": true
+    },
+    "home-faq-below": {
+      "enabled": true,
+      "type": "image_link",
+      "image": "https://images.unsplash.com/photo-1574015974293-817f0ebebb74?w=1200&h=200&fit=crop",
+      "link": "/categorias/brandy",
+      "targetBlank": false
+    },
+    "product-description-below": {
+      "enabled": true,
+      "type": "image_text_cta",
+      "image": "https://images.unsplash.com/photo-1582819509237-d5b75f20ff7a?w=600&h=300&fit=crop",
+      "title": "Espacio publicitario premium",
+      "description": "Tu marca en la pagina de cada producto. Maximo impacto, maxima visibilidad.",
+      "ctaText": "Anunciate aqui",
+      "ctaLink": "https://wa.me/5215512345678",
+      "bgColor": "#2d2d2d",
+      "textColor": "#ffffff",
+      "targetBlank": true
+    },
+    "product-similar-below": {
+      "enabled": true,
+      "type": "image_link",
+      "image": "https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?w=1200&h=250&fit=crop",
+      "link": "/",
+      "targetBlank": false
+    },
+    "collection-header-below": {
+      "enabled": true,
+      "type": "image_link",
+      "image": "https://images.unsplash.com/photo-1597290282695-edc43d0e7129?w=1200&h=200&fit=crop",
+      "link": "/",
+      "targetBlank": false
+    }
+  }
+}

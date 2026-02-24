@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { ProductCard } from '@/app/components/ProductCard';
+import { AdBanner } from '@/app/components/AdBanner';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
 
@@ -37,6 +38,10 @@ export const CollectionPage: React.FC = () => {
             <p className="text-[#717182] max-w-2xl">{currentCollection.description}</p>
           )}
         </div>
+      </div>
+
+      <div className="container mx-auto px-4 pt-4 pb-0">
+        <AdBanner slotId="collection-header-below" />
       </div>
 
       {/* Sidebar colecciones + Products Grid */}
