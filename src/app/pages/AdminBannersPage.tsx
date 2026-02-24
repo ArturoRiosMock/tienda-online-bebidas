@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Download, Lock, LogOut, Image, Type, ExternalLink } from 'lucide-react';
+import { Eye, EyeOff, Download, Lock, LogOut, Image, Type, ExternalLink, LayoutGrid, Columns } from 'lucide-react';
 import bannersConfigDefault from '@/data/banners-config.json';
 import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
 
@@ -14,9 +14,16 @@ async function sha256(message: string): Promise<string> {
 
 type SlotType = 'image_link' | 'image_text_cta';
 
+interface BannerFormat {
+  width: number;
+  height: number;
+  label: string;
+}
+
 interface BannerSlot {
   enabled: boolean;
   type: SlotType;
+  format?: string;
   image: string;
   title?: string;
   description?: string;
@@ -26,16 +33,49 @@ interface BannerSlot {
   bgColor?: string;
   textColor?: string;
   targetBlank?: boolean;
+  gridPosition?: number;
 }
 
-const SLOT_LABELS: Record<string, { label: string; page: string }> = {
-  'home-hero-below': { label: 'Debajo del Hero', page: 'Home' },
-  'home-products-mid': { label: 'Entre productos (posicion 8)', page: 'Home' },
-  'home-brands-below': { label: 'Debajo de marcas', page: 'Home' },
-  'home-faq-below': { label: 'Debajo del FAQ', page: 'Home' },
-  'product-description-below': { label: 'Debajo de descripcion', page: 'Producto' },
-  'product-similar-below': { label: 'Debajo de similares', page: 'Producto' },
-  'collection-header-below': { label: 'Debajo del header', page: 'Coleccion' },
+const FORMAT_DEFS = bannersConfigDefault.formats as Record<string, BannerFormat>;
+const FORMAT_OPTIONS = Object.entries(FORMAT_DEFS).map(([key, fmt]) => ({
+  value: key,
+  label: fmt.label,
+  dims: `${fmt.width}x${fmt.height}`,
+}));
+
+const SLOT_LABELS: Record<string, { label: string; page: string; placement: string }> = {
+  'home-hero-below':           { label: 'Debajo del Hero', page: 'Home', placement: 'Full-width entre secciones' },
+  'home-products-mid':         { label: 'Entre productos (pos 8)', page: 'Home', placement: 'Full-width separador de grid' },
+  'home-grid-inline-1':        { label: 'Inline en grid #1', page: 'Home', placement: 'Dentro del grid de productos' },
+  'home-grid-inline-2':        { label: 'Inline en grid #2', page: 'Home', placement: 'Dentro del grid de productos' },
+  'home-brands-below':         { label: 'Debajo de marcas', page: 'Home', placement: 'Full-width entre secciones' },
+  'home-faq-below':            { label: 'Debajo del FAQ', page: 'Home', placement: 'Leaderboard entre secciones' },
+  'product-description-below': { label: 'Debajo de descripcion', page: 'Producto', placement: 'Billboard junto a sidebar' },
+  'product-similar-below':     { label: 'Debajo de similares', page: 'Producto', placement: 'Leaderboard full-width' },
+  'product-sidebar-rectangle': { label: 'Sidebar rectangulo', page: 'Producto', placement: 'Medium Rectangle sidebar' },
+  'collection-header-below':   { label: 'Debajo del header', page: 'Coleccion', placement: 'Leaderboard full-width' },
+  'collection-sidebar-skyscraper': { label: 'Sidebar skyscraper', page: 'Coleccion', placement: 'Half-page en sidebar' },
+  'collection-grid-inline':    { label: 'Inline en grid', page: 'Coleccion', placement: 'Dentro del grid de productos' },
+};
+
+const PAGE_TABS = ['Todos', 'Home', 'Producto', 'Coleccion'] as const;
+
+const FORMAT_CATEGORY_MAP: Record<string, string> = {
+  'leaderboard': 'horizontal',
+  'large-leaderboard': 'horizontal',
+  'banner': 'horizontal',
+  'half-banner': 'horizontal',
+  'billboard': 'horizontal',
+  'full-width': 'horizontal',
+  'medium-rectangle': 'rectangle',
+  'large-rectangle': 'rectangle',
+  'square': 'rectangle',
+  'small-square': 'rectangle',
+  'inline-card': 'rectangle',
+  'skyscraper': 'vertical',
+  'half-page': 'vertical',
+  'wide-skyscraper': 'vertical',
+  'vertical-banner': 'vertical',
 };
 
 export const AdminBannersPage: React.FC = () => {
@@ -46,6 +86,7 @@ export const AdminBannersPage: React.FC = () => {
     () => JSON.parse(JSON.stringify(bannersConfigDefault.slots))
   );
   const [expandedSlot, setExpandedSlot] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<(typeof PAGE_TABS)[number]>('Todos');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +114,7 @@ export const AdminBannersPage: React.FC = () => {
   };
 
   const handleExportJSON = () => {
-    const json = JSON.stringify({ slots }, null, 2);
+    const json = JSON.stringify({ formats: FORMAT_DEFS, slots }, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -82,6 +123,12 @@ export const AdminBannersPage: React.FC = () => {
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  const filteredSlots = Object.entries(slots).filter(([slotId]) => {
+    if (activeTab === 'Todos') return true;
+    const meta = SLOT_LABELS[slotId];
+    return meta?.page === activeTab;
+  });
 
   if (!authenticated) {
     return (
@@ -119,7 +166,8 @@ export const AdminBannersPage: React.FC = () => {
       <header className="bg-[#0c3c1f] text-white px-4 py-4 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <img src={PLACEHOLDER_IMAGES.logo} alt="Mr. Brown" className="h-8 object-contain brightness-0 invert" />
-          <h1 className="text-lg font-bold">Administrador de Banners</h1>
+          <h1 className="text-lg font-bold hidden sm:block">Administrador de Banners</h1>
+          <h1 className="text-lg font-bold sm:hidden">Banners</h1>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -127,7 +175,7 @@ export const AdminBannersPage: React.FC = () => {
             className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
             <Download className="w-4 h-4" />
-            Exportar JSON
+            <span className="hidden sm:inline">Exportar JSON</span>
           </button>
           <button onClick={handleLogout} className="p-2 hover:bg-white/20 rounded-lg transition-colors">
             <LogOut className="w-5 h-5" />
@@ -135,31 +183,77 @@ export const AdminBannersPage: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="max-w-5xl mx-auto px-4 py-8">
         <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
-          Edita los banners y luego haz clic en <strong>"Exportar JSON"</strong> para descargar el archivo actualizado.
-          Reemplaza <code className="bg-blue-100 px-1 rounded">src/data/banners-config.json</code> en el proyecto y haz deploy.
+          Gestiona <strong>{Object.keys(slots).length} espacios publicitarios</strong> con <strong>{FORMAT_OPTIONS.length} formatos IAB</strong>.
+          Edita y haz clic en <strong>"Exportar JSON"</strong> para descargar el archivo actualizado.
+        </div>
+
+        {/* Resumen de formatos */}
+        <div className="mb-6 bg-white rounded-xl shadow-sm border p-4">
+          <h2 className="text-sm font-bold text-[#0c3c1f] mb-3 flex items-center gap-2">
+            <LayoutGrid className="w-4 h-4" />
+            Formatos IAB disponibles
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+            {FORMAT_OPTIONS.map(fmt => {
+              const cat = FORMAT_CATEGORY_MAP[fmt.value] || 'rectangle';
+              const colorClass = cat === 'horizontal' ? 'bg-blue-50 border-blue-200 text-blue-700'
+                : cat === 'vertical' ? 'bg-purple-50 border-purple-200 text-purple-700'
+                : 'bg-green-50 border-green-200 text-green-700';
+              return (
+                <div key={fmt.value} className={`rounded-lg border px-2.5 py-1.5 text-center ${colorClass}`}>
+                  <p className="text-[10px] font-bold">{fmt.dims}</p>
+                  <p className="text-[9px] opacity-75 line-clamp-1">{fmt.label.split('(')[0].trim()}</p>
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex gap-4 mt-3 text-[10px] text-[#717182]">
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-400" />Horizontal</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400" />Rectangulo</span>
+            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-purple-400" />Vertical</span>
+          </div>
+        </div>
+
+        {/* Page tabs */}
+        <div className="flex gap-1 mb-4 bg-white rounded-lg p-1 shadow-sm border w-fit">
+          {PAGE_TABS.map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                activeTab === tab ? 'bg-[#0c3c1f] text-white' : 'text-[#717182] hover:bg-gray-100'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
 
         <div className="space-y-4">
-          {Object.entries(slots).map(([slotId, slot]) => {
-            const meta = SLOT_LABELS[slotId] || { label: slotId, page: '?' };
+          {filteredSlots.map(([slotId, slot]) => {
+            const meta = SLOT_LABELS[slotId] || { label: slotId, page: '?', placement: 'Custom' };
             const isExpanded = expandedSlot === slotId;
+            const formatInfo = slot.format ? FORMAT_DEFS[slot.format] : null;
+            const isInlineCard = slot.format === 'inline-card';
 
             return (
               <div key={slotId} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                {/* Slot header */}
                 <button
                   onClick={() => setExpandedSlot(isExpanded ? null : slotId)}
                   className="w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <span className={`w-2.5 h-2.5 rounded-full ${slot.enabled ? 'bg-green-500' : 'bg-gray-300'}`} />
+                    <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${slot.enabled ? 'bg-green-500' : 'bg-gray-300'}`} />
                     <div className="text-left">
                       <p className="font-medium text-sm text-[#212121]">{meta.label}</p>
                       <p className="text-[11px] text-[#717182]">
-                        Pagina: {meta.page} &middot; Tipo: {slot.type === 'image_link' ? 'Imagen + Link' : 'Imagen + Texto + CTA'}
+                        {meta.page} &middot; {slot.type === 'image_link' ? 'Img+Link' : 'Img+Texto+CTA'}
+                        {formatInfo && <> &middot; {formatInfo.width}x{formatInfo.height}</>}
+                        {isInlineCard && slot.gridPosition && <> &middot; Pos: {slot.gridPosition}</>}
                       </p>
+                      <p className="text-[10px] text-[#0c3c1f]/60">{meta.placement}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -172,11 +266,10 @@ export const AdminBannersPage: React.FC = () => {
                   </div>
                 </button>
 
-                {/* Expanded editor */}
                 {isExpanded && (
                   <div className="border-t border-gray-100 px-5 py-5 space-y-4">
-                    {/* Toggle + Type */}
-                    <div className="flex flex-wrap gap-4">
+                    {/* Toggle + Type + Format */}
+                    <div className="flex flex-wrap gap-4 items-end">
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
@@ -197,12 +290,44 @@ export const AdminBannersPage: React.FC = () => {
                           <option value="image_text_cta">Imagen + Texto + CTA</option>
                         </select>
                       </div>
+                      <div className="flex items-center gap-2">
+                        <Columns className="w-3.5 h-3.5 text-[#717182]" />
+                        <span className="text-sm text-[#717182]">Formato:</span>
+                        <select
+                          value={slot.format || 'full-width'}
+                          onChange={e => updateSlot(slotId, { format: e.target.value })}
+                          className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]"
+                        >
+                          {FORMAT_OPTIONS.map(f => (
+                            <option key={f.value} value={f.value}>{f.label}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
+
+                    {/* Grid position for inline-card */}
+                    {slot.format === 'inline-card' && (
+                      <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                        <LayoutGrid className="w-4 h-4 text-amber-600 shrink-0" />
+                        <div className="flex-1">
+                          <label className="text-xs font-medium text-amber-800 block mb-1">Posicion en grid (numero de celda)</label>
+                          <input
+                            type="number"
+                            min={1}
+                            max={50}
+                            value={slot.gridPosition || 1}
+                            onChange={e => updateSlot(slotId, { gridPosition: parseInt(e.target.value) || 1 })}
+                            className="w-20 border border-amber-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          />
+                        </div>
+                      </div>
+                    )}
 
                     {/* Image URL */}
                     <div>
                       <label className="flex items-center gap-1.5 text-xs font-medium text-[#717182] mb-1.5">
                         <Image className="w-3.5 h-3.5" /> URL de imagen
+                        {formatInfo && <span className="text-[10px] opacity-60 ml-1">({formatInfo.width}x{formatInfo.height}px recomendado)</span>}
                       </label>
                       <input
                         type="text"
@@ -324,23 +449,36 @@ export const AdminBannersPage: React.FC = () => {
                       <p className="text-xs font-medium text-[#717182] mb-2 flex items-center gap-1.5">
                         {slot.enabled ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                         Vista previa
+                        {formatInfo && <span className="text-[10px] text-[#0c3c1f]/50">({formatInfo.label})</span>}
                       </p>
-                      <div className={`border border-dashed rounded-xl overflow-hidden ${slot.enabled ? 'border-green-300' : 'border-gray-300 opacity-50'}`}>
+                      <div
+                        className={`border border-dashed rounded-xl overflow-hidden ${slot.enabled ? 'border-green-300' : 'border-gray-300 opacity-50'}`}
+                        style={formatInfo ? { maxWidth: Math.min(formatInfo.width, 800) } : undefined}
+                      >
                         {slot.type === 'image_link' ? (
                           <div className="relative">
-                            <span className="absolute top-2 right-2 bg-black/40 text-white text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wider">Publicidad</span>
-                            <img src={slot.image} alt="Preview" className="w-full h-auto max-h-48 object-cover" />
+                            <span className="absolute top-2 right-2 bg-black/40 text-white text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wider z-10">Ad</span>
+                            <img
+                              src={slot.image}
+                              alt="Preview"
+                              className="w-full h-auto object-cover"
+                              style={formatInfo ? { aspectRatio: `${formatInfo.width}/${formatInfo.height}`, maxHeight: 300 } : { maxHeight: 200 }}
+                            />
                           </div>
                         ) : (
                           <div className="relative" style={{ backgroundColor: slot.bgColor || '#0c3c1f', color: slot.textColor || '#ffffff' }}>
-                            <span className="absolute top-2 right-2 bg-black/40 text-white text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wider">Publicidad</span>
-                            <div className="flex flex-col sm:flex-row items-center gap-4 p-4">
-                              <img src={slot.image} alt="Preview" className="w-full sm:w-1/3 h-32 object-cover rounded-lg" />
-                              <div className="flex-1 text-center sm:text-left">
-                                <h3 className="text-base font-bold mb-1">{slot.title || 'Titulo'}</h3>
-                                <p className="text-xs opacity-80 mb-2">{slot.description || 'Descripcion'}</p>
+                            <span className="absolute top-2 right-2 bg-black/40 text-white text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wider z-10">Ad</span>
+                            <div className={`flex ${isInlineCard ? 'flex-col' : 'flex-col sm:flex-row'} items-center gap-4 p-4`}>
+                              <img
+                                src={slot.image}
+                                alt="Preview"
+                                className={`${isInlineCard ? 'w-full h-32' : 'w-full sm:w-1/3 h-32'} object-cover rounded-lg`}
+                              />
+                              <div className={`flex-1 ${isInlineCard ? 'text-center' : 'text-center sm:text-left'}`}>
+                                <h3 className={`${isInlineCard ? 'text-sm' : 'text-base'} font-bold mb-1`}>{slot.title || 'Titulo'}</h3>
+                                <p className={`${isInlineCard ? 'text-[11px]' : 'text-xs'} opacity-80 mb-2`}>{slot.description || 'Descripcion'}</p>
                                 <span
-                                  className="inline-block px-4 py-1.5 rounded text-xs font-bold"
+                                  className={`inline-block ${isInlineCard ? 'px-3 py-1 text-[10px]' : 'px-4 py-1.5 text-xs'} rounded font-bold`}
                                   style={{ backgroundColor: slot.textColor || '#ffffff', color: slot.bgColor || '#0c3c1f' }}
                                 >
                                   {slot.ctaText || 'CTA'}
@@ -357,6 +495,12 @@ export const AdminBannersPage: React.FC = () => {
             );
           })}
         </div>
+
+        {filteredSlots.length === 0 && (
+          <div className="text-center py-12 text-[#717182]">
+            No hay slots para la pagina seleccionada.
+          </div>
+        )}
       </main>
     </div>
   );

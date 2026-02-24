@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Hero } from '@/app/components/Hero';
 import { FlashDeals } from '@/app/components/FlashDeals';
@@ -7,8 +7,12 @@ import { Newsletter } from '@/app/components/Newsletter';
 import { About } from '@/app/components/About';
 import { FAQ } from '@/app/components/FAQ';
 import { ProductCard } from '@/app/components/ProductCard';
-import { AdBanner } from '@/app/components/AdBanner';
+import { AdBanner, getInlineAdSlots } from '@/app/components/AdBanner';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
+
+type GridItem =
+  | { kind: 'product'; product: ReturnType<typeof useShopifyProducts>['products'][number] }
+  | { kind: 'ad'; slotId: string };
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +22,38 @@ export const HomePage: React.FC = () => {
   const scrollToProducts = () => {
     productsRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const inlineAds = useMemo(() => getInlineAdSlots('home'), []);
+
+  const gridItems = useMemo<GridItem[]>(() => {
+    const items: GridItem[] = [];
+    let adIndex = 0;
+    let productIndex = 0;
+    let position = 0;
+
+    while (productIndex < products.length || adIndex < inlineAds.length) {
+      if (adIndex < inlineAds.length && position === inlineAds[adIndex].position - 1) {
+        items.push({ kind: 'ad', slotId: inlineAds[adIndex].slotId });
+        adIndex++;
+        position++;
+        continue;
+      }
+
+      if (productIndex < products.length) {
+        items.push({ kind: 'product', product: products[productIndex] });
+        productIndex++;
+        position++;
+      } else {
+        break;
+      }
+    }
+
+    return items;
+  }, [products, inlineAds]);
+
+  const midBannerAfter = 8;
+  const firstHalf = gridItems.slice(0, midBannerAfter);
+  const secondHalf = gridItems.slice(midBannerAfter);
 
   return (
     <>
@@ -29,7 +65,6 @@ export const HomePage: React.FC = () => {
 
       <FlashDeals />
 
-      {/* Products Grid */}
       <section ref={productsRef} className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 max-w-[100vw]">
         <div className="flex items-center justify-between mb-6 sm:mb-8 gap-2 min-w-0">
           <h2 className="text-[#212121]">Todos los Productos</h2>
@@ -51,30 +86,38 @@ export const HomePage: React.FC = () => {
         ) : (
           <>
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-              {products.slice(0, 8).map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onClick={() => navigate(`/producto/${product.handle || product.id}`)}
-                />
-              ))}
+              {firstHalf.map((item, i) =>
+                item.kind === 'product' ? (
+                  <ProductCard
+                    key={`p-${item.product.id}`}
+                    product={item.product}
+                    onClick={() => navigate(`/producto/${item.product.handle || item.product.id}`)}
+                  />
+                ) : (
+                  <AdBanner key={`ad-${item.slotId}-${i}`} slotId={item.slotId} variant="inline-card" />
+                )
+              )}
             </div>
 
-            {products.length > 8 && (
+            {secondHalf.length > 0 && (
               <div className="my-4 sm:my-8">
                 <AdBanner slotId="home-products-mid" />
               </div>
             )}
 
-            {products.length > 8 && (
+            {secondHalf.length > 0 && (
               <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-                {products.slice(8).map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onClick={() => navigate(`/producto/${product.handle || product.id}`)}
-                  />
-                ))}
+                {secondHalf.map((item, i) =>
+                  item.kind === 'product' ? (
+                    <ProductCard
+                      key={`p-${item.product.id}`}
+                      product={item.product}
+                      onClick={() => navigate(`/producto/${item.product.handle || item.product.id}`)}
+                    />
+                  ) : (
+                    <AdBanner key={`ad-${item.slotId}-${i}`} slotId={item.slotId} variant="inline-card" />
+                  )
+                )}
               </div>
             )}
           </>
@@ -92,10 +135,9 @@ export const HomePage: React.FC = () => {
       <FAQ />
 
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
-        <AdBanner slotId="home-faq-below" />
+        <AdBanner slotId="home-faq-below" variant="leaderboard" />
       </div>
 
-      {/* Features Section */}
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

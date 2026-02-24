@@ -375,8 +375,13 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
           </div>
         )}
 
-        <div className="mt-6 max-w-5xl mx-auto">
-          <AdBanner slotId="product-description-below" />
+        <div className="mt-6 max-w-5xl mx-auto flex flex-col lg:flex-row gap-6">
+          <div className="flex-1">
+            <AdBanner slotId="product-description-below" />
+          </div>
+          <div className="hidden lg:block shrink-0 w-[300px]">
+            <AdBanner slotId="product-sidebar-rectangle" variant="sidebar" />
+          </div>
         </div>
 
         {/* Productos Similares */}

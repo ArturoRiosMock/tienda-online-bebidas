@@ -1,8 +1,26 @@
 {
+  "formats": {
+    "leaderboard":      { "width": 728, "height": 90,  "label": "Leaderboard (728x90)" },
+    "large-leaderboard": { "width": 970, "height": 90,  "label": "Large Leaderboard (970x90)" },
+    "banner":           { "width": 468, "height": 60,  "label": "Full Banner (468x60)" },
+    "half-banner":      { "width": 234, "height": 60,  "label": "Half Banner (234x60)" },
+    "medium-rectangle": { "width": 300, "height": 250, "label": "Medium Rectangle (300x250)" },
+    "large-rectangle":  { "width": 336, "height": 280, "label": "Large Rectangle (336x280)" },
+    "square":           { "width": 250, "height": 250, "label": "Square (250x250)" },
+    "small-square":     { "width": 180, "height": 150, "label": "Small Rectangle (180x150)" },
+    "skyscraper":       { "width": 160, "height": 600, "label": "Wide Skyscraper (160x600)" },
+    "half-page":        { "width": 300, "height": 600, "label": "Half Page (300x600)" },
+    "wide-skyscraper":  { "width": 240, "height": 400, "label": "Wide Skyscraper (240x400)" },
+    "vertical-banner":  { "width": 120, "height": 240, "label": "Vertical Banner (120x240)" },
+    "billboard":        { "width": 720, "height": 300, "label": "Billboard (720x300)" },
+    "inline-card":      { "width": 300, "height": 400, "label": "Inline Card (product grid)" },
+    "full-width":       { "width": 1200, "height": 300, "label": "Full Width (responsive)" }
+  },
   "slots": {
     "home-hero-below": {
       "enabled": true,
       "type": "image_text_cta",
+      "format": "full-width",
       "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&h=300&fit=crop",
       "title": "Descubre las mejores marcas",
       "description": "Ofertas exclusivas en whiskys premium y licores importados. Envio gratis en compras mayores a $500 MXN.",
@@ -15,13 +33,38 @@
     "home-products-mid": {
       "enabled": true,
       "type": "image_link",
+      "format": "billboard",
       "image": "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=1200&h=250&fit=crop",
       "link": "/categorias/vino",
       "targetBlank": false
     },
+    "home-grid-inline-1": {
+      "enabled": true,
+      "type": "image_text_cta",
+      "format": "inline-card",
+      "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=300&h=300&fit=crop",
+      "title": "Anunciate aqui",
+      "description": "Espacio premium dentro del catalogo de productos.",
+      "ctaText": "Contactar",
+      "ctaLink": "https://wa.me/5215512345678",
+      "bgColor": "#1a1a2e",
+      "textColor": "#ffffff",
+      "targetBlank": true,
+      "gridPosition": 5
+    },
+    "home-grid-inline-2": {
+      "enabled": true,
+      "type": "image_link",
+      "format": "inline-card",
+      "image": "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=300&h=400&fit=crop",
+      "link": "/categorias/whisky",
+      "targetBlank": false,
+      "gridPosition": 12
+    },
     "home-brands-below": {
       "enabled": true,
       "type": "image_text_cta",
+      "format": "full-width",
       "image": "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&h=400&fit=crop",
       "title": "Espacio publicitario disponible",
       "description": "Coloca tu marca aqui y llega a miles de clientes. Contactanos para mas informacion.",
@@ -34,6 +77,7 @@
     "home-faq-below": {
       "enabled": true,
       "type": "image_link",
+      "format": "leaderboard",
       "image": "https://images.unsplash.com/photo-1574015974293-817f0ebebb74?w=1200&h=200&fit=crop",
       "link": "/categorias/brandy",
       "targetBlank": false
@@ -41,6 +85,7 @@
     "product-description-below": {
       "enabled": true,
       "type": "image_text_cta",
+      "format": "billboard",
       "image": "https://images.unsplash.com/photo-1582819509237-d5b75f20ff7a?w=600&h=300&fit=crop",
       "title": "Espacio publicitario premium",
       "description": "Tu marca en la pagina de cada producto. Maximo impacto, maxima visibilidad.",
@@ -53,16 +98,48 @@
     "product-similar-below": {
       "enabled": true,
       "type": "image_link",
+      "format": "leaderboard",
       "image": "https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?w=1200&h=250&fit=crop",
       "link": "/",
+      "targetBlank": false
+    },
+    "product-sidebar-rectangle": {
+      "enabled": true,
+      "type": "image_link",
+      "format": "medium-rectangle",
+      "image": "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=300&h=250&fit=crop",
+      "link": "/categorias/vino",
       "targetBlank": false
     },
     "collection-header-below": {
       "enabled": true,
       "type": "image_link",
+      "format": "leaderboard",
       "image": "https://images.unsplash.com/photo-1597290282695-edc43d0e7129?w=1200&h=200&fit=crop",
       "link": "/",
       "targetBlank": false
+    },
+    "collection-sidebar-skyscraper": {
+      "enabled": true,
+      "type": "image_link",
+      "format": "half-page",
+      "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=300&h=600&fit=crop",
+      "link": "/categorias/whisky",
+      "targetBlank": false
+    },
+    "collection-grid-inline": {
+      "enabled": true,
+      "type": "image_text_cta",
+      "format": "inline-card",
+      "image": "https://images.unsplash.com/photo-1574015974293-817f0ebebb74?w=300&h=300&fit=crop",
+      "title": "Tu marca aqui",
+      "description": "Espacio dentro del catalogo de coleccion.",
+      "ctaText": "Anunciate",
+      "ctaLink": "https://wa.me/5215512345678",
+      "bgColor": "#0c3c1f",
+      "textColor": "#ffffff",
+      "targetBlank": true,
+      "gridPosition": 4
     }
   }
 }
