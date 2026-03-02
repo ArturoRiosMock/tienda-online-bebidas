@@ -26,7 +26,7 @@
       "description": "Ofertas exclusivas en whiskys premium y licores importados. Envio gratis en compras mayores a $500 MXN.",
       "ctaText": "Ver ofertas",
       "ctaLink": "/categorias/whisky",
-      "bgColor": "#0c3c1f",
+      "bgColor": "#0055a2",
       "textColor": "#ffffff",
       "targetBlank": false
     },
@@ -136,7 +136,7 @@
       "description": "Espacio dentro del catalogo de coleccion.",
       "ctaText": "Anunciate",
       "ctaLink": "https://wa.me/5215512345678",
-      "bgColor": "#0c3c1f",
+      "bgColor": "#0055a2",
       "textColor": "#ffffff",
       "targetBlank": true,
       "gridPosition": 4

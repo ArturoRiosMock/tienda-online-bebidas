@@ -38,7 +38,7 @@ function highlightMatch(text: string, query: string): React.ReactNode {
   return (
     <>
       {text.slice(0, idx)}
-      <strong className="font-semibold text-[#0c3c1f]">{text.slice(idx, idx + query.trim().length)}</strong>
+      <strong className="font-semibold text-[#0055a2]">{text.slice(idx, idx + query.trim().length)}</strong>
       {text.slice(idx + query.trim().length)}
     </>
   );
@@ -213,7 +213,7 @@ export const SearchBar = ({ collections, onClose, variant = 'desktop' }: SearchB
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => setIsOpen(true)}
         onKeyDown={handleKeyDown}
-        className="w-full border border-gray-300 rounded-lg px-4 py-2 pr-20 focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]/30 text-sm text-[#212121]"
+        className="w-full border border-gray-300 rounded-lg px-4 py-2 pr-20 focus:outline-none focus:ring-2 focus:ring-[#0055a2]/30 text-sm text-[#212121]"
         autoFocus={isMobile}
         aria-label="Buscar productos y colecciones"
         aria-expanded={showDropdown}
@@ -231,7 +231,7 @@ export const SearchBar = ({ collections, onClose, variant = 'desktop' }: SearchB
             <X className="w-4 h-4" />
           </button>
         )}
-        <button type="button" className="p-1 text-[#0c3c1f]" aria-hidden>
+        <button type="button" className="p-1 text-[#0055a2]" aria-hidden>
           <Search className="w-5 h-5" />
         </button>
       </div>
@@ -252,7 +252,7 @@ export const SearchBar = ({ collections, onClose, variant = 'desktop' }: SearchB
                 type="button"
                 onClick={() => handleRecentClick(q)}
                 className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 ${
-                  i === selectedIndex ? 'bg-[#0c3c1f]/10 text-[#0c3c1f]' : 'text-[#212121] hover:bg-gray-50'
+                  i === selectedIndex ? 'bg-[#0055a2]/10 text-[#0055a2]' : 'text-[#212121] hover:bg-gray-50'
                 }`}
               >
                 <Search className="w-4 h-4 text-[#717182] flex-shrink-0" />
@@ -297,10 +297,10 @@ export const SearchBar = ({ collections, onClose, variant = 'desktop' }: SearchB
                       onClick={() => handleSelectCollection(c)}
                       onMouseEnter={() => setSelectedIndex(idx)}
                       className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 ${
-                        selected ? 'bg-[#0c3c1f]/10 text-[#0c3c1f]' : 'text-[#212121] hover:bg-gray-50'
+                        selected ? 'bg-[#0055a2]/10 text-[#0055a2]' : 'text-[#212121] hover:bg-gray-50'
                       }`}
                     >
-                      <FolderOpen className="w-4 h-4 text-[#0c3c1f] flex-shrink-0" />
+                      <FolderOpen className="w-4 h-4 text-[#0055a2] flex-shrink-0" />
                       <span className="flex-1">{highlightMatch(c.title, trimmedQuery)}</span>
                       <ChevronRight className="w-4 h-4 text-[#717182]" />
                     </button>
@@ -327,7 +327,7 @@ export const SearchBar = ({ collections, onClose, variant = 'desktop' }: SearchB
                       onClick={() => handleSelectProduct(p)}
                       onMouseEnter={() => setSelectedIndex(idx)}
                       className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3 ${
-                        selected ? 'bg-[#0c3c1f]/10 text-[#0c3c1f]' : 'text-[#212121] hover:bg-gray-50'
+                        selected ? 'bg-[#0055a2]/10 text-[#0055a2]' : 'text-[#212121] hover:bg-gray-50'
                       }`}
                     >
                       <div className="w-10 h-10 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
@@ -339,7 +339,7 @@ export const SearchBar = ({ collections, onClose, variant = 'desktop' }: SearchB
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium truncate">{highlightMatch(p.name, trimmedQuery)}</p>
-                        <p className="text-[#0c3c1f] font-semibold">
+                        <p className="text-[#0055a2] font-semibold">
                           ${p.price.toFixed(2)} MXN
                         </p>
                       </div>

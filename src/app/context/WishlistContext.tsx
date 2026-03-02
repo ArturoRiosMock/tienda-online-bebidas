@@ -21,7 +21,7 @@ interface WishlistContextType {
   totalItems: number;
 }
 
-const STORAGE_KEY = 'mr-brown-wishlist';
+const STORAGE_KEY = 'bebify-wishlist';
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 

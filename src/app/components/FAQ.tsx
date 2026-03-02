@@ -9,36 +9,36 @@ interface FAQItem {
 
 const faqs: FAQItem[] = [
   {
-    question: '¿Cuál es el tiempo de entrega?',
-    answer: 'Realizamos entregas en 24-48 horas en zonas urbanas. Para zonas más alejadas, el tiempo puede extenderse de 3 a 5 días hábiles. Recibirás una notificación con el número de seguimiento una vez que tu pedido sea despachado.'
+    question: '¿Cómo me registro como cliente en Bebify?',
+    answer: 'Regístrate directamente en nuestra plataforma con los datos de tu negocio (centro de consumo, restaurante, bar, etc.). Una vez verificada tu cuenta, tendrás acceso a todo nuestro catálogo con precios exclusivos B2B.'
   },
   {
-    question: '¿Los productos son 100% naturales?',
-    answer: 'Sí, todos nuestros productos están elaborados con ingredientes 100% naturales. No utilizamos conservantes artificiales, colorantes ni saborizantes químicos. Trabajamos con productores locales para garantizar la frescura y calidad de cada bebida.'
+    question: '¿Cuál es el tiempo de entrega?',
+    answer: 'Realizamos entregas en menos de 24 horas en toda la CDMX. Nuestra plataforma tecnológica garantiza pedidos sin errores y entregas rápidas y confiables para que tu negocio nunca se quede sin stock.'
+  },
+  {
+    question: '¿Cómo puedo ver los precios de los productos?',
+    answer: 'Los precios son exclusivos para clientes registrados. Una vez que inicies sesión con tu cuenta, podrás ver todos los precios y realizar pedidos. Esto nos permite ofrecer precios competitivos B2B a nuestros clientes.'
   },
   {
     question: '¿Cuáles son los métodos de pago?',
-    answer: 'Aceptamos tarjetas de crédito y débito (Visa, Mastercard, American Express), transferencias bancarias, PayPal y pago en efectivo contra entrega en zonas seleccionadas. Todos los pagos son procesados de forma segura.'
-  },
-  {
-    question: '¿Puedo devolver un producto?',
-    answer: 'Sí, aceptamos devoluciones dentro de los primeros 7 días después de la entrega si el producto llega en mal estado o con defectos. Contacta a nuestro servicio al cliente con fotos del producto y procesaremos tu devolución o cambio inmediatamente.'
+    answer: 'Aceptamos tarjetas de crédito y débito (Visa, Mastercard, American Express), transferencias bancarias y pagos por depósito. Todos los pagos son procesados de forma segura. Para clientes recurrentes, ofrecemos condiciones de crédito.'
   },
   {
     question: '¿Hay pedido mínimo?',
-    answer: 'No, no tenemos pedido mínimo. Puedes comprar desde una sola bebida. Sin embargo, para pedidos superiores a $50, ofrecemos envío gratuito como beneficio especial.'
+    answer: 'Consulta con nuestro equipo de ventas las condiciones de pedido mínimo. Trabajamos para adaptarnos a las necesidades de cada centro de consumo, desde pequeños bares hasta grandes restaurantes y cadenas.'
   },
   {
-    question: '¿Las bebidas necesitan refrigeración?',
-    answer: 'Sí, la mayoría de nuestras bebidas son productos frescos que requieren refrigeración. Te recomendamos guardarlas en el refrigerador inmediatamente después de recibirlas. Cada producto incluye instrucciones específicas de almacenamiento en la etiqueta.'
+    question: '¿Qué variedad de productos manejan?',
+    answer: 'Contamos con más de 2,000 productos disponibles de más de 300 proveedores: destilados (whisky, vodka, tequila, gin, ron, mezcal), vinos, champagne, cervezas artesanales, nacionales e importadas, refrescos, aguas y más.'
   },
   {
-    question: '¿Tienen opciones sin azúcar?',
-    answer: 'Sí, contamos con una amplia selección de bebidas sin azúcar añadida y endulzadas naturalmente con stevia o fruta. Puedes filtrar estos productos en nuestra tienda usando la categoría "Sin Azúcar".'
+    question: '¿Puedo devolver un producto?',
+    answer: 'Sí, aceptamos devoluciones si el producto llega en mal estado o con defectos. Contacta a nuestro servicio al cliente con fotos del producto y procesaremos tu devolución o cambio de inmediato.'
   },
   {
-    question: '¿Ofrecen suscripciones mensuales?',
-    answer: 'Sí, ofrecemos planes de suscripción mensual con descuentos de hasta 15%. Puedes personalizar tu caja eligiendo tus bebidas favoritas y modificar tu suscripción en cualquier momento sin cargos adicionales.'
+    question: '¿Cómo contacto a servicio al cliente?',
+    answer: 'Puedes contactarnos a través de nuestra página de contacto, por WhatsApp o por correo electrónico. Nuestro equipo de soporte está disponible de lunes a viernes para atender todas tus dudas y solicitudes.'
   }
 ];
 
@@ -57,10 +57,10 @@ export const FAQ = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 bg-[#0c3c1f]/10 px-4 py-2 rounded-full mb-4"
+            className="inline-flex items-center gap-2 bg-[#0055a2]/10 px-4 py-2 rounded-full mb-4"
           >
-            <HelpCircle className="w-4 h-4 text-[#0c3c1f]" />
-            <span className="text-[#0c3c1f]">Preguntas Frecuentes</span>
+            <HelpCircle className="w-4 h-4 text-[#0055a2]" />
+            <span className="text-[#0055a2]">Preguntas Frecuentes</span>
           </motion.div>
           
           <motion.h2
@@ -107,7 +107,7 @@ export const FAQ = () => {
                     transition={{ duration: 0.3 }}
                     className="flex-shrink-0"
                   >
-                    <ChevronDown className="w-5 h-5 text-[#0c3c1f]" />
+                    <ChevronDown className="w-5 h-5 text-[#0055a2]" />
                   </motion.div>
                 </div>
                 
@@ -138,21 +138,21 @@ export const FAQ = () => {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <div className="bg-gradient-to-r from-[#0c3c1f] to-[#0a5028] text-white rounded-xl p-8 max-w-2xl mx-auto">
+          <div className="bg-gradient-to-r from-[#0055a2] to-[#0a5028] text-white rounded-xl p-8 max-w-2xl mx-auto">
             <h3 className="text-white mb-3">¿Aún tienes preguntas?</h3>
             <p className="text-white/90 mb-6">
               Nuestro equipo de soporte está disponible de lunes a viernes de 9:00 AM a 6:00 PM
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <a
-                href="mailto:soporte@bebidasfrescas.com"
-                className="bg-white text-[#0c3c1f] px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors"
+                href="https://bebify.mx/pages/contact"
+                className="bg-white text-[#0055a2] px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                Enviar Email
+                Contáctanos
               </a>
               <a
                 href="tel:+123456789"
-                className="border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-[#0c3c1f] transition-colors"
+                className="border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-[#0055a2] transition-colors"
               >
                 Llamar Ahora
               </a>

@@ -97,7 +97,7 @@ export const AddToCartAnimation: React.FC<AddToCartAnimationProps> = ({ onAnimat
           }}
           transition={{ duration: 0.6, ease: [0.22, 0.68, 0, 1.1] }}
         >
-          <div className="w-[50px] h-[50px] rounded-full bg-white shadow-xl border-2 border-[#0c3c1f] overflow-hidden flex items-center justify-center">
+          <div className="w-[50px] h-[50px] rounded-full bg-white shadow-xl border-2 border-[#0055a2] overflow-hidden flex items-center justify-center">
             <img src={item.image} alt="" className="w-full h-full object-contain p-1" />
           </div>
         </motion.div>

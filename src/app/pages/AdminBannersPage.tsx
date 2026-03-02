@@ -138,21 +138,21 @@ export const AdminBannersPage: React.FC = () => {
             <img src={PLACEHOLDER_IMAGES.logo} alt="Mr. Brown" className="h-14 object-contain" />
           </div>
           <div className="flex items-center gap-2 mb-6 justify-center">
-            <Lock className="w-5 h-5 text-[#0c3c1f]" />
-            <h1 className="text-xl font-bold text-[#0c3c1f]">Admin Banners</h1>
+            <Lock className="w-5 h-5 text-[#0055a2]" />
+            <h1 className="text-xl font-bold text-[#0055a2]">Admin Banners</h1>
           </div>
           <input
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             placeholder="Contrasena"
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3 focus:outline-none focus:ring-2 focus:ring-[#0c3c1f] text-sm"
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-3 focus:outline-none focus:ring-2 focus:ring-[#0055a2] text-sm"
             autoFocus
           />
           {loginError && <p className="text-red-500 text-xs mb-3">{loginError}</p>}
           <button
             type="submit"
-            className="w-full bg-[#0c3c1f] text-white py-3 rounded-lg font-bold hover:bg-[#0a3019] transition-colors"
+            className="w-full bg-[#0055a2] text-white py-3 rounded-lg font-bold hover:bg-[#0a3019] transition-colors"
           >
             Entrar
           </button>
@@ -163,7 +163,7 @@ export const AdminBannersPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="bg-[#0c3c1f] text-white px-4 py-4 flex items-center justify-between sticky top-0 z-10">
+      <header className="bg-[#0055a2] text-white px-4 py-4 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <img src={PLACEHOLDER_IMAGES.logo} alt="Mr. Brown" className="h-8 object-contain brightness-0 invert" />
           <h1 className="text-lg font-bold hidden sm:block">Administrador de Banners</h1>
@@ -191,7 +191,7 @@ export const AdminBannersPage: React.FC = () => {
 
         {/* Resumen de formatos */}
         <div className="mb-6 bg-white rounded-xl shadow-sm border p-4">
-          <h2 className="text-sm font-bold text-[#0c3c1f] mb-3 flex items-center gap-2">
+          <h2 className="text-sm font-bold text-[#0055a2] mb-3 flex items-center gap-2">
             <LayoutGrid className="w-4 h-4" />
             Formatos IAB disponibles
           </h2>
@@ -223,7 +223,7 @@ export const AdminBannersPage: React.FC = () => {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                activeTab === tab ? 'bg-[#0c3c1f] text-white' : 'text-[#717182] hover:bg-gray-100'
+                activeTab === tab ? 'bg-[#0055a2] text-white' : 'text-[#717182] hover:bg-gray-100'
               }`}
             >
               {tab}
@@ -253,7 +253,7 @@ export const AdminBannersPage: React.FC = () => {
                         {formatInfo && <> &middot; {formatInfo.width}x{formatInfo.height}</>}
                         {isInlineCard && slot.gridPosition && <> &middot; Pos: {slot.gridPosition}</>}
                       </p>
-                      <p className="text-[10px] text-[#0c3c1f]/60">{meta.placement}</p>
+                      <p className="text-[10px] text-[#0055a2]/60">{meta.placement}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -275,7 +275,7 @@ export const AdminBannersPage: React.FC = () => {
                           type="checkbox"
                           checked={slot.enabled}
                           onChange={e => updateSlot(slotId, { enabled: e.target.checked })}
-                          className="w-4 h-4 rounded border-gray-300 text-[#0c3c1f] focus:ring-[#0c3c1f]"
+                          className="w-4 h-4 rounded border-gray-300 text-[#0055a2] focus:ring-[#0055a2]"
                         />
                         <span className="text-sm font-medium">Habilitado</span>
                       </label>
@@ -284,7 +284,7 @@ export const AdminBannersPage: React.FC = () => {
                         <select
                           value={slot.type}
                           onChange={e => updateSlot(slotId, { type: e.target.value as SlotType })}
-                          className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]"
+                          className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#0055a2]"
                         >
                           <option value="image_link">Imagen + Link</option>
                           <option value="image_text_cta">Imagen + Texto + CTA</option>
@@ -296,7 +296,7 @@ export const AdminBannersPage: React.FC = () => {
                         <select
                           value={slot.format || 'full-width'}
                           onChange={e => updateSlot(slotId, { format: e.target.value })}
-                          className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]"
+                          className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#0055a2]"
                         >
                           {FORMAT_OPTIONS.map(f => (
                             <option key={f.value} value={f.value}>{f.label}</option>
@@ -333,7 +333,7 @@ export const AdminBannersPage: React.FC = () => {
                         type="text"
                         value={slot.image}
                         onChange={e => updateSlot(slotId, { image: e.target.value })}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0055a2]"
                         placeholder="https://..."
                       />
                     </div>
@@ -347,7 +347,7 @@ export const AdminBannersPage: React.FC = () => {
                           type="text"
                           value={slot.link || ''}
                           onChange={e => updateSlot(slotId, { link: e.target.value })}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]"
+                          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0055a2]"
                           placeholder="/categorias/whisky o https://..."
                         />
                       </div>
@@ -364,7 +364,7 @@ export const AdminBannersPage: React.FC = () => {
                               type="text"
                               value={slot.title || ''}
                               onChange={e => updateSlot(slotId, { title: e.target.value })}
-                              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0055a2]"
                             />
                           </div>
                           <div>
@@ -373,7 +373,7 @@ export const AdminBannersPage: React.FC = () => {
                               type="text"
                               value={slot.ctaText || ''}
                               onChange={e => updateSlot(slotId, { ctaText: e.target.value })}
-                              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0055a2]"
                             />
                           </div>
                         </div>
@@ -383,7 +383,7 @@ export const AdminBannersPage: React.FC = () => {
                             value={slot.description || ''}
                             onChange={e => updateSlot(slotId, { description: e.target.value })}
                             rows={2}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0c3c1f] resize-none"
+                            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0055a2] resize-none"
                           />
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -393,7 +393,7 @@ export const AdminBannersPage: React.FC = () => {
                               type="text"
                               value={slot.ctaLink || ''}
                               onChange={e => updateSlot(slotId, { ctaLink: e.target.value })}
-                              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]"
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0055a2]"
                             />
                           </div>
                           <div>
@@ -401,15 +401,15 @@ export const AdminBannersPage: React.FC = () => {
                             <div className="flex items-center gap-2">
                               <input
                                 type="color"
-                                value={slot.bgColor || '#0c3c1f'}
+                                value={slot.bgColor || '#0055a2'}
                                 onChange={e => updateSlot(slotId, { bgColor: e.target.value })}
                                 className="w-8 h-8 rounded cursor-pointer border-0"
                               />
                               <input
                                 type="text"
-                                value={slot.bgColor || '#0c3c1f'}
+                                value={slot.bgColor || '#0055a2'}
                                 onChange={e => updateSlot(slotId, { bgColor: e.target.value })}
-                                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]"
+                                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0055a2]"
                               />
                             </div>
                           </div>
@@ -426,7 +426,7 @@ export const AdminBannersPage: React.FC = () => {
                                 type="text"
                                 value={slot.textColor || '#ffffff'}
                                 onChange={e => updateSlot(slotId, { textColor: e.target.value })}
-                                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]"
+                                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0055a2]"
                               />
                             </div>
                           </div>
@@ -439,7 +439,7 @@ export const AdminBannersPage: React.FC = () => {
                         type="checkbox"
                         checked={slot.targetBlank || false}
                         onChange={e => updateSlot(slotId, { targetBlank: e.target.checked })}
-                        className="w-4 h-4 rounded border-gray-300 text-[#0c3c1f] focus:ring-[#0c3c1f]"
+                        className="w-4 h-4 rounded border-gray-300 text-[#0055a2] focus:ring-[#0055a2]"
                       />
                       <span className="text-sm">Abrir en nueva pestana</span>
                     </label>
@@ -449,7 +449,7 @@ export const AdminBannersPage: React.FC = () => {
                       <p className="text-xs font-medium text-[#717182] mb-2 flex items-center gap-1.5">
                         {slot.enabled ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                         Vista previa
-                        {formatInfo && <span className="text-[10px] text-[#0c3c1f]/50">({formatInfo.label})</span>}
+                        {formatInfo && <span className="text-[10px] text-[#0055a2]/50">({formatInfo.label})</span>}
                       </p>
                       <div
                         className={`border border-dashed rounded-xl overflow-hidden ${slot.enabled ? 'border-green-300' : 'border-gray-300 opacity-50'}`}
@@ -466,7 +466,7 @@ export const AdminBannersPage: React.FC = () => {
                             />
                           </div>
                         ) : (
-                          <div className="relative" style={{ backgroundColor: slot.bgColor || '#0c3c1f', color: slot.textColor || '#ffffff' }}>
+                          <div className="relative" style={{ backgroundColor: slot.bgColor || '#0055a2', color: slot.textColor || '#ffffff' }}>
                             <span className="absolute top-2 right-2 bg-black/40 text-white text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wider z-10">Ad</span>
                             <div className={`flex ${isInlineCard ? 'flex-col' : 'flex-col sm:flex-row'} items-center gap-4 p-4`}>
                               <img
@@ -479,7 +479,7 @@ export const AdminBannersPage: React.FC = () => {
                                 <p className={`${isInlineCard ? 'text-[11px]' : 'text-xs'} opacity-80 mb-2`}>{slot.description || 'Descripcion'}</p>
                                 <span
                                   className={`inline-block ${isInlineCard ? 'px-3 py-1 text-[10px]' : 'px-4 py-1.5 text-xs'} rounded font-bold`}
-                                  style={{ backgroundColor: slot.textColor || '#ffffff', color: slot.bgColor || '#0c3c1f' }}
+                                  style={{ backgroundColor: slot.textColor || '#ffffff', color: slot.bgColor || '#0055a2' }}
                                 >
                                   {slot.ctaText || 'CTA'}
                                 </span>

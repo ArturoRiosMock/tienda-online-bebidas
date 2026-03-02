@@ -24,45 +24,46 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
     {
       id: 1,
       image: 'https://images.unsplash.com/photo-1746422029293-43065303dab5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aGlza3klMjBib3R0bGVzJTIwcHJlbWl1bSUyMGNvbGxlY3Rpb258ZW58MXx8fHwxNzcwMTM1OTYyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      title: 'Whisky Premium',
-      subtitle: 'Colección exclusiva de whiskies premium de las mejores marcas del mundo',
-      badge: '5% OFF',
-      buttonText: 'COMPRE AHORA',
+      title: 'La Plataforma de Bebidas B2B',
+      subtitle: 'Centraliza tus compras con acceso a más de 2,000 productos de más de 300 proveedores',
+      badge: 'B2B',
+      buttonText: 'EXPLORAR CATÁLOGO',
       buttonAction: onShopNowClick
     },
     {
       id: 2,
       image: 'https://images.unsplash.com/photo-1737029114889-8f5edb15b8be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2RrYSUyMGFic29sdXQlMjBib3R0bGUlMjBwcmVtaXVtfGVufDF8fHx8MTc3MDEzNTk2NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      title: 'Vodka Absolut',
-      subtitle: 'Marcas icónicas para momentos especiales',
-      badge: 'ROYAL COLLECTION',
-      buttonText: 'COMPRE AHORA',
+      title: 'Destilados Premium',
+      subtitle: 'Whisky, Vodka, Tequila, Gin, Ron y más de las mejores marcas del mundo',
+      badge: '+300 PROVEEDORES',
+      buttonText: 'EXPLORAR CATÁLOGO',
       buttonAction: onShopNowClick
     },
     {
       id: 3,
       image: 'https://images.unsplash.com/photo-1672361720452-02fd251c69dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGFtcGFnbmUlMjBib3R0bGUlMjBjZWxlYnJhdGlvbiUyMGx1eHVyeXxlbnwxfHx8fDE3NzAxMzU5NjN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      title: 'Champagne & Espumantes',
-      subtitle: 'Celebra cada momento con las mejores burbujas',
-      badge: 'NUEVO',
-      buttonText: 'COMPRE AHORA',
+      title: 'Vinos y Espumantes',
+      subtitle: 'Champagne, vino tinto, blanco, rosado y espumosos para tu negocio',
+      badge: '+2,000 PRODUCTOS',
+      buttonText: 'EXPLORAR CATÁLOGO',
       buttonAction: onShopNowClick
     },
     {
       id: 4,
       image: 'https://images.unsplash.com/photo-1769697064243-889f2e25d44a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aW5lJTIwYm90dGxlcyUyMGVsZWdhbnQlMjBkaXNwbGF5fGVufDF8fHx8MTc3MDEzNTk2M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      title: 'Vinos Selectos',
-      subtitle: 'Los mejores vinos tintos, blancos y rosados',
-      buttonText: 'COMPRE AHORA',
+      title: 'Cervezas y Refrescos',
+      subtitle: 'Artesanales, nacionales, importadas y la mayor variedad de refrescos',
+      badge: 'ENTREGAS 24H',
+      buttonText: 'EXPLORAR CATÁLOGO',
       buttonAction: onShopNowClick
     },
     {
       id: 5,
       image: 'https://images.unsplash.com/photo-1682618901459-54ae8c166d16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnaW4lMjB0b25pYyUyMGJvdHRsZSUyMGJhcnxlbnwxfHx8fDE3NzAxMzU5NjR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      title: 'Gin Premium',
-      subtitle: 'Descubre nuestra colección de gins artesanales',
-      badge: 'PREMIUM',
-      buttonText: 'COMPRE AHORA',
+      title: 'Aguas y Otras Bebidas',
+      subtitle: 'Aguas minerales, tónicas, jugos, energizantes y más para completar tu inventario',
+      badge: '+250 CLIENTES',
+      buttonText: 'EXPLORAR CATÁLOGO',
       buttonAction: onShopNowClick
     }
   ];
@@ -152,7 +153,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
                         transition={{ delay: 0.3 }}
                         className="inline-block mb-4"
                       >
-                        <div className="bg-[#0c3c1f] text-white px-4 py-2 rounded-full text-sm font-bold">
+                        <div className="bg-[#0055a2] text-white px-4 py-2 rounded-full text-sm font-bold">
                           {slides[currentSlide].badge}
                         </div>
                       </motion.div>
@@ -184,7 +185,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 }}
                       onClick={slides[currentSlide].buttonAction}
-                      className="bg-[#0c3c1f] text-white px-8 py-3 rounded-lg hover:bg-[#0a3019] transition-colors font-bold text-sm flex items-center gap-2 group"
+                      className="bg-[#0055a2] text-white px-8 py-3 rounded-lg hover:bg-[#004488] transition-colors font-bold text-sm flex items-center gap-2 group"
                     >
                       <ShoppingCart className="w-5 h-5" />
                       {slides[currentSlide].buttonText}

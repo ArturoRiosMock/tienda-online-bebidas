@@ -13,6 +13,7 @@ import { AgeVerification } from '@/app/components/AgeVerification';
 export const MainLayout: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleCategoryClick = (collectionHandle: string) => {
@@ -24,8 +25,10 @@ export const MainLayout: React.FC = () => {
   };
 
   const handleCartAnimationComplete = useCallback(() => {
-    setIsCartOpen(true);
-  }, []);
+    if (!isSearchDrawerOpen) {
+      setIsCartOpen(true);
+    }
+  }, [isSearchDrawerOpen]);
 
   return (
     <AgeVerification>
@@ -36,6 +39,8 @@ export const MainLayout: React.FC = () => {
               onCartClick={() => setIsCartOpen(true)}
               onWishlistClick={() => setIsWishlistOpen(true)}
               onCategoryClick={handleCategoryClick}
+              searchDrawerOpen={isSearchDrawerOpen}
+              onSearchDrawerChange={setIsSearchDrawerOpen}
             />
 
             <main className="flex-1">

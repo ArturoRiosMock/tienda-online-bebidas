@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
-import { Zap } from 'lucide-react';
+import { Zap, Lock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useCart } from '@/app/context/CartContext';
+import { useAuth } from '@/app/context/AuthContext';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -11,6 +13,8 @@ const FLASH_DEALS_COLLECTION = 'ofertas-relampago';
 
 export const FlashDeals: React.FC = () => {
   const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const { products: deals, loading, error } = useShopifyProducts(FLASH_DEALS_COLLECTION);
 
   const [timeLeft, setTimeLeft] = useState({
@@ -110,7 +114,7 @@ export const FlashDeals: React.FC = () => {
               <path
                 d="M50 5 L95 50 L50 95 L5 50 Z"
                 fill="none"
-                stroke="#0c3c1f"
+                stroke="#0055a2"
                 strokeWidth="1.5"
                 strokeLinejoin="round"
               />
@@ -122,28 +126,41 @@ export const FlashDeals: React.FC = () => {
           {deal.name}
         </h3>
 
-        <div className="text-center mb-1.5 md:mb-3">
-          <p className="text-[10px] md:text-xs text-[#717182] mb-0.5">Por apenas:</p>
-          <div className="flex items-center justify-center gap-1 flex-wrap">
-            {hasDiscount && (
-              <span className="text-[10px] md:text-sm text-[#717182] line-through">
-                ${deal.originalPrice!.toFixed(2)}
-              </span>
-            )}
-            <span className="text-sm md:text-2xl font-bold text-[#0c3c1f]">
-              ${deal.price.toFixed(2)}
-            </span>
-          </div>
-        </div>
+        {isAuthenticated ? (
+          <>
+            <div className="text-center mb-1.5 md:mb-3">
+              <p className="text-[10px] md:text-xs text-[#717182] mb-0.5">Por apenas:</p>
+              <div className="flex items-center justify-center gap-1 flex-wrap">
+                {hasDiscount && (
+                  <span className="text-[10px] md:text-sm text-[#717182] line-through">
+                    ${deal.originalPrice!.toFixed(2)}
+                  </span>
+                )}
+                <span className="text-sm md:text-2xl font-bold text-[#0055a2]">
+                  ${deal.price.toFixed(2)}
+                </span>
+              </div>
+            </div>
 
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => handleAddToCart(deal)}
-          className="w-full bg-[#0c3c1f] text-white py-1.5 md:py-2 px-2 md:px-4 rounded-lg hover:bg-[#0c3c1f]/90 transition-colors text-[10px] md:text-sm font-medium"
-        >
-          Agregar
-        </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handleAddToCart(deal)}
+              className="w-full bg-[#0055a2] text-white py-1.5 md:py-2 px-2 md:px-4 rounded-lg hover:bg-[#0055a2]/90 transition-colors text-[10px] md:text-sm font-medium"
+            >
+              Agregar
+            </motion.button>
+          </>
+        ) : (
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/login')}
+            className="w-full bg-[#0055a2] text-white py-1.5 md:py-2 px-2 md:px-4 rounded-lg hover:bg-[#0055a2]/90 transition-colors text-[10px] md:text-sm font-medium flex items-center justify-center gap-1"
+          >
+            <Lock className="w-3 h-3 md:w-3.5 md:h-3.5" />
+            Ver precio
+          </motion.button>
+        )}
       </motion.div>
     );
   };
@@ -157,25 +174,25 @@ export const FlashDeals: React.FC = () => {
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 1, repeat: Infinity }}
-              className="w-10 h-10 sm:w-12 sm:h-12 bg-[#0c3c1f] rounded-full flex items-center justify-center shrink-0"
+              className="w-10 h-10 sm:w-12 sm:h-12 bg-[#0055a2] rounded-full flex items-center justify-center shrink-0"
             >
               <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-white" />
             </motion.div>
-            <h2 className="text-[#0c3c1f] text-lg sm:text-xl">Ofertas Relámpago</h2>
+            <h2 className="text-[#0055a2] text-lg sm:text-xl">Ofertas Relámpago</h2>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto min-w-0">
             <span className="text-[#212121] font-medium text-sm sm:text-base shrink-0">Las ofertas terminan en:</span>
             <div className="flex gap-1.5 sm:gap-2 shrink-0">
-              <div className="bg-[#0c3c1f] text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg min-w-[52px] sm:min-w-[60px] text-center">
+              <div className="bg-[#0055a2] text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg min-w-[52px] sm:min-w-[60px] text-center">
                 <div className="text-xl sm:text-2xl font-bold">{String(timeLeft.hours).padStart(2, '0')}</div>
                 <div className="text-[10px] sm:text-xs uppercase">Horas</div>
               </div>
-              <div className="bg-[#0c3c1f] text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg min-w-[52px] sm:min-w-[60px] text-center">
+              <div className="bg-[#0055a2] text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg min-w-[52px] sm:min-w-[60px] text-center">
                 <div className="text-xl sm:text-2xl font-bold">{String(timeLeft.minutes).padStart(2, '0')}</div>
                 <div className="text-[10px] sm:text-xs uppercase">Min</div>
               </div>
-              <div className="bg-[#0c3c1f] text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg min-w-[52px] sm:min-w-[60px] text-center">
+              <div className="bg-[#0055a2] text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg min-w-[52px] sm:min-w-[60px] text-center">
                 <div className="text-xl sm:text-2xl font-bold">{String(timeLeft.seconds).padStart(2, '0')}</div>
                 <div className="text-[10px] sm:text-xs uppercase">Seg</div>
               </div>
@@ -227,14 +244,14 @@ export const FlashDeals: React.FC = () => {
         .flash-deals-mobile-scroll::-webkit-scrollbar { display: none; }
         .flash-deals-mobile-scroll { scrollbar-width: none; -ms-overflow-style: none; }
         .flash-deals-slider .slick-dots { bottom: -35px; }
-        .flash-deals-slider .slick-dots li button:before { color: #0c3c1f; font-size: 8px; }
-        .flash-deals-slider .slick-dots li.slick-active button:before { color: #0c3c1f; }
+        .flash-deals-slider .slick-dots li button:before { color: #0055a2; font-size: 8px; }
+        .flash-deals-slider .slick-dots li.slick-active button:before { color: #0055a2; }
         .flash-deals-slider .slick-prev,
         .flash-deals-slider .slick-next { width: 40px; height: 40px; z-index: 10; }
         .flash-deals-slider .slick-prev { left: -45px; }
         .flash-deals-slider .slick-next { right: -45px; }
         .flash-deals-slider .slick-prev:before,
-        .flash-deals-slider .slick-next:before { color: #0c3c1f; font-size: 40px; }
+        .flash-deals-slider .slick-next:before { color: #0055a2; font-size: 40px; }
         @media (max-width: 1024px) {
           .flash-deals-slider .slick-prev { left: -25px; }
           .flash-deals-slider .slick-next { right: -25px; }

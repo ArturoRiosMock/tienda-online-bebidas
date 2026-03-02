@@ -53,7 +53,7 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
             className="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col"
           >
-            <div className="bg-[#0c3c1f] text-white p-5 flex items-center justify-between">
+            <div className="bg-[#0055a2] text-white p-5 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5" />
                 <h2 className="text-lg font-bold">Carrito ({getTotalItems()})</h2>
@@ -103,7 +103,7 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                         />
                         <div className="flex-1 min-w-0">
                           <h3 className="text-sm font-medium text-[#212121] line-clamp-2 mb-1">{item.name}</h3>
-                          <p className="text-[#0c3c1f] font-bold mb-2">${item.price.toFixed(2)} MXN</p>
+                          <p className="text-[#0055a2] font-bold mb-2">${item.price.toFixed(2)} MXN</p>
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => updateQuantity(itemId(item), item.quantity - 1)}
@@ -147,12 +147,12 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
               >
                 <div className="flex items-center justify-between text-[#212121]">
                   <span className="font-medium">Total:</span>
-                  <span className="text-[#0c3c1f] text-xl font-bold">${getTotalPrice().toFixed(2)} MXN</span>
+                  <span className="text-[#0055a2] text-xl font-bold">${getTotalPrice().toFixed(2)} MXN</span>
                 </div>
                 <button
                   onClick={handleCheckout}
                   disabled={cartLoading}
-                  className="w-full bg-[#0c3c1f] text-white py-3 rounded-lg hover:bg-[#0a3019] transition-colors disabled:opacity-50 font-bold text-base"
+                  className="w-full bg-[#0055a2] text-white py-3 rounded-lg hover:bg-[#004488] transition-colors disabled:opacity-50 font-bold text-base"
                 >
                   {isShopifyCart ? 'Ir a pagar (Shopify)' : 'Finalizar Compra'}
                 </button>

@@ -57,7 +57,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({ isOpen, onClose 
             <div className="flex items-center justify-between p-4 border-b">
               <div className="flex items-center gap-2">
                 <Heart className="w-5 h-5 text-red-500 fill-red-500" />
-                <h2 className="text-lg font-bold text-[#0c3c1f]">
+                <h2 className="text-lg font-bold text-[#0055a2]">
                   Mis Favoritos ({totalItems})
                 </h2>
               </div>
@@ -89,7 +89,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({ isOpen, onClose 
                       </div>
                       <div className="flex-1 min-w-0">
                         <p
-                          className="text-sm font-medium text-[#212121] line-clamp-2 cursor-pointer hover:text-[#0c3c1f]"
+                          className="text-sm font-medium text-[#212121] line-clamp-2 cursor-pointer hover:text-[#0055a2]"
                           onClick={() => handleProductClick(item)}
                         >
                           {item.name}
@@ -98,12 +98,12 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({ isOpen, onClose 
                           {item.originalPrice && item.originalPrice > item.price && (
                             <span className="text-xs text-[#717182] line-through">${item.originalPrice.toFixed(2)}</span>
                           )}
-                          <span className="text-base font-bold text-[#0c3c1f]">${item.price.toFixed(2)}</span>
+                          <span className="text-base font-bold text-[#0055a2]">${item.price.toFixed(2)}</span>
                         </div>
                         <div className="flex items-center gap-2 mt-2">
                           <button
                             onClick={() => handleAddToCart(item)}
-                            className="flex items-center gap-1 bg-[#0c3c1f] text-white px-3 py-1 rounded text-xs font-medium hover:bg-[#0a3019] transition-colors"
+                            className="flex items-center gap-1 bg-[#0055a2] text-white px-3 py-1 rounded text-xs font-medium hover:bg-[#004488] transition-colors"
                           >
                             <ShoppingCart className="w-3 h-3" />
                             Agregar
@@ -130,7 +130,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({ isOpen, onClose 
                     for (const item of items) handleAddToCart(item);
                     onClose();
                   }}
-                  className="w-full bg-[#0c3c1f] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-[#0a3019] transition-colors"
+                  className="w-full bg-[#0055a2] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-[#004488] transition-colors"
                 >
                   <ShoppingCart className="w-5 h-5" />
                   Agregar todos al carrito

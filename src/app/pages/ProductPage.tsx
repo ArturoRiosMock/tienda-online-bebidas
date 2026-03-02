@@ -63,7 +63,7 @@ export const ProductPage: React.FC = () => {
         <p className="text-[#717182] text-lg mb-4">{error || 'Producto no encontrado'}</p>
         <button
           onClick={() => navigate('/')}
-          className="inline-block bg-[#0c3c1f] text-white px-6 py-3 rounded-lg hover:bg-[#0a3019] transition-colors font-medium"
+          className="inline-block bg-[#0055a2] text-white px-6 py-3 rounded-lg hover:bg-[#004488] transition-colors font-medium"
         >
           Volver al inicio
         </button>

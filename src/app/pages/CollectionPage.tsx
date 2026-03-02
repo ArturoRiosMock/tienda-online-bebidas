@@ -52,18 +52,18 @@ export const CollectionPage: React.FC = () => {
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center gap-2 text-sm text-[#717182]">
-            <Link to="/" className="hover:text-[#0c3c1f] transition-colors">
+            <Link to="/" className="hover:text-[#0055a2] transition-colors">
               Inicio
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-[#0c3c1f] font-medium">{collectionTitle}</span>
+            <span className="text-[#0055a2] font-medium">{collectionTitle}</span>
           </div>
         </div>
       </div>
 
       <div className="bg-white">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-[#0c3c1f] mb-2">{collectionTitle}</h1>
+          <h1 className="text-3xl font-bold text-[#0055a2] mb-2">{collectionTitle}</h1>
           {currentCollection?.description && (
             <p className="text-[#717182] max-w-2xl">{currentCollection.description}</p>
           )}
@@ -79,11 +79,11 @@ export const CollectionPage: React.FC = () => {
           <aside className="hidden lg:block">
             <div className="sticky top-4 space-y-6">
               <div>
-                <h3 className="text-[#0c3c1f] font-bold mb-4 text-sm uppercase tracking-wide">Categorías</h3>
+                <h3 className="text-[#0055a2] font-bold mb-4 text-sm uppercase tracking-wide">Categorías</h3>
                 <nav className="space-y-1">
                   <Link
                     to="/"
-                    className="block px-3 py-2 text-sm rounded-lg text-[#212121] hover:bg-gray-100 hover:text-[#0c3c1f] transition-colors"
+                    className="block px-3 py-2 text-sm rounded-lg text-[#212121] hover:bg-gray-100 hover:text-[#0055a2] transition-colors"
                   >
                     Todos los Productos
                   </Link>
@@ -95,8 +95,8 @@ export const CollectionPage: React.FC = () => {
                         to={`/categorias/${col.handle}`}
                         className={`block px-3 py-2 text-sm rounded-lg transition-colors ${
                           col.handle === handle
-                            ? 'bg-[#0c3c1f] text-white font-medium'
-                            : 'text-[#212121] hover:bg-gray-100 hover:text-[#0c3c1f]'
+                            ? 'bg-[#0055a2] text-white font-medium'
+                            : 'text-[#212121] hover:bg-gray-100 hover:text-[#0055a2]'
                         }`}
                       >
                         {col.title}
@@ -133,7 +133,7 @@ export const CollectionPage: React.FC = () => {
                 <p className="text-[#717182] text-lg mb-4">No se encontraron productos en esta colección.</p>
                 <Link
                   to="/"
-                  className="inline-block bg-[#0c3c1f] text-white px-6 py-3 rounded-lg hover:bg-[#0a3019] transition-colors font-medium"
+                  className="inline-block bg-[#0055a2] text-white px-6 py-3 rounded-lg hover:bg-[#0a3019] transition-colors font-medium"
                 >
                   Ver todos los productos
                 </Link>

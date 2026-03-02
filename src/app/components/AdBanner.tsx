@@ -113,7 +113,7 @@ const renderImageTextCtaInlineCard = (
   className: string
 ) => {
   const isExternal = slot.ctaLink.startsWith('http');
-  const bgColor = slot.bgColor || '#0c3c1f';
+  const bgColor = slot.bgColor || '#0055a2';
   const textColor = slot.textColor || '#ffffff';
   const handleClick = () => trackClick(slotId);
 
@@ -174,7 +174,7 @@ const renderImageTextCtaDefault = (
   className: string
 ) => {
   const isExternal = slot.ctaLink.startsWith('http');
-  const bgColor = slot.bgColor || '#0c3c1f';
+  const bgColor = slot.bgColor || '#0055a2';
   const textColor = slot.textColor || '#ffffff';
   const handleClick = () => trackClick(slotId);
 

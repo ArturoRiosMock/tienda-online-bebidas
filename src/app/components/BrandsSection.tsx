@@ -274,7 +274,7 @@ const ProductCarouselCard = ({ product }: { product: BrandProduct }) => {
         </div>
 
         {/* Product Name */}
-        <h4 className="text-[#0c3c1f] text-[10px] sm:text-xs font-medium mb-1 sm:mb-2 line-clamp-2 min-h-[24px] sm:min-h-[32px]">
+        <h4 className="text-[#0055a2] text-[10px] sm:text-xs font-medium mb-1 sm:mb-2 line-clamp-2 min-h-[24px] sm:min-h-[32px]">
           {product.name}
         </h4>
 
@@ -285,7 +285,7 @@ const ProductCarouselCard = ({ product }: { product: BrandProduct }) => {
           </p>
           <div className="flex items-baseline gap-0.5 sm:gap-1 mb-1 flex-wrap">
             <span className="text-[9px] sm:text-[10px] text-[#212121]">por:</span>
-            <span className="text-sm sm:text-lg font-bold text-[#0c3c1f]">
+            <span className="text-sm sm:text-lg font-bold text-[#0055a2]">
               ${product.price.toFixed(2)}
             </span>
           </div>
@@ -295,7 +295,7 @@ const ProductCarouselCard = ({ product }: { product: BrandProduct }) => {
         <div className="hidden sm:flex items-center gap-1.5">
           <button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="w-7 h-7 flex items-center justify-center border border-[#0c3c1f] text-[#0c3c1f] rounded hover:bg-[#0c3c1f] hover:text-white transition-colors"
+            className="w-7 h-7 flex items-center justify-center border border-[#0055a2] text-[#0055a2] rounded hover:bg-[#0055a2] hover:text-white transition-colors"
           >
             <Minus className="w-3 h-3" />
           </button>
@@ -307,13 +307,13 @@ const ProductCarouselCard = ({ product }: { product: BrandProduct }) => {
           />
           <button
             onClick={() => setQuantity(quantity + 1)}
-            className="w-7 h-7 flex items-center justify-center border border-[#0c3c1f] text-[#0c3c1f] rounded hover:bg-[#0c3c1f] hover:text-white transition-colors"
+            className="w-7 h-7 flex items-center justify-center border border-[#0055a2] text-[#0055a2] rounded hover:bg-[#0055a2] hover:text-white transition-colors"
           >
             <Plus className="w-3 h-3" />
           </button>
           <button
             onClick={handleAddToCart}
-            className="flex-1 bg-[#0c3c1f] text-white py-1.5 px-3 rounded hover:bg-[#0a3019] transition-colors text-xs font-semibold uppercase"
+            className="flex-1 bg-[#0055a2] text-white py-1.5 px-3 rounded hover:bg-[#004488] transition-colors text-xs font-semibold uppercase"
           >
             Comprar
           </button>
@@ -322,7 +322,7 @@ const ProductCarouselCard = ({ product }: { product: BrandProduct }) => {
         {/* Buy Button - Mobile */}
         <button
           onClick={handleAddToCart}
-          className="sm:hidden w-full bg-[#0c3c1f] text-white py-1.5 px-2 rounded hover:bg-[#0a3019] transition-colors text-[10px] font-semibold uppercase"
+          className="sm:hidden w-full bg-[#0055a2] text-white py-1.5 px-2 rounded hover:bg-[#004488] transition-colors text-[10px] font-semibold uppercase"
         >
           Comprar
         </button>
@@ -337,9 +337,9 @@ const CustomArrow = ({ onClick, direction }: { onClick?: () => void; direction: 
     className={`absolute top-1/2 -translate-y-1/2 ${direction === 'prev' ? '-left-4' : '-right-4'} z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors border border-gray-200`}
   >
     {direction === 'prev' ? (
-      <ChevronLeft className="w-5 h-5 text-[#0c3c1f]" />
+      <ChevronLeft className="w-5 h-5 text-[#0055a2]" />
     ) : (
-      <ChevronRight className="w-5 h-5 text-[#0c3c1f]" />
+      <ChevronRight className="w-5 h-5 text-[#0055a2]" />
     )}
   </button>
 );
@@ -360,7 +360,7 @@ export const BrandsSection = () => {
       { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 1 } }
     ],
     customPaging: () => (
-      <div className="w-2 h-2 bg-gray-300 rounded-full hover:bg-[#0c3c1f] transition-colors mt-4" />
+      <div className="w-2 h-2 bg-gray-300 rounded-full hover:bg-[#0055a2] transition-colors mt-4" />
     ),
     dotsClass: 'slick-dots !flex !items-center !justify-center !gap-2'
   };
@@ -380,7 +380,7 @@ export const BrandsSection = () => {
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               className={`relative rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all shrink-0 ${
-                selectedBrand.id === brand.id ? 'ring-2 ring-[#0c3c1f] ring-offset-2' : ''
+                selectedBrand.id === brand.id ? 'ring-2 ring-[#0055a2] ring-offset-2' : ''
               }`}
             >
               <div className="relative w-28 h-16 sm:w-40 sm:h-24">

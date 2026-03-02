@@ -14,82 +14,67 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Left Column - About */}
           <div className="space-y-4">
-            <img
-              src={PLACEHOLDER_IMAGES.logo}
-              alt="Mr. Brown"
-              className="h-12"
-            />
+            <div className="bg-[#0055a2] rounded-lg px-4 py-2 inline-block">
+              <img
+                src={PLACEHOLDER_IMAGES.logo}
+                alt="Bebify"
+                className="h-10"
+              />
+            </div>
             <p className="text-[#212121] text-sm leading-relaxed">
-              Desde hace más de 18 años, Mr. Brown es referencia cuando el tema es excelencia, 
-              variedad y procedencia en el mundo de las bebidas. Somos el mayor e-commerce de 
-              bebidas premium de México, con una gran variedad de las etiquetas más deseadas del 
-              mundo – todo con garantía de origen legal, entrega rápida y segura para todo el 
-              territorio nacional.
+              Revolucionamos el suministro de bebidas para centros de consumo, 
+              centralizando tus compras con acceso a más de 2,000 productos de más 
+              de 300 proveedores.
             </p>
             <p className="text-[#212121] text-sm leading-relaxed">
-              Más que vender bebidas, entregamos experiencias.
-            </p>
-            <p className="text-[#212121] text-sm font-medium">
-              Mr. Brown – donde se encuentran los grandes amantes.
+              ¡Optimiza tu operación, ahorra tiempo y dinero con Bebify!
             </p>
             <a 
-              href="#" 
-              className="inline-flex items-center gap-2 text-[#0c3c1f] hover:underline text-sm"
+              href="https://bebify.mx/pages/nosotros" 
+              className="inline-flex items-center gap-2 text-[#0055a2] hover:underline text-sm"
             >
-              <span className="w-6 h-6 bg-[#0c3c1f] rounded-full flex items-center justify-center text-white">
+              <span className="w-6 h-6 bg-[#0055a2] rounded-full flex items-center justify-center text-white">
                 →
               </span>
-              Haz clic aquí y conoce más
+              Conócenos
             </a>
           </div>
 
           {/* Middle Column - Links */}
           <div className="space-y-3">
-            <h4 className="text-[#212121] font-semibold mb-4">Sobre la empresa</h4>
+            <h4 className="text-[#212121] font-semibold mb-4">Información</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Blog
+                <a href="https://bebify.mx/search" className="text-[#212121] hover:text-[#0055a2] transition-colors">
+                  Buscar
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Guía Anti-resaca
+                <a href="https://bebify.mx/pages/nosotros" className="text-[#212121] hover:text-[#0055a2] transition-colors">
+                  Conócenos
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Formas de pago
+                <a href="#about" className="text-[#212121] hover:text-[#0055a2] transition-colors">
+                  Preguntas Frecuentes
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Servicios de entrega
+                <a href="https://bebify.mx/pages/contact" className="text-[#212121] hover:text-[#0055a2] transition-colors">
+                  Contáctanos
                 </a>
               </li>
+            </ul>
+            <h4 className="text-[#212121] font-semibold mb-4 mt-6">Políticas</h4>
+            <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Garantía
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
+                <a href="https://bebify.mx/policies/privacy-policy" className="text-[#212121] hover:text-[#0055a2] transition-colors">
                   Política de privacidad
                 </a>
               </li>
               <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Declaración de privacidad
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Contáctanos
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Atención al cliente
+                <a href="https://bebify.mx/policies/terms-of-service" className="text-[#212121] hover:text-[#0055a2] transition-colors">
+                  Términos de servicio
                 </a>
               </li>
             </ul>
@@ -98,7 +83,7 @@ export const Footer: React.FC = () => {
           {/* Right Column - Images */}
           <div className="space-y-6">
             <div>
-              <h4 className="text-[#0c3c1f] font-semibold mb-3">Centro de Distribución</h4>
+              <h4 className="text-[#0055a2] font-semibold mb-3">Centro de Distribución</h4>
               <div className="relative rounded-lg overflow-hidden group cursor-pointer">
                 <img
                   src="https://images.unsplash.com/photo-1767522247768-fb18caca37f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiZXZlcmFnZSUyMGRpc3RyaWJ1dGlvbiUyMHdhcmVob3VzZXxlbnwxfHx8fDE3NzAxMzM1ODR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
@@ -114,7 +99,7 @@ export const Footer: React.FC = () => {
             </div>
             
             <div>
-              <h4 className="text-[#0c3c1f] font-semibold mb-3">Tienda Concepto</h4>
+              <h4 className="text-[#0055a2] font-semibold mb-3">Tienda Concepto</h4>
               <div className="relative rounded-lg overflow-hidden group cursor-pointer">
                 <img
                   src="https://images.unsplash.com/photo-1534782596238-c642ca6e4324?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBkcmlua3MlMjBzdG9yZSUyMGludGVyaW9yfGVufDF8fHx8MTc3MDEzMzU4NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
@@ -136,7 +121,7 @@ export const Footer: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Left - Payment Methods */}
             <div>
-              <h4 className="text-[#212121] font-semibold mb-4">Pagamentos</h4>
+              <h4 className="text-[#212121] font-semibold mb-4">Pagos</h4>
               <div className="flex flex-wrap gap-3">
                 <div className="bg-white rounded px-3 py-2 shadow-sm">
                   <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%231434CB' width='40' height='25' rx='3'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='10' font-weight='bold'%3EVISA%3C/text%3E%3C/svg%3E" alt="Visa" className="h-6" />
@@ -187,22 +172,22 @@ export const Footer: React.FC = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-[#717182] text-sm">
-              Copyright© 2026 Mr. Brown - Todos los derechos reservados.
+              Copyright© 2026 Bebify - Todos los derechos reservados.
             </p>
             <div className="flex items-center gap-2">
               <p className="text-[#717182] text-xs">
-                Comercio electrónico, creación de tienda virtual:
+                Tecnología de
               </p>
-              <span className="text-[#0c3c1f] font-semibold text-sm">Figma Make</span>
+              <span className="text-[#0055a2] font-semibold text-sm">Shopify</span>
             </div>
             
             {/* Scroll to Top Button */}
             <button
               onClick={scrollToTop}
-              className="w-10 h-10 rounded-full border-2 border-[#0c3c1f] flex items-center justify-center hover:bg-[#0c3c1f] hover:text-white transition-colors group"
+              className="w-10 h-10 rounded-full border-2 border-[#0055a2] flex items-center justify-center hover:bg-[#0055a2] hover:text-white transition-colors group"
               aria-label="Scroll to top"
             >
-              <ArrowUp className="w-5 h-5 text-[#0c3c1f] group-hover:text-white" />
+              <ArrowUp className="w-5 h-5 text-[#0055a2] group-hover:text-white" />
             </button>
           </div>
         </div>

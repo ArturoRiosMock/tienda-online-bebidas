@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Heart, Star, Minus, Plus } from 'lucide-react';
+import { Heart, Star, Minus, Plus, Lock } from 'lucide-react';
 import { Product, useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
+import { useAuth } from '@/app/context/AuthContext';
 
 interface ProductCardProps {
   product: Product;
@@ -12,6 +14,8 @@ interface ProductCardProps {
 export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { toggleItem, isInWishlist } = useWishlist();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const isFavorite = isInWishlist(product.id);
 
@@ -104,62 +108,75 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
         </div>
 
         {/* Product Name */}
-        <h3 className="text-[#0c3c1f] text-xs sm:text-sm font-medium mb-1.5 sm:mb-3 line-clamp-2 min-h-[28px] sm:min-h-[40px]">
+        <h3 className="text-[#0055a2] text-xs sm:text-sm font-medium mb-1.5 sm:mb-3 line-clamp-2 min-h-[28px] sm:min-h-[40px]">
           {product.name}
         </h3>
 
-        {/* Pricing */}
-        <div className="mb-2 sm:mb-3">
-          <p className="text-[10px] sm:text-xs text-[#717182] line-through mb-0.5 sm:mb-1">
-            De: ${originalPrice.toFixed(2)}
-          </p>
-          <div className="flex items-baseline gap-0.5 sm:gap-1 mb-1 sm:mb-2 flex-wrap">
-            <span className="text-[10px] sm:text-xs text-[#212121]">por:</span>
-            <span className="text-base sm:text-2xl font-bold text-[#0c3c1f]">
-              ${product.price.toFixed(2)}
-            </span>
-          </div>
-        </div>
+        {isAuthenticated ? (
+          <>
+            {/* Pricing */}
+            <div className="mb-2 sm:mb-3">
+              <p className="text-[10px] sm:text-xs text-[#717182] line-through mb-0.5 sm:mb-1">
+                De: ${originalPrice.toFixed(2)}
+              </p>
+              <div className="flex items-baseline gap-0.5 sm:gap-1 mb-1 sm:mb-2 flex-wrap">
+                <span className="text-[10px] sm:text-xs text-[#212121]">por:</span>
+                <span className="text-base sm:text-2xl font-bold text-[#0055a2]">
+                  ${product.price.toFixed(2)}
+                </span>
+              </div>
+            </div>
 
-        {/* Quantity Controls - Desktop */}
-        <div className="hidden sm:flex items-center gap-2 mb-3">
-          <button
-            onClick={decrementQuantity}
-            className="w-8 h-8 flex items-center justify-center border border-[#0c3c1f] text-[#0c3c1f] rounded hover:bg-[#0c3c1f] hover:text-white transition-colors"
-          >
-            <Minus className="w-4 h-4" />
-          </button>
-          <input
-            type="number"
-            value={quantity}
-            onChange={handleQuantityInputChange}
-            onClick={handleQuantityInputClick}
-            className="w-12 h-8 text-center border border-gray-300 rounded text-[#212121] font-medium"
-          />
-          <button
-            onClick={incrementQuantity}
-            className="w-8 h-8 flex items-center justify-center border border-[#0c3c1f] text-[#0c3c1f] rounded hover:bg-[#0c3c1f] hover:text-white transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
+            {/* Quantity Controls - Desktop */}
+            <div className="hidden sm:flex items-center gap-2 mb-3">
+              <button
+                onClick={decrementQuantity}
+                className="w-8 h-8 flex items-center justify-center border border-[#0055a2] text-[#0055a2] rounded hover:bg-[#0055a2] hover:text-white transition-colors"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <input
+                type="number"
+                value={quantity}
+                onChange={handleQuantityInputChange}
+                onClick={handleQuantityInputClick}
+                className="w-12 h-8 text-center border border-gray-300 rounded text-[#212121] font-medium"
+              />
+              <button
+                onClick={incrementQuantity}
+                className="w-8 h-8 flex items-center justify-center border border-[#0055a2] text-[#0055a2] rounded hover:bg-[#0055a2] hover:text-white transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+              <motion.button
+                onClick={handleAddToCart}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 bg-[#0055a2] text-white py-2 px-4 rounded hover:bg-[#004488] transition-colors text-sm font-semibold uppercase"
+              >
+                Comprar
+              </motion.button>
+            </div>
+
+            {/* Buy Button - Mobile */}
+            <motion.button
+              onClick={handleAddToCart}
+              whileTap={{ scale: 0.95 }}
+              className="sm:hidden w-full bg-[#0055a2] text-white py-1.5 px-2 rounded hover:bg-[#004488] transition-colors text-[11px] font-semibold uppercase"
+            >
+              Comprar
+            </motion.button>
+          </>
+        ) : (
           <motion.button
-            onClick={handleAddToCart}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex-1 bg-[#0c3c1f] text-white py-2 px-4 rounded hover:bg-[#0a3019] transition-colors text-sm font-semibold uppercase"
+            onClick={(e) => { e.stopPropagation(); navigate('/login'); }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full bg-[#0055a2] text-white py-2 sm:py-2.5 px-3 rounded hover:bg-[#004488] transition-colors text-[11px] sm:text-sm font-semibold flex items-center justify-center gap-1.5"
           >
-            Comprar
+            <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            Inicia sesión para ver precio
           </motion.button>
-        </div>
-
-        {/* Buy Button - Mobile */}
-        <motion.button
-          onClick={handleAddToCart}
-          whileTap={{ scale: 0.95 }}
-          className="sm:hidden w-full bg-[#0c3c1f] text-white py-1.5 px-2 rounded hover:bg-[#0a3019] transition-colors text-[11px] font-semibold uppercase"
-        >
-          Comprar
-        </motion.button>
+        )}
       </div>
     </motion.div>
   );
