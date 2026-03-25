@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getOrCreateCart, addToShopifyCart, updateCartLine, removeFromShopifyCart, redirectToCheckout } from '@/shopify/cart';
+import { updateCartAttributes } from '@/shopify/mutations/cartAttributes';
 import { isShopifyConfigured } from '@/shopify/config';
 import type { ShopifyCart } from '@/shopify/types';
 
@@ -129,6 +130,31 @@ export const useShopifyCart = () => {
     }
   };
 
+  // Actualizar atributos del carrito
+  const updateAttributes = async (
+    attributes: Array<{ key: string; value: string }>
+  ): Promise<boolean> => {
+    if (!cart) return false;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const success = await updateCartAttributes(cart.id, attributes);
+      if (!success) {
+        setError('No se pudieron guardar los datos del evento');
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error('Error updating cart attributes:', err);
+      setError('Error al guardar datos del evento');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Ir al checkout
   const goToCheckout = () => {
     if (!cart?.checkoutUrl) {
@@ -163,6 +189,7 @@ export const useShopifyCart = () => {
     updateItem,
     removeItem,
     removeAllItems,
+    updateAttributes,
     goToCheckout,
     getTotalItems,
     getSubtotal,

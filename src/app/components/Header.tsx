@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ShoppingCart, Menu, X, MapPin, Package, Search, MessageCircle, User, ChevronLeft, ChevronRight, Heart } from 'lucide-react';
+import { ShoppingCart, Menu, X, MapPin, Package, Search, MessageCircle, User, ChevronLeft, ChevronRight, Heart, PartyPopper } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
 import { motion, AnimatePresence } from 'motion/react';
@@ -18,9 +19,9 @@ interface HeaderProps {
 }
 
 const announcements = [
-  'Productos con precio atractivo. Mr. Brown, credibilidad construida en 18 años.',
-  '¡Envío GRATIS en compras mayores a $500 MXN! Aprovecha ahora.',
-  'Nuevos productos cada semana. ¡Descubre nuestras novedades!'
+  '¡Envío gratuito en compras mayores a $2,000! Entregas disponibles solo en la Ciudad de México.',
+  'Productos con precio atractivo. Mr. Brown, credibilidad construida desde 2018.',
+  '¡Cotiza tu evento y hazlo inolvidable! Barras libres, eventos corporativos y más.',
 ];
 
 const FLASH_DEALS_HANDLE = 'ofertas-relampago';
@@ -28,6 +29,7 @@ const FLASH_DEALS_HANDLE = 'ofertas-relampago';
 export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDrawerOpen, onSearchDrawerChange }: HeaderProps) => {
   const { getTotalItems } = useCart();
   const { totalItems: wishlistCount } = useWishlist();
+  const navigate = useNavigate();
   const { collections, loading: collectionsLoading } = useShopifyCollections();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
@@ -243,6 +245,14 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                 </div>
               ))
             )}
+
+            <button
+              onClick={() => navigate('/cotizar-evento')}
+              className="flex items-center gap-1.5 bg-[#FDB93A] text-[#212121] px-4 py-1.5 rounded-full hover:bg-[#FF8A00] transition-colors font-bold text-sm whitespace-nowrap flex-shrink-0"
+            >
+              <PartyPopper className="w-4 h-4" />
+              Cotiza tu Evento
+            </button>
           </div>
 
           {/* Right Arrow */}
@@ -307,6 +317,19 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                   </button>
                 ))
               )}
+
+              <div className="border-t border-gray-200 mt-2 pt-2">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate('/cotizar-evento');
+                  }}
+                  className="flex items-center gap-2 w-full text-left py-2.5 px-4 bg-[#FDB93A]/10 hover:bg-[#FDB93A]/20 rounded-lg transition-colors font-bold text-[#212121]"
+                >
+                  <PartyPopper className="w-5 h-5 text-[#FF8A00]" />
+                  Cotiza tu Evento
+                </button>
+              </div>
             </nav>
           </motion.div>
         )}

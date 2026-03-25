@@ -1,5 +1,7 @@
 import React, { useRef, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'motion/react';
+import { PartyPopper, ArrowRight } from 'lucide-react';
 import { Hero } from '@/app/components/Hero';
 import { FlashDeals } from '@/app/components/FlashDeals';
 import { BrandsSection } from '@/app/components/BrandsSection';
@@ -64,6 +66,50 @@ export const HomePage: React.FC = () => {
       </div>
 
       <FlashDeals />
+
+      {/* Event Quote CTA */}
+      <section className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-[100vw]">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <Link
+            to="/cotizar-evento"
+            className="block rounded-2xl overflow-hidden bg-gradient-to-r from-[#0c3c1f] via-[#1a5c35] to-[#0c3c1f] relative group"
+          >
+            <div className="absolute inset-0 opacity-10">
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage:
+                    'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px)',
+                }}
+              />
+            </div>
+            <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4 px-6 sm:px-10 py-8 sm:py-10">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-[#FDB93A] rounded-full flex items-center justify-center flex-shrink-0">
+                  <PartyPopper className="w-7 h-7 text-[#212121]" />
+                </div>
+                <div>
+                  <h3 className="text-white text-xl sm:text-2xl font-bold mb-1">
+                    ¿Planeas un evento?
+                  </h3>
+                  <p className="text-white/70 text-sm sm:text-base">
+                    Cotiza bebidas para tu boda, fiesta o reunión. Te armamos una propuesta a tu medida.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-[#FDB93A] text-[#212121] px-6 py-3 rounded-lg font-bold text-sm whitespace-nowrap group-hover:bg-[#FF8A00] transition-colors flex-shrink-0">
+                Cotizar Evento
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          </Link>
+        </motion.div>
+      </section>
 
       <section ref={productsRef} className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 max-w-[100vw]">
         <div className="flex items-center justify-between mb-6 sm:mb-8 gap-2 min-w-0">

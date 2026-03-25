@@ -30,6 +30,7 @@ interface CartContextType {
   getTotalPrice: () => number;
   getTotalItems: () => number;
   goToCheckout?: () => void;
+  updateAttributes?: (attributes: Array<{ key: string; value: string }>) => Promise<boolean>;
   isShopifyCart: boolean;
   cartLoading: boolean;
   cartError: string | null;
@@ -138,6 +139,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     getTotalPrice,
     getTotalItems,
     goToCheckout: isShopify ? shopify.goToCheckout : undefined,
+    updateAttributes: isShopify ? shopify.updateAttributes : undefined,
     isShopifyCart: isShopify,
     cartLoading: shopify.loading,
     cartError: shopify.error,

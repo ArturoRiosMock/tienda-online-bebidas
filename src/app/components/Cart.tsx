@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCart } from '@/app/context/CartContext';
+import { PurchaseTypeDialog, type EventFormData } from './PurchaseTypeDialog';
 
 interface CartProps {
   isOpen: boolean;
@@ -17,21 +18,52 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
     getTotalItems,
     clearCart,
     goToCheckout,
+    updateAttributes,
     isShopifyCart,
     cartLoading,
     cartError,
   } = useCart();
 
+  const [showPurchaseType, setShowPurchaseType] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+
   const itemId = (item: { lineId?: string; id: number | string }) => item.lineId ?? item.id;
 
   const handleCheckout = () => {
     if (isShopifyCart && goToCheckout) {
-      goToCheckout();
-      onClose();
+      setShowPurchaseType(true);
       return;
     }
     clearCart();
     onClose();
+  };
+
+  const handleConfirmPurchaseType = async (eventData: EventFormData | null) => {
+    setCheckoutLoading(true);
+    try {
+      if (eventData && updateAttributes) {
+        const attributes = [
+          { key: 'Tipo de compra', value: 'Evento' },
+          { key: 'Tipo de evento', value: eventData.eventType },
+          { key: 'Nombre de la escuela', value: eventData.schoolName },
+          { key: 'Nombre del graduado', value: eventData.graduateName },
+          { key: 'Número de mesa', value: eventData.tableNumber },
+        ];
+        const success = await updateAttributes(attributes);
+        if (!success) {
+          setCheckoutLoading(false);
+          return;
+        }
+      } else if (updateAttributes) {
+        await updateAttributes([{ key: 'Tipo de compra', value: 'Personal' }]);
+      }
+      goToCheckout!();
+      onClose();
+    } catch {
+      // error handled by cartError
+    } finally {
+      setCheckoutLoading(false);
+    }
   };
 
   return (
@@ -168,6 +200,13 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
           </motion.div>
         </>
       )}
+
+      <PurchaseTypeDialog
+        open={showPurchaseType}
+        onClose={() => setShowPurchaseType(false)}
+        onConfirm={handleConfirmPurchaseType}
+        loading={checkoutLoading}
+      />
     </AnimatePresence>
   );
 };

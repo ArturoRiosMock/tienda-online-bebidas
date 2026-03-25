@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowUp, Play } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
 
 export const Footer: React.FC = () => {
@@ -14,85 +15,54 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Left Column - About */}
           <div className="space-y-4">
-            <img
-              src={PLACEHOLDER_IMAGES.logo}
-              alt="Mr. Brown"
-              className="h-12"
-            />
+            <img src={PLACEHOLDER_IMAGES.logo} alt="Mr. Brown" className="h-12" />
             <p className="text-[#212121] text-sm leading-relaxed">
-              Desde hace más de 18 años, Mr. Brown es referencia cuando el tema es excelencia, 
-              variedad y procedencia en el mundo de las bebidas. Somos el mayor e-commerce de 
-              bebidas premium de México, con una gran variedad de las etiquetas más deseadas del 
-              mundo – todo con garantía de origen legal, entrega rápida y segura para todo el 
-              territorio nacional.
+              En Mr. Brown, somos curadores de experiencias únicas en bebidas premium. Desde 2018 ofrecemos una selección inigualable de destilados, vinos y más, para elevar cada momento especial.
             </p>
             <p className="text-[#212121] text-sm leading-relaxed">
               Más que vender bebidas, entregamos experiencias.
             </p>
             <p className="text-[#212121] text-sm font-medium">
-              Mr. Brown – donde se encuentran los grandes amantes.
+              Mr. Brown – HOUSE OF SPIRITS
             </p>
-            <a 
-              href="#" 
+            <Link
+              to="/sobre-nosotros"
               className="inline-flex items-center gap-2 text-[#0c3c1f] hover:underline text-sm"
             >
-              <span className="w-6 h-6 bg-[#0c3c1f] rounded-full flex items-center justify-center text-white">
-                →
-              </span>
-              Haz clic aquí y conoce más
-            </a>
+              <span className="w-6 h-6 bg-[#0c3c1f] rounded-full flex items-center justify-center text-white text-xs">→</span>
+              Conoce nuestra historia
+            </Link>
           </div>
 
           {/* Middle Column - Links */}
           <div className="space-y-3">
-            <h4 className="text-[#212121] font-semibold mb-4">Sobre la empresa</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Guía Anti-resaca
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Formas de pago
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Servicios de entrega
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Garantía
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Política de privacidad
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Declaración de privacidad
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Contáctanos
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">
-                  Atención al cliente
-                </a>
-              </li>
-            </ul>
+            <div className="mb-6">
+              <h4 className="text-[#212121] font-semibold mb-3">Información</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/sobre-nosotros" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Sobre nosotros</Link></li>
+                <li><Link to="/preguntas-frecuentes" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Preguntas frecuentes</Link></li>
+                <li><Link to="/contacto" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Contacto</Link></li>
+                <li><Link to="/cotizar-evento" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Cotiza tu evento</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-[#212121] font-semibold mb-3">Legal</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/aviso-de-privacidad" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Política de privacidad</Link></li>
+                <li><Link to="/politica-de-reembolso" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Política de reembolso</Link></li>
+                <li><Link to="/terminos-de-servicio" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Términos de servicio</Link></li>
+              </ul>
+            </div>
+            <div className="pt-2">
+              <h4 className="text-[#212121] font-semibold mb-3">Síguenos</h4>
+              <div className="flex gap-3">
+                <a href="https://www.facebook.com/profile.php?id=100076305783446" target="_blank" rel="noopener noreferrer" className="text-[#212121] hover:text-[#0c3c1f] transition-colors text-sm">Facebook</a>
+                <span className="text-gray-400">·</span>
+                <a href="https://www.instagram.com/mrbrown.mx/" target="_blank" rel="noopener noreferrer" className="text-[#212121] hover:text-[#0c3c1f] transition-colors text-sm">Instagram</a>
+                <span className="text-gray-400">·</span>
+                <a href="https://www.tiktok.com/@mrbrown.mx" target="_blank" rel="noopener noreferrer" className="text-[#212121] hover:text-[#0c3c1f] transition-colors text-sm">TikTok</a>
+              </div>
+            </div>
           </div>
 
           {/* Right Column - Images */}
@@ -112,7 +82,7 @@ export const Footer: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div>
               <h4 className="text-[#0c3c1f] font-semibold mb-3">Tienda Concepto</h4>
               <div className="relative rounded-lg overflow-hidden group cursor-pointer">
@@ -134,50 +104,33 @@ export const Footer: React.FC = () => {
         {/* Payment and Security Section */}
         <div className="mt-12 pt-8 border-t border-gray-300">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Left - Payment Methods */}
             <div>
-              <h4 className="text-[#212121] font-semibold mb-4">Pagamentos</h4>
+              <h4 className="text-[#212121] font-semibold mb-4">Métodos de pago</h4>
               <div className="flex flex-wrap gap-3">
-                <div className="bg-white rounded px-3 py-2 shadow-sm">
-                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%231434CB' width='40' height='25' rx='3'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='10' font-weight='bold'%3EVISA%3C/text%3E%3C/svg%3E" alt="Visa" className="h-6" />
-                </div>
-                <div className="bg-white rounded px-3 py-2 shadow-sm">
-                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%23EB001B' width='20' height='25' rx='3'/%3E%3Crect fill='%23FF5F00' x='10' width='20' height='25'/%3E%3Crect fill='%23F79E1B' x='20' width='20' height='25' rx='3'/%3E%3C/svg%3E" alt="Mastercard" className="h-6" />
-                </div>
-                <div className="bg-white rounded px-3 py-2 shadow-sm">
-                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%23006FCF' width='40' height='25' rx='3'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='8' font-weight='bold'%3EAMEX%3C/text%3E%3C/svg%3E" alt="American Express" className="h-6" />
-                </div>
-                <div className="bg-white rounded px-3 py-2 shadow-sm">
-                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%23000000' width='40' height='25' rx='3'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23FFCB05' font-family='Arial, sans-serif' font-size='9' font-weight='bold'%3EELO%3C/text%3E%3C/svg%3E" alt="Elo" className="h-6" />
-                </div>
-                <div className="bg-white rounded px-3 py-2 shadow-sm">
-                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%23FF6000' width='40' height='25' rx='3'/%3E%3Ctext x='50%25' y='35%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='6' font-weight='bold'%3EDISCOVER%3C/text%3E%3Cpath d='M15 15 Q20 18 25 15' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E" alt="Discover" className="h-6" />
-                </div>
+                {['Visa', 'Mastercard', 'Amex', 'PayPal', 'Google Pay'].map((method) => (
+                  <div key={method} className="bg-white rounded px-3 py-2 shadow-sm text-xs font-medium text-[#212121]">
+                    {method}
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Right - Security */}
             <div>
               <h4 className="text-[#212121] font-semibold mb-4">Seguridad</h4>
               <div className="flex flex-wrap gap-3">
-                <div className="bg-white rounded px-3 py-2 shadow-sm flex items-center gap-2">
-                  <span className="text-green-600 text-lg">✓</span>
-                  <span className="text-xs text-[#212121] font-medium">SSL Strong</span>
-                </div>
-                <div className="bg-white rounded px-3 py-2 shadow-sm flex items-center gap-2">
-                  <span className="text-xs text-[#212121] font-medium">Google Safe</span>
-                </div>
-                <div className="bg-white rounded px-3 py-2 shadow-sm flex items-center gap-2">
-                  <span className="text-xs text-[#212121] font-medium">ClearSale</span>
-                </div>
+                {['SSL Strong', 'Google Safe', 'ClearSale'].map((badge) => (
+                  <div key={badge} className="bg-white rounded px-3 py-2 shadow-sm flex items-center gap-1.5">
+                    <span className="text-green-600 text-sm">✓</span>
+                    <span className="text-xs text-[#212121] font-medium">{badge}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Disclaimer */}
           <div className="mt-8 p-4 bg-white/50 rounded-lg">
             <h4 className="text-[#212121] font-bold mb-1">BEBA CON MODERACIÓN</h4>
-            <p className="text-[#212121] text-sm">No compartir con menores de 18 años</p>
+            <p className="text-[#212121] text-sm">No compartir con menores de 18 años.</p>
           </div>
         </div>
       </div>
@@ -187,16 +140,13 @@ export const Footer: React.FC = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-[#717182] text-sm">
-              Copyright© 2026 Mr. Brown - Todos los derechos reservados.
+              © 2026 Mr. Brown – Todos los derechos reservados.
             </p>
-            <div className="flex items-center gap-2">
-              <p className="text-[#717182] text-xs">
-                Comercio electrónico, creación de tienda virtual:
-              </p>
-              <span className="text-[#0c3c1f] font-semibold text-sm">Figma Make</span>
+            <div className="flex gap-4 text-xs text-[#717182]">
+              <Link to="/aviso-de-privacidad" className="hover:text-[#0c3c1f] transition-colors">Privacidad</Link>
+              <Link to="/terminos-de-servicio" className="hover:text-[#0c3c1f] transition-colors">Términos</Link>
+              <Link to="/politica-de-reembolso" className="hover:text-[#0c3c1f] transition-colors">Reembolsos</Link>
             </div>
-            
-            {/* Scroll to Top Button */}
             <button
               onClick={scrollToTop}
               className="w-10 h-10 rounded-full border-2 border-[#0c3c1f] flex items-center justify-center hover:bg-[#0c3c1f] hover:text-white transition-colors group"
