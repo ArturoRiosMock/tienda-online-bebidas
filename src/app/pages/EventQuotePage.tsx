@@ -44,7 +44,7 @@ const BUDGET_RANGES = [
   'No estoy seguro',
 ];
 
-const WHATSAPP_NUMBER = '5215512345678';
+const WHATSAPP_NUMBER = '5215515012488';
 
 interface FormData {
   name: string;

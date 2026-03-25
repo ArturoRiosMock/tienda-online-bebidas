@@ -6,7 +6,7 @@ export const WhatsAppButton = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   
   // Número de WhatsApp (cambiar por el número real)
-  const whatsappNumber = '5215512345678'; // Formato: código país + número
+  const whatsappNumber = '5215515012488'; // Formato: código país + número
   const message = '¡Hola! Me gustaría obtener más información sobre sus productos.';
   
   const handleWhatsAppClick = () => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface HeroProps {
   onShopNowClick: () => void;
@@ -9,8 +10,9 @@ interface HeroProps {
 interface Slide {
   id: number;
   image: string;
-  title: string;
-  subtitle: string;
+  bgColor: string;
+  title?: string;
+  subtitle?: string;
   badge?: string;
   buttonText: string;
   buttonAction?: () => void;
@@ -19,49 +21,44 @@ interface Slide {
 export const Hero = ({ onShopNowClick }: HeroProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
+  const navigate = useNavigate();
 
   const slides: Slide[] = [
     {
       id: 1,
-      image: 'https://images.unsplash.com/photo-1746422029293-43065303dab5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aGlza3klMjBib3R0bGVzJTIwcHJlbWl1bSUyMGNvbGxlY3Rpb258ZW58MXx8fHwxNzcwMTM1OTYyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      title: 'Whisky Premium',
-      subtitle: 'Colección exclusiva de whiskies premium de las mejores marcas del mundo',
-      badge: '5% OFF',
-      buttonText: 'COMPRE AHORA',
-      buttonAction: onShopNowClick
+      image: '/hero-barra-boda-2.png',
+      bgColor: '#f5f0e8',
+      buttonText: 'COTIZA AHORA',
+      buttonAction: () => navigate('/cotizar-evento')
     },
     {
       id: 2,
-      image: 'https://images.unsplash.com/photo-1737029114889-8f5edb15b8be?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2RrYSUyMGFic29sdXQlMjBib3R0bGUlMjBwcmVtaXVtfGVufDF8fHx8MTc3MDEzNTk2NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      title: 'Vodka Absolut',
-      subtitle: 'Marcas icónicas para momentos especiales',
-      badge: 'ROYAL COLLECTION',
-      buttonText: 'COMPRE AHORA',
-      buttonAction: onShopNowClick
+      image: '/hero-barra-mixologia.png',
+      bgColor: '#3a4a35',
+      buttonText: 'COTIZA AHORA',
+      buttonAction: () => navigate('/cotizar-evento')
     },
     {
       id: 3,
-      image: 'https://images.unsplash.com/photo-1672361720452-02fd251c69dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGFtcGFnbmUlMjBib3R0bGUlMjBjZWxlYnJhdGlvbiUyMGx1eHVyeXxlbnwxfHx8fDE3NzAxMzU5NjN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      title: 'Champagne & Espumantes',
-      subtitle: 'Celebra cada momento con las mejores burbujas',
-      badge: 'NUEVO',
-      buttonText: 'COMPRE AHORA',
-      buttonAction: onShopNowClick
+      image: '/hero-eventos-sociales.png',
+      bgColor: '#f5f0e8',
+      buttonText: 'COTIZA AHORA',
+      buttonAction: () => navigate('/cotizar-evento')
     },
     {
       id: 4,
-      image: 'https://images.unsplash.com/photo-1769697064243-889f2e25d44a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aW5lJTIwYm90dGxlcyUyMGVsZWdhbnQlMjBkaXNwbGF5fGVufDF8fHx8MTc3MDEzNTk2M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      title: 'Vinos Selectos',
-      subtitle: 'Los mejores vinos tintos, blancos y rosados',
+      image: '/hero-super-promo.png',
+      bgColor: '#8B5E1A',
       buttonText: 'COMPRE AHORA',
       buttonAction: onShopNowClick
     },
     {
       id: 5,
-      image: 'https://images.unsplash.com/photo-1682618901459-54ae8c166d16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnaW4lMjB0b25pYyUyMGJvdHRsZSUyMGJhcnxlbnwxfHx8fDE3NzAxMzU5NjR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-      title: 'Gin Premium',
-      subtitle: 'Descubre nuestra colección de gins artesanales',
-      badge: 'PREMIUM',
+      image: '/hero-best-sellers.png',
+      bgColor: '#4a5240',
+      title: 'Best Sellers',
+      subtitle: 'Bacardi, Modelo Especial, Dobel Cristalino y más — los favoritos de Mr. Brown',
+      badge: 'LO MÁS VENDIDO',
       buttonText: 'COMPRE AHORA',
       buttonAction: onShopNowClick
     }
@@ -107,9 +104,9 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
   };
 
   return (
-    <section className="relative bg-gray-100 overflow-hidden">
+    <section className="relative overflow-hidden">
       {/* Carousel Container */}
-      <div className="relative h-[400px] md:h-[500px] lg:h-[600px]">
+      <div className="relative h-[220px] md:h-[320px] lg:h-[420px]">
         <AnimatePresence initial={false} custom={direction} mode="wait">
           <motion.div
             key={currentSlide}
@@ -123,20 +120,23 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
               opacity: { duration: 0.6 }
             }}
             className="absolute inset-0"
+            style={{ backgroundColor: slides[currentSlide].bgColor }}
           >
             {/* Slide Background Image */}
             <div className="relative w-full h-full">
               <img
                 src={slides[currentSlide].image}
-                alt={slides[currentSlide].title}
-                className="w-full h-full object-cover"
+                alt={slides[currentSlide].title ?? 'Mr. Brown Banner'}
+                className="w-full h-full object-contain"
               />
-              
-              {/* Overlay Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
+
+              {/* Overlay solo para slides con texto superpuesto */}
+              {(slides[currentSlide].title || slides[currentSlide].badge) && (
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
+              )}
 
               {/* Content Overlay */}
-              <div className="absolute inset-0 flex items-center">
+              <div className="absolute inset-0 flex items-end pb-8">
                 <div className="container mx-auto px-4 md:px-8 lg:px-16">
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -159,24 +159,28 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
                     )}
 
                     {/* Title */}
-                    <motion.h1
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.4 }}
-                      className="text-white text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
-                    >
-                      {slides[currentSlide].title}
-                    </motion.h1>
+                    {slides[currentSlide].title && (
+                      <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="text-white text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
+                      >
+                        {slides[currentSlide].title}
+                      </motion.h1>
+                    )}
 
                     {/* Subtitle */}
-                    <motion.p
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 }}
-                      className="text-white/90 text-lg md:text-xl mb-8 max-w-lg"
-                    >
-                      {slides[currentSlide].subtitle}
-                    </motion.p>
+                    {slides[currentSlide].subtitle && (
+                      <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="text-white/90 text-lg md:text-xl mb-8 max-w-lg"
+                      >
+                        {slides[currentSlide].subtitle}
+                      </motion.p>
+                    )}
 
                     {/* CTA Button */}
                     <motion.button
