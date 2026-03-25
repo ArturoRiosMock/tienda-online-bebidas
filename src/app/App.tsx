@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { MainLayout } from '@/app/layouts/MainLayout';
 import { HomePage } from '@/app/pages/HomePage';
 import { CollectionPage } from '@/app/pages/CollectionPage';
@@ -10,6 +10,14 @@ import { PreguntasFrecuentesPage } from '@/app/pages/PreguntasFrecuentesPage';
 import { ContactoPage } from '@/app/pages/ContactoPage';
 import { PolicyDocumentPage } from '@/app/pages/PolicyDocumentPage';
 import { privacyPolicy, refundPolicy, termsOfService } from '@/content/mrbrown/policies';
+
+const SHOPIFY_CHECKOUT_DOMAIN = 'mrbrownmx.myshopify.com';
+
+function ShopifyRedirect() {
+  const location = useLocation();
+  window.location.href = `https://${SHOPIFY_CHECKOUT_DOMAIN}${location.pathname}${location.search}`;
+  return null;
+}
 
 function App() {
   return (
@@ -28,6 +36,9 @@ function App() {
           <Route path="/terminos-de-servicio" element={<PolicyDocumentPage title="Términos del Servicio" blocks={termsOfService} />} />
         </Route>
         <Route path="/admin/banners" element={<AdminBannersPage />} />
+        {/* Rutas de Shopify: redirigir checkout y carrito al dominio nativo */}
+        <Route path="/cart/*" element={<ShopifyRedirect />} />
+        <Route path="/checkouts/*" element={<ShopifyRedirect />} />
       </Routes>
     </BrowserRouter>
   );

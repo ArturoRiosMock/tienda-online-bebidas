@@ -141,14 +141,17 @@ export const clearCart = (): void => {
   localStorage.removeItem('shopifyCartId');
 };
 
+// Dominio nativo de Shopify para el checkout (siempre .myshopify.com)
+const SHOPIFY_CHECKOUT_DOMAIN = 'mrbrownmx.myshopify.com';
+
 // Redirigir al checkout de Shopify
 export const redirectToCheckout = (checkoutUrl: string): void => {
   // Shopify genera el checkoutUrl con el dominio personalizado (mrbrown.com.mx),
-  // pero ese dominio ahora apunta a la SPA de React en Vercel.
-  // Reemplazamos el dominio por el nativo de Shopify para que el checkout funcione.
+  // pero ese dominio ahora apunta a la SPA headless en Vercel.
+  // Forzamos el dominio nativo .myshopify.com para que el checkout funcione.
   const nativeCheckoutUrl = checkoutUrl.replace(
     /https?:\/\/[^/]+/,
-    `https://${shopifyConfig.storeDomain}`
+    `https://${SHOPIFY_CHECKOUT_DOMAIN}`
   );
   window.location.href = nativeCheckoutUrl;
 };
