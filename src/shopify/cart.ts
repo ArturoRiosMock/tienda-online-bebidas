@@ -1,4 +1,5 @@
 import { shopifyClient, GET_CART, CREATE_CART, ADD_TO_CART, UPDATE_CART_LINES, REMOVE_FROM_CART } from './queries';
+import { shopifyConfig } from './config';
 import type { ShopifyCart } from './types';
 
 /**
@@ -142,5 +143,12 @@ export const clearCart = (): void => {
 
 // Redirigir al checkout de Shopify
 export const redirectToCheckout = (checkoutUrl: string): void => {
-  window.location.href = checkoutUrl;
+  // Shopify genera el checkoutUrl con el dominio personalizado (mrbrown.com.mx),
+  // pero ese dominio ahora apunta a la SPA de React en Vercel.
+  // Reemplazamos el dominio por el nativo de Shopify para que el checkout funcione.
+  const nativeCheckoutUrl = checkoutUrl.replace(
+    /https?:\/\/[^/]+/,
+    `https://${shopifyConfig.storeDomain}`
+  );
+  window.location.href = nativeCheckoutUrl;
 };
