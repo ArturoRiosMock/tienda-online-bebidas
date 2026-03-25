@@ -41,26 +41,26 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
   const handleConfirmPurchaseType = async (eventData: EventFormData | null) => {
     setCheckoutLoading(true);
     try {
-      if (eventData && updateAttributes) {
-        const attributes = [
-          { key: 'Tipo de compra', value: 'Evento' },
-          { key: 'Tipo de evento', value: eventData.eventType },
-          { key: 'Nombre de la escuela', value: eventData.schoolName },
-          { key: 'Nombre del graduado', value: eventData.graduateName },
-          { key: 'Número de mesa', value: eventData.tableNumber },
-        ];
-        const success = await updateAttributes(attributes);
-        if (!success) {
-          setCheckoutLoading(false);
-          return;
+      if (updateAttributes) {
+        // Los atributos son opcionales — si fallan, el checkout continúa igual
+        if (eventData) {
+          await updateAttributes([
+            { key: 'Tipo de compra', value: 'Evento' },
+            { key: 'Tipo de evento', value: eventData.eventType },
+            { key: 'Nombre de la escuela', value: eventData.schoolName },
+            { key: 'Nombre del graduado', value: eventData.graduateName },
+            { key: 'Número de mesa', value: eventData.tableNumber },
+          ]).catch(() => {});
+        } else {
+          await updateAttributes([{ key: 'Tipo de compra', value: 'Personal' }]).catch(() => {});
         }
-      } else if (updateAttributes) {
-        await updateAttributes([{ key: 'Tipo de compra', value: 'Personal' }]);
       }
       goToCheckout!();
       onClose();
     } catch {
-      // error handled by cartError
+      // Si algo falla, igual intentamos ir al checkout
+      goToCheckout?.();
+      onClose();
     } finally {
       setCheckoutLoading(false);
     }
