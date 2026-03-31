@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ShoppingCart, Menu, X, MapPin, Package, Search, MessageCircle, User, ChevronLeft, ChevronRight, Heart, PartyPopper } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, MessageCircle, User, ChevronLeft, ChevronRight, Heart, PartyPopper } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
@@ -19,7 +19,7 @@ interface HeaderProps {
 }
 
 const announcements = [
-  '¡Envío gratuito en compras mayores a $2,000! Entregas disponibles solo en la Ciudad de México.',
+  '¡Envios GRATIS en compras mayores a $2000 MXN!',
   'Productos con precio atractivo. Mr. Brown, credibilidad construida desde 2018.',
   '¡Cotiza tu evento y hazlo inolvidable! Barras libres, eventos corporativos y más.',
 ];
@@ -34,7 +34,6 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
-  const [zipCode, setZipCode] = useState('');
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const setSearchDrawerOpen = onSearchDrawerChange;
@@ -116,24 +115,6 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
               className="h-9 sm:h-10 md:h-12 flex-shrink-0 cursor-pointer max-h-12 object-contain"
               onClick={() => handleCategoryClick('Todos')}
             />
-
-            {/* Location */}
-            <div className="hidden lg:flex items-center gap-2 text-sm">
-              <MapPin className="w-4 h-4 text-[#0c3c1f]" />
-              <input
-                type="text"
-                placeholder="Ingresa tu código postal"
-                value={zipCode}
-                onChange={(e) => setZipCode(e.target.value)}
-                className="border-b border-gray-300 focus:border-[#0c3c1f] outline-none px-2 py-1 w-40"
-              />
-            </div>
-
-            {/* Track Order Button */}
-            <button className="hidden lg:flex items-center gap-2 bg-[#0c3c1f] text-white px-4 py-2 rounded-lg hover:bg-[#0a3019] transition-colors">
-              <Package className="w-4 h-4" />
-              <span className="text-sm font-medium">Rastreo</span>
-            </button>
 
             {/* Search Trigger - Desktop */}
             <button

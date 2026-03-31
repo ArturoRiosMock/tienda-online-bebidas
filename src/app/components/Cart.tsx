@@ -135,6 +135,11 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                         />
                         <div className="flex-1 min-w-0">
                           <h3 className="text-sm font-medium text-[#212121] line-clamp-2 mb-1">{item.name}</h3>
+                          {item.cantidadLabel && (
+                            <p className="text-xs text-[#717182] mb-1">
+                              <span className="font-semibold text-[#212121]">Cantidad:</span> {item.cantidadLabel}
+                            </p>
+                          )}
                           <p className="text-[#0c3c1f] font-bold mb-2">${item.price.toFixed(2)} MXN</p>
                           <div className="flex items-center gap-2">
                             <button
@@ -186,7 +191,7 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                   disabled={cartLoading}
                   className="w-full bg-[#0c3c1f] text-white py-3 rounded-lg hover:bg-[#0a3019] transition-colors disabled:opacity-50 font-bold text-base"
                 >
-                  {isShopifyCart ? 'Ir a pagar (Shopify)' : 'Finalizar Compra'}
+                  {isShopifyCart ? 'Ir a pagar' : 'Finalizar Compra'}
                 </button>
                 <button
                   onClick={clearCart}

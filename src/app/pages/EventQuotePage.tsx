@@ -29,9 +29,12 @@ const DRINK_OPTIONS = [
   'Champagne / Espumante',
   'Vodka',
   'Gin',
+  'Ron',
   'Licor',
   'Cerveza',
-  'Refrescos / Agua',
+  'Mixología',
+  'Aperol Spritz',
+  'St. Germain Spritz',
   'Otro',
 ];
 

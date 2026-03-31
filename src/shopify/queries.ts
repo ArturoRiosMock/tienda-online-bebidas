@@ -127,6 +127,10 @@ export const GET_PRODUCTS_BY_COLLECTION = `
                     currencyCode
                   }
                   availableForSale
+                  selectedOptions {
+                    name
+                    value
+                  }
                 }
               }
             }
@@ -258,6 +262,10 @@ export const GET_CART = `
                   amount
                   currencyCode
                 }
+                selectedOptions {
+                  name
+                  value
+                }
               }
             }
           }
@@ -310,6 +318,10 @@ export const CREATE_CART = `
                   price {
                     amount
                     currencyCode
+                  }
+                  selectedOptions {
+                    name
+                    value
                   }
                 }
               }
@@ -369,6 +381,10 @@ export const ADD_TO_CART = `
                     amount
                     currencyCode
                   }
+                  selectedOptions {
+                    name
+                    value
+                  }
                 }
               }
             }
@@ -422,6 +438,10 @@ export const UPDATE_CART_LINES = `
                   price {
                     amount
                     currencyCode
+                  }
+                  selectedOptions {
+                    name
+                    value
                   }
                 }
               }
@@ -477,6 +497,10 @@ export const REMOVE_FROM_CART = `
                     amount
                     currencyCode
                   }
+                  selectedOptions {
+                    name
+                    value
+                  }
                 }
               }
             }
@@ -524,6 +548,18 @@ export const SEARCH_PRODUCTS = `
                 node {
                   id
                   availableForSale
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  compareAtPrice {
+                    amount
+                    currencyCode
+                  }
+                  selectedOptions {
+                    name
+                    value
+                  }
                 }
               }
             }

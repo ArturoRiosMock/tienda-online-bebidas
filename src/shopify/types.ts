@@ -117,6 +117,7 @@ export interface ShopifyCartLine {
       amount: string;
       currencyCode: string;
     };
+    selectedOptions?: Array<{ name: string; value: string }>;
   };
 }
 
@@ -145,4 +146,6 @@ export interface Product {
   shopifyId?: string;
   variantId?: string;
   handle?: string;
+  /** Valor de la opción de variante "Cantidad" en Shopify (ej. "1 Botella") */
+  cantidadLabel?: string;
 }

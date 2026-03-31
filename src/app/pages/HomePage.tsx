@@ -12,6 +12,10 @@ import { ProductCard } from '@/app/components/ProductCard';
 import { AdBanner, getInlineAdSlots } from '@/app/components/AdBanner';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 
+/** Handle esperado; si Admin usa otro, el fallback por título lo corrige. */
+const HOME_FEATURED_COLLECTION_HANDLE = 'los-favoritos-del-club';
+const HOME_FEATURED_COLLECTION_TITLE = 'Los Favoritos del Club';
+
 type GridItem =
   | { kind: 'product'; product: ReturnType<typeof useShopifyProducts>['products'][number] }
   | { kind: 'ad'; slotId: string };
@@ -19,7 +23,10 @@ type GridItem =
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const productsRef = useRef<HTMLElement>(null);
-  const { products, loading, error } = useShopifyProducts();
+  const { products, loading, error } = useShopifyProducts(
+    HOME_FEATURED_COLLECTION_HANDLE,
+    HOME_FEATURED_COLLECTION_TITLE
+  );
 
   const scrollToProducts = () => {
     productsRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -113,7 +120,7 @@ export const HomePage: React.FC = () => {
 
       <section ref={productsRef} className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 max-w-[100vw]">
         <div className="flex items-center justify-between mb-6 sm:mb-8 gap-2 min-w-0">
-          <h2 className="text-[#212121]">Todos los Productos</h2>
+          <h2 className="text-[#212121]">Los Favoritos del Club</h2>
           {!loading && <p className="text-[#717182]">{products.length} productos</p>}
         </div>
 
@@ -129,6 +136,10 @@ export const HomePage: React.FC = () => {
               <div key={i} className="h-60 sm:h-80 bg-gray-100 rounded-lg animate-pulse" />
             ))}
           </div>
+        ) : products.length === 0 ? (
+          <p className="text-[#717182] text-center py-12">
+            Pronto tendremos novedades en Los Favoritos del Club.
+          </p>
         ) : (
           <>
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">

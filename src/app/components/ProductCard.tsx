@@ -15,9 +15,8 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(1);
   const isFavorite = isInWishlist(product.id);
 
-  // Calculate discount and pricing
-  const originalPrice = product.price * 1.35; // 35% markup to show discount
-  const discountPercentage = Math.round(((originalPrice - product.price) / originalPrice) * 100);
+  const cardDisplayDiscountPercent = 10;
+  const originalPrice = product.price / (1 - cardDisplayDiscountPercent / 100);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -70,7 +69,7 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
     >
       {/* Discount Badge */}
       <div className="absolute top-2 left-2 z-10 bg-[#FF6B35] text-white rounded-full w-10 h-10 sm:w-14 sm:h-14 flex flex-col items-center justify-center shadow-lg">
-        <span className="text-[10px] sm:text-sm font-bold leading-none">-{discountPercentage}%</span>
+        <span className="text-[10px] sm:text-sm font-bold leading-none">{cardDisplayDiscountPercent}%</span>
         <span className="text-[7px] sm:text-[10px] uppercase leading-none mt-0.5">OFF</span>
       </div>
 
@@ -120,6 +119,13 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
             </span>
           </div>
         </div>
+
+        {product.cantidadLabel && (
+          <p className="text-[10px] sm:text-xs text-[#717182] mb-2 sm:mb-3 leading-snug">
+            <span className="font-semibold text-[#212121]">Cantidad:</span>{' '}
+            {product.cantidadLabel}
+          </p>
+        )}
 
         {/* Quantity Controls - Desktop */}
         <div className="hidden sm:flex items-center gap-2 mb-3">

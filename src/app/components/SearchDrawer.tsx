@@ -36,6 +36,7 @@ function toCartProduct(p: ShopifyProduct): Product {
     description: p.description || '',
     variantId: p.variantId,
     handle: p.handle,
+    cantidadLabel: p.cantidadLabel,
   };
 }
 
@@ -206,8 +207,13 @@ export const SearchDrawer = ({ isOpen, onClose, onOpenCart }: SearchDrawerProps)
                             >
                               {highlightMatch(product.name, trimmedQuery)}
                             </p>
-                            {product.category && (
-                              <p className="text-xs text-[#717182] mt-0.5">Cantidad: 1 {product.category || 'Botella'}</p>
+                            {product.cantidadLabel && (
+                              <p className="text-xs text-[#717182] mt-0.5">
+                                <span className="font-semibold text-[#212121]">Cantidad:</span> {product.cantidadLabel}
+                              </p>
+                            )}
+                            {!product.cantidadLabel && product.category && (
+                              <p className="text-xs text-[#717182] mt-0.5">{product.category}</p>
                             )}
                             <div className="mt-1.5">
                               <p className="text-[#0c3c1f] font-bold text-sm mb-1.5">${product.price.toFixed(2)} MXN</p>

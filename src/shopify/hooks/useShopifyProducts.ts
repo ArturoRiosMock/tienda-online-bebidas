@@ -5,10 +5,10 @@ import type { Product } from '@/shopify/types';
 
 /**
  * Hook para obtener productos de Shopify.
- * Recibe un collectionHandle opcional. Si se pasa, filtra por colección;
- * si no, trae todos los productos.
+ * Si pasas collectionHandle, filtra por colección.
+ * titleFallback: título exacto de la colección en Admin; si el handle no devuelve datos, se resuelve el handle por título.
  */
-export const useShopifyProducts = (collectionHandle?: string) => {
+export const useShopifyProducts = (collectionHandle?: string, titleFallback?: string) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +29,9 @@ export const useShopifyProducts = (collectionHandle?: string) => {
         let fetchedProducts: Product[];
 
         if (collectionHandle) {
-          fetchedProducts = await getProductsByCollection(collectionHandle, 50);
+          fetchedProducts = await getProductsByCollection(collectionHandle, 50, {
+            titleFallback,
+          });
         } else {
           fetchedProducts = await getProducts(50);
         }
@@ -45,7 +47,7 @@ export const useShopifyProducts = (collectionHandle?: string) => {
     };
 
     fetchProducts();
-  }, [collectionHandle]);
+  }, [collectionHandle, titleFallback]);
 
   return { products, loading, error };
 };

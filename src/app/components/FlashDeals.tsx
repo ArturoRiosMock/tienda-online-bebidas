@@ -71,6 +71,7 @@ export const FlashDeals: React.FC = () => {
       variantId: deal.variantId,
       shopifyId: deal.shopifyId,
       handle: deal.handle,
+      cantidadLabel: deal.cantidadLabel,
     }, 1);
   };
 
@@ -123,7 +124,6 @@ export const FlashDeals: React.FC = () => {
         </h3>
 
         <div className="text-center mb-1.5 md:mb-3">
-          <p className="text-[10px] md:text-xs text-[#717182] mb-0.5">Por apenas:</p>
           <div className="flex items-center justify-center gap-1 flex-wrap">
             {hasDiscount && (
               <span className="text-[10px] md:text-sm text-[#717182] line-through">
@@ -230,15 +230,18 @@ export const FlashDeals: React.FC = () => {
         .flash-deals-slider .slick-dots li button:before { color: #0c3c1f; font-size: 8px; }
         .flash-deals-slider .slick-dots li.slick-active button:before { color: #0c3c1f; }
         .flash-deals-slider .slick-prev,
-        .flash-deals-slider .slick-next { width: 40px; height: 40px; z-index: 10; }
-        .flash-deals-slider .slick-prev { left: -45px; }
-        .flash-deals-slider .slick-next { right: -45px; }
-        .flash-deals-slider .slick-prev:before,
-        .flash-deals-slider .slick-next:before { color: #0c3c1f; font-size: 40px; }
-        @media (max-width: 1024px) {
-          .flash-deals-slider .slick-prev { left: -25px; }
-          .flash-deals-slider .slick-next { right: -25px; }
+        .flash-deals-slider .slick-next {
+          width: 40px;
+          height: 40px;
+          z-index: 10;
+          background: rgba(255, 255, 255, 0.95);
+          border-radius: 9999px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
         }
+        .flash-deals-slider .slick-prev { left: 8px; }
+        .flash-deals-slider .slick-next { right: 8px; }
+        .flash-deals-slider .slick-prev:before,
+        .flash-deals-slider .slick-next:before { color: #0c3c1f; font-size: 28px; opacity: 1; line-height: 40px; }
       `}</style>
     </section>
   );

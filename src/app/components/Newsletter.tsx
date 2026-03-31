@@ -63,11 +63,8 @@ export const Newsletter = () => {
               </div>
 
               <p className="text-xs mt-6 opacity-80">
-                *Descuento se da en el momento del check-out. 
-                Este descuento es válido para compras a partir de $500 MXN
-              </p>
-              <p className="text-xs mt-2 opacity-80">
-                Oferta válida solo por CPF. Cupón no acumulable.
+                *Descuento se da en el momento del check-out.{' '}
+                Este descuento es válido para compras a partir de $2000 MXN
               </p>
             </div>
           </motion.div>

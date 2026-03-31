@@ -81,6 +81,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
         variantId: product.variantId,
         shopifyId: product.shopifyId,
         handle: product.handle,
+        cantidadLabel: product.cantidadLabel,
       },
       quantity
     );

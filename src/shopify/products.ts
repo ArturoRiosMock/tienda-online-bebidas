@@ -1,9 +1,23 @@
 import { shopifyClient, GET_PRODUCTS, GET_PRODUCTS_BY_COLLECTION, GET_PRODUCT_BY_HANDLE, GET_COLLECTIONS, SEARCH_PRODUCTS } from './queries';
-import type { ShopifyProduct, ShopifyCollection, Product } from './types';
+import type { ShopifyProduct, ShopifyCollection, Product, ShopifyVariant } from './types';
 
 /**
  * Servicio para interactuar con Shopify Storefront API
  */
+
+/** Valor de la opción de variante "Cantidad" (Shopify), reutilizable en carrito y productos */
+export function cantidadLabelFromOptions(
+  options: Array<{ name: string; value: string }> | undefined | null
+): string | undefined {
+  if (!options?.length) return undefined;
+  const hit = options.find((o) => o.name.trim().toLowerCase() === 'cantidad');
+  const v = hit?.value?.trim();
+  return v || undefined;
+}
+
+function cantidadFromVariant(variant: ShopifyVariant | undefined): string | undefined {
+  return cantidadLabelFromOptions(variant?.selectedOptions);
+}
 
 // Convierte un producto de Shopify al formato de la app
 export const convertShopifyProductToAppProduct = (shopifyProduct: ShopifyProduct): Product => {
@@ -29,7 +43,8 @@ export const convertShopifyProductToAppProduct = (shopifyProduct: ShopifyProduct
     images: allImages.length > 0 ? allImages : undefined,
     shopifyId: shopifyProduct.id,
     variantId: firstVariant?.id,
-    handle: shopifyProduct.handle
+    handle: shopifyProduct.handle,
+    cantidadLabel: cantidadFromVariant(firstVariant),
   };
 };
 
@@ -47,21 +62,60 @@ export const getProducts = async (first: number = 20): Promise<Product[]> => {
   }
 };
 
+/**
+ * Busca el handle real en Storefront API por título exacto (ignora mayúsculas).
+ * Útil si el handle manual en código no coincide con el de Admin.
+ */
+export const findCollectionHandleByTitle = async (collectionTitle: string): Promise<string | null> => {
+  try {
+    const collections = await getCollections(250);
+    const target = collectionTitle.trim().toLowerCase();
+    const hit = collections.find((c) => c.title.trim().toLowerCase() === target);
+    return hit?.handle ?? null;
+  } catch {
+    return null;
+  }
+};
+
+export type GetProductsByCollectionOptions = {
+  /** Si la colección no existe con este handle o viene vacía, reintenta con el handle del título en Admin */
+  titleFallback?: string;
+};
+
 // Obtener productos por colección/categoría
-export const getProductsByCollection = async (collectionHandle: string, first: number = 20): Promise<Product[]> => {
+export const getProductsByCollection = async (
+  collectionHandle: string,
+  first: number = 20,
+  options?: GetProductsByCollectionOptions
+): Promise<Product[]> => {
   try {
     const data: any = await shopifyClient.request(GET_PRODUCTS_BY_COLLECTION, {
       handle: collectionHandle,
       first
     });
-    
+
     if (!data.collection) {
+      if (options?.titleFallback) {
+        const resolved = await findCollectionHandleByTitle(options.titleFallback);
+        if (resolved && resolved !== collectionHandle) {
+          return getProductsByCollection(resolved, first);
+        }
+      }
+      console.warn(
+        `[Shopify] No existe colección con handle "${collectionHandle}" en Storefront API. Revisa el handle en Admin o la publicación al canal de tienda.`
+      );
       return [];
     }
 
-    return data.collection.products.edges.map((edge: any) => 
-      convertShopifyProductToAppProduct(edge.node)
-    );
+    const edges: unknown[] = data.collection.products?.edges ?? [];
+    if (edges.length === 0 && options?.titleFallback) {
+      const resolved = await findCollectionHandleByTitle(options.titleFallback);
+      if (resolved && resolved !== collectionHandle) {
+        return getProductsByCollection(resolved, first);
+      }
+    }
+
+    return (edges as { node: ShopifyProduct }[]).map((edge) => convertShopifyProductToAppProduct(edge.node));
   } catch (error) {
     console.error('Error fetching products by collection:', error);
     return [];
