@@ -39,6 +39,9 @@ interface BannerFormat {
 const formats = bannersConfig.formats as Record<string, BannerFormat>;
 const slots = bannersConfig.slots as Record<string, BannerSlot>;
 
+/** Publicidad global oculta salvo estos slots (temporal). */
+const VISIBLE_AD_SLOT_IDS = new Set<string>(['home-hero-below']);
+
 const trackImpression = (slotId: string) => {
   console.log(`[AdBanner] impression: ${slotId}`, { timestamp: Date.now() });
 };
@@ -231,13 +234,19 @@ const renderImageTextCtaDefault = (
 export const AdBanner: React.FC<AdBannerProps> = ({ slotId, className = '', variant = 'default' }) => {
   const slot = slots[slotId];
   const tracked = useRef(false);
+  const isVisibleSlot = VISIBLE_AD_SLOT_IDS.has(slotId);
 
   useEffect(() => {
+    if (!isVisibleSlot) return;
     if (slot?.enabled && !tracked.current) {
       trackImpression(slotId);
       tracked.current = true;
     }
-  }, [slotId, slot?.enabled]);
+  }, [slotId, slot?.enabled, isVisibleSlot]);
+
+  if (!isVisibleSlot) {
+    return <div className="hidden" aria-hidden />;
+  }
 
   if (!slot || !slot.enabled) return null;
 
@@ -260,7 +269,12 @@ export const getInlineAdSlots = (page: 'home' | 'collection'): Array<{ slotId: s
   const result: Array<{ slotId: string; position: number }> = [];
 
   for (const [key, slot] of Object.entries(slots)) {
-    if (key.startsWith(prefix) && slot.enabled && slot.gridPosition) {
+    if (
+      key.startsWith(prefix) &&
+      slot.enabled &&
+      slot.gridPosition &&
+      VISIBLE_AD_SLOT_IDS.has(key)
+    ) {
       result.push({ slotId: key, position: slot.gridPosition });
     }
   }
