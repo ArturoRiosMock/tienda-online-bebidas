@@ -56,7 +56,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
       id: 5,
       image: '/hero-best-sellers.png',
       bgColor: '#4a5240',
-      title: 'Best Sellers',
+      title: 'Los favoritos del Club',
       subtitle: 'Bacardi, Modelo Especial, Dobel Cristalino y más — los favoritos de Mr. Brown',
       badge: 'LO MÁS VENDIDO',
       buttonText: 'COMPRE AHORA',
