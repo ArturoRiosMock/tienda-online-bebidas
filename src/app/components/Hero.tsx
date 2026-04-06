@@ -45,13 +45,14 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
       buttonText: 'COTIZA AHORA',
       buttonAction: () => navigate('/cotizar-evento')
     },
-    {
-      id: 4,
-      image: '/hero-super-promo.png',
-      bgColor: '#8B5E1A',
-      buttonText: 'COMPRE AHORA',
-      buttonAction: onShopNowClick
-    },
+    // Slide 4 (Super Promo) oculto temporalmente
+    // {
+    //   id: 4,
+    //   image: '/hero-super-promo.png',
+    //   bgColor: '#8B5E1A',
+    //   buttonText: 'COMPRE AHORA',
+    //   buttonAction: onShopNowClick
+    // },
     {
       id: 5,
       image: '/hero-best-sellers.png',
