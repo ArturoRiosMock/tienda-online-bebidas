@@ -1,8 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { ProductCard } from '@/app/components/ProductCard';
 import { AdBanner, getInlineAdSlots } from '@/app/components/AdBanner';
+import { CollectionProductFilters } from '@/app/components/CollectionProductFilters';
+import {
+  defaultCollectionFilterState,
+  filterAndSortProducts,
+  hasActiveFilters,
+} from '@/app/utils/collectionFilters';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
 
@@ -16,6 +22,17 @@ export const CollectionPage: React.FC = () => {
   const { products, loading, error } = useShopifyProducts(handle);
   const { collections } = useShopifyCollections();
 
+  const [filters, setFilters] = useState(defaultCollectionFilterState);
+
+  useEffect(() => {
+    setFilters(defaultCollectionFilterState());
+  }, [handle]);
+
+  const filteredProducts = useMemo(
+    () => filterAndSortProducts(products, filters),
+    [products, filters]
+  );
+
   const currentCollection = collections.find((c) => c.handle === handle);
   const collectionTitle = currentCollection?.title || handle?.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) || 'Colección';
 
@@ -27,7 +44,7 @@ export const CollectionPage: React.FC = () => {
     let productIndex = 0;
     let position = 0;
 
-    while (productIndex < products.length || adIndex < inlineAds.length) {
+    while (productIndex < filteredProducts.length || adIndex < inlineAds.length) {
       if (adIndex < inlineAds.length && position === inlineAds[adIndex].position - 1) {
         items.push({ kind: 'ad', slotId: inlineAds[adIndex].slotId });
         adIndex++;
@@ -35,8 +52,8 @@ export const CollectionPage: React.FC = () => {
         continue;
       }
 
-      if (productIndex < products.length) {
-        items.push({ kind: 'product', product: products[productIndex] });
+      if (productIndex < filteredProducts.length) {
+        items.push({ kind: 'product', product: filteredProducts[productIndex] });
         productIndex++;
         position++;
       } else {
@@ -45,7 +62,7 @@ export const CollectionPage: React.FC = () => {
     }
 
     return items;
-  }, [products, inlineAds]);
+  }, [filteredProducts, inlineAds]);
 
   return (
     <div className="min-h-[60vh]">
@@ -110,11 +127,24 @@ export const CollectionPage: React.FC = () => {
           </aside>
 
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
               {!loading && (
-                <p className="text-[#717182] text-sm">{products.length} productos encontrados</p>
+                <p className="text-[#717182] text-sm">
+                  {hasActiveFilters(filters) && products.length > 0
+                    ? `${filteredProducts.length} de ${products.length} productos`
+                    : `${products.length} productos encontrados`}
+                </p>
               )}
             </div>
+
+            {!loading && products.length > 0 && (
+              <CollectionProductFilters
+                products={products}
+                value={filters}
+                onChange={setFilters}
+                disabled={loading}
+              />
+            )}
 
             {error && (
               <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
@@ -137,6 +167,19 @@ export const CollectionPage: React.FC = () => {
                 >
                   Ver todos los productos
                 </Link>
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              <div className="text-center py-16 rounded-xl border border-gray-200 bg-gray-50 px-4">
+                <p className="text-[#717182] text-lg mb-4">
+                  Ningún producto coincide con los filtros seleccionados.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setFilters(defaultCollectionFilterState())}
+                  className="inline-block bg-[#0055a2] text-white px-6 py-3 rounded-lg hover:bg-[#003d7a] transition-colors font-medium"
+                >
+                  Limpiar filtros
+                </button>
               </div>
             ) : (
               <div className="grid grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-6">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ShoppingCart, Menu, X, MapPin, Package, Search, MessageCircle, User, ChevronLeft, ChevronRight, Heart, LogIn, LogOut } from 'lucide-react';
+import { ShoppingCart, Menu, X, MapPin, Package, Search, MessageCircle, ChevronLeft, ChevronRight, Heart, LogIn, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
@@ -26,6 +26,9 @@ const announcements = [
 ];
 
 const FLASH_DEALS_HANDLE = 'ofertas-relampago';
+
+/** Código postal + botón Rastreo en la barra oscura (reactivar cuando haya integración). */
+const SHOW_HEADER_LOCATION_AND_TRACKING = false;
 
 export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDrawerOpen, onSearchDrawerChange }: HeaderProps) => {
   const { getTotalItems } = useCart();
@@ -119,23 +122,27 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
               onClick={() => handleCategoryClick('Todos')}
             />
 
-            {/* Location */}
-            <div className="hidden lg:flex items-center gap-2 text-sm">
-              <MapPin className="w-4 h-4 text-[#0055a2]" />
-              <input
-                type="text"
-                placeholder="Ingresa tu código postal"
-                value={zipCode}
-                onChange={(e) => setZipCode(e.target.value)}
-                className="border-b border-gray-500 focus:border-[#0055a2] outline-none px-2 py-1 w-40 bg-transparent text-white placeholder-gray-400"
-              />
-            </div>
-
-            {/* Track Order Button */}
-            <button className="hidden lg:flex items-center gap-2 bg-[#0055a2] text-white px-4 py-2 rounded-lg hover:bg-[#004488] transition-colors">
-              <Package className="w-4 h-4" />
-              <span className="text-sm font-medium">Rastreo</span>
-            </button>
+            {SHOW_HEADER_LOCATION_AND_TRACKING && (
+              <>
+                <div className="hidden lg:flex items-center gap-2 text-sm">
+                  <MapPin className="w-4 h-4 text-[#0055a2]" />
+                  <input
+                    type="text"
+                    placeholder="Ingresa tu código postal"
+                    value={zipCode}
+                    onChange={(e) => setZipCode(e.target.value)}
+                    className="border-b border-gray-500 focus:border-[#0055a2] outline-none px-2 py-1 w-40 bg-transparent text-white placeholder-gray-400"
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="hidden lg:flex items-center gap-2 bg-[#0055a2] text-white px-4 py-2 rounded-lg hover:bg-[#004488] transition-colors"
+                >
+                  <Package className="w-4 h-4" />
+                  <span className="text-sm font-medium">Rastreo</span>
+                </button>
+              </>
+            )}
 
             {/* Search Trigger - Desktop */}
             <button

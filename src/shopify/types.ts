@@ -138,6 +138,10 @@ export interface Product {
   price: number;
   originalPrice?: number;
   category: string;
+  /** Marca / proveedor (Shopify vendor) */
+  vendor?: string;
+  /** Primera variante disponible para venta */
+  inStock?: boolean;
   description: string;
   descriptionHtml?: string;
   image: string;

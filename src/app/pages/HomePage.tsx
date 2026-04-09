@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Hero } from '@/app/components/Hero';
 import { FlashDeals } from '@/app/components/FlashDeals';
@@ -8,6 +8,12 @@ import { About } from '@/app/components/About';
 import { FAQ } from '@/app/components/FAQ';
 import { ProductCard } from '@/app/components/ProductCard';
 import { AdBanner, getInlineAdSlots } from '@/app/components/AdBanner';
+import { CollectionProductFilters } from '@/app/components/CollectionProductFilters';
+import {
+  defaultCollectionFilterState,
+  filterAndSortProducts,
+  hasActiveFilters,
+} from '@/app/utils/collectionFilters';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 
 type GridItem =
@@ -18,6 +24,12 @@ export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const productsRef = useRef<HTMLElement>(null);
   const { products, loading, error } = useShopifyProducts();
+  const [filters, setFilters] = useState(defaultCollectionFilterState);
+
+  const filteredProducts = useMemo(
+    () => filterAndSortProducts(products, filters),
+    [products, filters]
+  );
 
   const scrollToProducts = () => {
     productsRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -31,7 +43,7 @@ export const HomePage: React.FC = () => {
     let productIndex = 0;
     let position = 0;
 
-    while (productIndex < products.length || adIndex < inlineAds.length) {
+    while (productIndex < filteredProducts.length || adIndex < inlineAds.length) {
       if (adIndex < inlineAds.length && position === inlineAds[adIndex].position - 1) {
         items.push({ kind: 'ad', slotId: inlineAds[adIndex].slotId });
         adIndex++;
@@ -39,8 +51,8 @@ export const HomePage: React.FC = () => {
         continue;
       }
 
-      if (productIndex < products.length) {
-        items.push({ kind: 'product', product: products[productIndex] });
+      if (productIndex < filteredProducts.length) {
+        items.push({ kind: 'product', product: filteredProducts[productIndex] });
         productIndex++;
         position++;
       } else {
@@ -49,7 +61,7 @@ export const HomePage: React.FC = () => {
     }
 
     return items;
-  }, [products, inlineAds]);
+  }, [filteredProducts, inlineAds]);
 
   const midBannerAfter = 8;
   const firstHalf = gridItems.slice(0, midBannerAfter);
@@ -66,10 +78,25 @@ export const HomePage: React.FC = () => {
       <FlashDeals />
 
       <section ref={productsRef} className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 max-w-[100vw]">
-        <div className="flex items-center justify-between mb-6 sm:mb-8 gap-2 min-w-0">
+        <div className="flex items-center justify-between mb-4 sm:mb-6 gap-2 min-w-0 flex-wrap">
           <h2 className="text-[#212121]">Todos los Productos</h2>
-          {!loading && <p className="text-[#717182]">{products.length} productos</p>}
+          {!loading && (
+            <p className="text-[#717182] text-sm sm:text-base">
+              {hasActiveFilters(filters) && products.length > 0
+                ? `${filteredProducts.length} de ${products.length} productos`
+                : `${products.length} productos`}
+            </p>
+          )}
         </div>
+
+        {!loading && products.length > 0 && (
+          <CollectionProductFilters
+            products={products}
+            value={filters}
+            onChange={setFilters}
+            disabled={loading}
+          />
+        )}
 
         {error && (
           <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
@@ -82,6 +109,19 @@ export const HomePage: React.FC = () => {
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div key={i} className="h-60 sm:h-80 bg-gray-100 rounded-lg animate-pulse" />
             ))}
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center py-16 rounded-xl border border-gray-200 bg-gray-50 px-4">
+            <p className="text-[#717182] text-lg mb-4">
+              Ningún producto coincide con los filtros seleccionados.
+            </p>
+            <button
+              type="button"
+              onClick={() => setFilters(defaultCollectionFilterState())}
+              className="inline-block bg-[#0055a2] text-white px-6 py-3 rounded-lg hover:bg-[#003d7a] transition-colors font-medium"
+            >
+              Limpiar filtros
+            </button>
           </div>
         ) : (
           <>
