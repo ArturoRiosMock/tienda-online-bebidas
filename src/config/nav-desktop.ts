@@ -80,13 +80,13 @@ const RAW_GROUPS: RawGroup[] = [
     id: 'aguas',
     title: 'Aguas',
     mode: 'link',
-    entry: { type: 'collection', label: 'Aguas', handle: 'aguas' },
+    entry: { type: 'collection', label: 'Aguas', handle: 'refrescos' },
   },
   {
     id: 'refrescos',
     title: 'Refrescos',
     mode: 'link',
-    entry: { type: 'collection', label: 'Refrescos', handle: 'refrescos' },
+    entry: { type: 'collection', label: 'Refrescos', handle: 'aguas' },
   },
   {
     id: 'otras-bebidas',

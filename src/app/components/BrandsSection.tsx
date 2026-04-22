@@ -26,8 +26,8 @@ const brands: Brand[] = [
   {
     id: 'felix',
     name: 'Félix',
-    handle: 'felix',
-    titleFallback: 'Félix',
+    handle: 'felix-shorle',
+    titleFallback: 'Felix Shorle',
     image: '/brands/felix.png',
   },
   {
