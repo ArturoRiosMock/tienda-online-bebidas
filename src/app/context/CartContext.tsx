@@ -15,6 +15,8 @@ export interface Product {
   handle?: string;
   /** Opción de variante Cantidad (Shopify), ej. "1 Botella" */
   cantidadLabel?: string;
+  vendor?: string;
+  tags?: string[];
 }
 
 export interface CartItem extends Omit<Product, 'id'> {

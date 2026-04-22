@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, SlidersHorizontal } from 'lucide-react';
 import { ProductCard } from '@/app/components/ProductCard';
 import { AdBanner, getInlineAdSlots } from '@/app/components/AdBanner';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
@@ -10,16 +10,108 @@ type GridItem =
   | { kind: 'product'; product: ReturnType<typeof useShopifyProducts>['products'][number] }
   | { kind: 'ad'; slotId: string };
 
+type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name';
+
 export const CollectionPage: React.FC = () => {
   const { handle } = useParams<{ handle: string }>();
   const navigate = useNavigate();
   const { products, loading, error } = useShopifyProducts(handle);
   const { collections } = useShopifyCollections();
 
+  const [sortBy, setSortBy] = useState<SortOption>('default');
+  const [vendorFilter, setVendorFilter] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
+  const [tagFilter, setTagFilter] = useState('');
+  const [discountOnly, setDiscountOnly] = useState(false);
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+
+  useEffect(() => {
+    setSortBy('default');
+    setVendorFilter('');
+    setTypeFilter('');
+    setTagFilter('');
+    setDiscountOnly(false);
+    setMinPrice('');
+    setMaxPrice('');
+  }, [handle]);
+
   const currentCollection = collections.find((c) => c.handle === handle);
   const collectionTitle = currentCollection?.title || handle?.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) || 'Colección';
 
   const inlineAds = useMemo(() => getInlineAdSlots('collection'), []);
+
+  const vendorOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const p of products) {
+      const v = p.vendor?.trim();
+      if (v) set.add(v);
+    }
+    return [...set].sort((a, b) => a.localeCompare(b, 'es'));
+  }, [products]);
+
+  const typeOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const p of products) {
+      const t = p.category?.trim();
+      if (t) set.add(t);
+    }
+    return [...set].sort((a, b) => a.localeCompare(b, 'es'));
+  }, [products]);
+
+  const tagOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const p of products) {
+      for (const t of p.tags || []) {
+        const tag = t.trim();
+        if (tag) set.add(tag);
+      }
+    }
+    return [...set].sort((a, b) => a.localeCompare(b, 'es'));
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    let list = products.filter((p) => {
+      if (vendorFilter && (p.vendor || '') !== vendorFilter) return false;
+      if (typeFilter && p.category !== typeFilter) return false;
+      if (tagFilter && !(p.tags || []).includes(tagFilter)) return false;
+      if (discountOnly) {
+        const hasDiscount = p.originalPrice != null && p.originalPrice > p.price;
+        if (!hasDiscount) return false;
+      }
+      const min = parseFloat(minPrice.replace(',', '.'));
+      if (minPrice.trim() !== '' && !Number.isNaN(min) && p.price < min) return false;
+      const max = parseFloat(maxPrice.replace(',', '.'));
+      if (maxPrice.trim() !== '' && !Number.isNaN(max) && p.price > max) return false;
+      return true;
+    });
+
+    const sorted = [...list];
+    if (sortBy === 'price-asc') sorted.sort((a, b) => a.price - b.price);
+    else if (sortBy === 'price-desc') sorted.sort((a, b) => b.price - a.price);
+    else if (sortBy === 'name') sorted.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+
+    return sorted;
+  }, [products, sortBy, vendorFilter, typeFilter, tagFilter, discountOnly, minPrice, maxPrice]);
+
+  const filtersActive =
+    sortBy !== 'default' ||
+    Boolean(vendorFilter) ||
+    Boolean(typeFilter) ||
+    Boolean(tagFilter) ||
+    discountOnly ||
+    minPrice.trim() !== '' ||
+    maxPrice.trim() !== '';
+
+  const clearFilters = () => {
+    setSortBy('default');
+    setVendorFilter('');
+    setTypeFilter('');
+    setTagFilter('');
+    setDiscountOnly(false);
+    setMinPrice('');
+    setMaxPrice('');
+  };
 
   const gridItems = useMemo<GridItem[]>(() => {
     const items: GridItem[] = [];
@@ -27,7 +119,7 @@ export const CollectionPage: React.FC = () => {
     let productIndex = 0;
     let position = 0;
 
-    while (productIndex < products.length || adIndex < inlineAds.length) {
+    while (productIndex < filteredProducts.length || adIndex < inlineAds.length) {
       if (adIndex < inlineAds.length && position === inlineAds[adIndex].position - 1) {
         items.push({ kind: 'ad', slotId: inlineAds[adIndex].slotId });
         adIndex++;
@@ -35,8 +127,8 @@ export const CollectionPage: React.FC = () => {
         continue;
       }
 
-      if (productIndex < products.length) {
-        items.push({ kind: 'product', product: products[productIndex] });
+      if (productIndex < filteredProducts.length) {
+        items.push({ kind: 'product', product: filteredProducts[productIndex] });
         productIndex++;
         position++;
       } else {
@@ -45,7 +137,7 @@ export const CollectionPage: React.FC = () => {
     }
 
     return items;
-  }, [products, inlineAds]);
+  }, [filteredProducts, inlineAds]);
 
   return (
     <div className="min-h-[60vh]">
@@ -110,11 +202,142 @@ export const CollectionPage: React.FC = () => {
           </aside>
 
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="mb-4">
               {!loading && (
-                <p className="text-[#717182] text-sm">{products.length} productos encontrados</p>
+                <p className="text-[#717182] text-sm">
+                  {filteredProducts.length === products.length
+                    ? `${products.length} productos encontrados`
+                    : `${filteredProducts.length} de ${products.length} productos`}
+                </p>
               )}
             </div>
+
+            {!loading && products.length > 0 && (
+              <div
+                className="mb-6 rounded-xl border border-gray-200 bg-gray-50/80 p-4 sm:p-5"
+                role="search"
+                aria-label="Filtros de productos"
+              >
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <SlidersHorizontal className="w-4 h-4 text-[#0c3c1f] shrink-0" aria-hidden />
+                  <span className="text-sm font-semibold text-[#0c3c1f]">Filtros</span>
+                  {filtersActive && (
+                    <button
+                      type="button"
+                      onClick={clearFilters}
+                      className="ml-auto text-xs sm:text-sm text-[#0c3c1f] underline underline-offset-2 hover:no-underline"
+                    >
+                      Limpiar filtros
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[#717182]">Ordenar</span>
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value as SortOption)}
+                      className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-[#212121] focus:border-[#0c3c1f] focus:outline-none focus:ring-1 focus:ring-[#0c3c1f]"
+                    >
+                      <option value="default">Destacados</option>
+                      <option value="price-asc">Precio: menor a mayor</option>
+                      <option value="price-desc">Precio: mayor a menor</option>
+                      <option value="name">Nombre (A–Z)</option>
+                    </select>
+                  </label>
+
+                  {vendorOptions.length > 0 && (
+                    <label className="flex flex-col gap-1">
+                      <span className="text-xs font-medium text-[#717182]">Marca</span>
+                      <select
+                        value={vendorFilter}
+                        onChange={(e) => setVendorFilter(e.target.value)}
+                        className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-[#212121] focus:border-[#0c3c1f] focus:outline-none focus:ring-1 focus:ring-[#0c3c1f]"
+                      >
+                        <option value="">Todas</option>
+                        {vendorOptions.map((v) => (
+                          <option key={v} value={v}>
+                            {v}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+
+                  {typeOptions.length > 0 && (
+                    <label className="flex flex-col gap-1">
+                      <span className="text-xs font-medium text-[#717182]">Tipo</span>
+                      <select
+                        value={typeFilter}
+                        onChange={(e) => setTypeFilter(e.target.value)}
+                        className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-[#212121] focus:border-[#0c3c1f] focus:outline-none focus:ring-1 focus:ring-[#0c3c1f]"
+                      >
+                        <option value="">Todos</option>
+                        {typeOptions.map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+
+                  {tagOptions.length > 0 && (
+                    <label className="flex flex-col gap-1">
+                      <span className="text-xs font-medium text-[#717182]">Etiqueta</span>
+                      <select
+                        value={tagFilter}
+                        onChange={(e) => setTagFilter(e.target.value)}
+                        className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-[#212121] focus:border-[#0c3c1f] focus:outline-none focus:ring-1 focus:ring-[#0c3c1f]"
+                      >
+                        <option value="">Todas</option>
+                        {tagOptions.map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+
+                  <label className="flex flex-col gap-1 sm:col-span-2 xl:col-span-1">
+                    <span className="text-xs font-medium text-[#717182]">Precio (MXN)</span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        placeholder="Mín."
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
+                        className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-[#212121] placeholder:text-gray-400 focus:border-[#0c3c1f] focus:outline-none focus:ring-1 focus:ring-[#0c3c1f]"
+                        aria-label="Precio mínimo"
+                      />
+                      <span className="text-[#717182] text-sm">—</span>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        placeholder="Máx."
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                        className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-[#212121] placeholder:text-gray-400 focus:border-[#0c3c1f] focus:outline-none focus:ring-1 focus:ring-[#0c3c1f]"
+                        aria-label="Precio máximo"
+                      />
+                    </div>
+                  </label>
+
+                  <label className="flex items-center gap-2 sm:col-span-2 xl:col-span-3 cursor-pointer select-none pt-1">
+                    <input
+                      type="checkbox"
+                      checked={discountOnly}
+                      onChange={(e) => setDiscountOnly(e.target.checked)}
+                      className="h-4 w-4 rounded border-gray-300 text-[#0c3c1f] focus:ring-[#0c3c1f]"
+                    />
+                    <span className="text-sm text-[#212121]">Solo productos con descuento</span>
+                  </label>
+                </div>
+              </div>
+            )}
 
             {error && (
               <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
@@ -137,6 +360,17 @@ export const CollectionPage: React.FC = () => {
                 >
                   Ver todos los productos
                 </Link>
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              <div className="text-center py-16 rounded-xl border border-dashed border-gray-200 bg-gray-50/50">
+                <p className="text-[#717182] text-lg mb-4">Ningún producto coincide con los filtros.</p>
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="inline-block bg-[#0c3c1f] text-white px-6 py-3 rounded-lg hover:bg-[#0a3019] transition-colors font-medium"
+                >
+                  Quitar filtros
+                </button>
               </div>
             ) : (
               <div className="grid grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-6">

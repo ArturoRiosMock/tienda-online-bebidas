@@ -1,17 +1,145 @@
 import React, { useState, useEffect } from 'react';
 import Slider from 'react-slick';
-import { Zap } from 'lucide-react';
+import { Zap, Minus, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useCart } from '@/app/context/CartContext';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
+import type { Product } from '@/app/context/CartContext';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 const FLASH_DEALS_COLLECTION = 'ofertas-relampago';
 
-export const FlashDeals: React.FC = () => {
+type DealProduct = Product;
+
+function FlashDealCard({ deal }: { deal: DealProduct }) {
   const { addToCart } = useCart();
-  const { products: deals, loading, error } = useShopifyProducts(FLASH_DEALS_COLLECTION);
+  const [quantity, setQuantity] = useState(1);
+
+  const hasDiscount = deal.originalPrice && deal.originalPrice > deal.price;
+  const discountPercentage = hasDiscount
+    ? Math.round(((deal.originalPrice! - deal.price) / deal.originalPrice!) * 100)
+    : 0;
+
+  const handleAddToCart = () => {
+    addToCart(
+      {
+        id: deal.id,
+        name: deal.name,
+        price: deal.price,
+        originalPrice: deal.originalPrice,
+        category: deal.category,
+        description: deal.description,
+        image: deal.image,
+        variantId: deal.variantId,
+        shopifyId: deal.shopifyId,
+        handle: deal.handle,
+        cantidadLabel: deal.cantidadLabel,
+      },
+      quantity
+    );
+    setQuantity(1);
+  };
+
+  return (
+    <motion.div
+      whileHover={{ y: -5 }}
+      className="bg-white rounded-lg p-2 sm:p-4 relative"
+    >
+      {discountPercentage > 0 && (
+        <div className="absolute top-1 left-1 z-10 bg-[rgb(255,107,53)] text-white rounded-full w-10 h-10 md:w-16 md:h-16 flex flex-col items-center justify-center shadow-lg">
+          <span className="text-xs md:text-lg font-bold leading-none">{discountPercentage}%</span>
+          <span className="text-[8px] md:text-xs uppercase leading-none">OFF</span>
+        </div>
+      )}
+
+      <div className="relative mb-2 md:mb-4 mx-auto w-[85%]">
+        <div className="relative w-full aspect-square flex items-center justify-center">
+          <img
+            src={deal.image}
+            alt={deal.name}
+            className="relative w-[55%] h-[55%] object-contain"
+          />
+          <svg
+            className="absolute inset-0 w-full h-full z-20 pointer-events-none"
+            viewBox="0 0 100 100"
+          >
+            <path
+              d="M50 5 L95 50 L50 95 L5 50 Z"
+              fill="none"
+              stroke="#0c3c1f"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <h3 className="text-[#212121] text-xs md:text-sm font-medium mb-1 md:mb-2 text-center line-clamp-2 min-h-[32px] md:min-h-[40px]">
+        {deal.name}
+      </h3>
+
+      <div className="text-center mb-1.5 md:mb-3">
+        <div className="flex items-center justify-center gap-1 flex-wrap">
+          {hasDiscount && (
+            <span className="text-[10px] md:text-sm text-[#717182] line-through">
+              ${deal.originalPrice!.toFixed(2)}
+            </span>
+          )}
+          <span className="text-sm md:text-2xl font-bold text-[#0c3c1f]">
+            ${deal.price.toFixed(2)}
+          </span>
+        </div>
+      </div>
+
+      {deal.cantidadLabel && (
+        <p className="text-[10px] md:text-xs text-[#717182] mb-1.5 md:mb-2 text-center leading-snug px-0.5">
+          <span className="font-semibold text-[#212121]">Cantidad:</span>{' '}
+          {deal.cantidadLabel}
+        </p>
+      )}
+
+      <div className="flex items-center justify-center gap-1 md:gap-1.5 mb-1.5 md:mb-2">
+        <button
+          type="button"
+          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+          className="w-7 h-7 md:w-8 md:h-8 shrink-0 flex items-center justify-center border border-[#0c3c1f] text-[#0c3c1f] rounded hover:bg-[#0c3c1f] hover:text-white transition-colors"
+          aria-label="Reducir cantidad"
+        >
+          <Minus className="w-3.5 h-3.5 md:w-4 md:h-4" />
+        </button>
+        <input
+          type="number"
+          min={1}
+          value={quantity}
+          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value, 10) || 1))}
+          className="w-9 md:w-11 h-7 md:h-8 text-center border border-gray-300 rounded text-[#212121] text-xs md:text-sm font-medium [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          aria-label="Cantidad a agregar"
+        />
+        <button
+          type="button"
+          onClick={() => setQuantity((q) => q + 1)}
+          className="w-7 h-7 md:w-8 md:h-8 shrink-0 flex items-center justify-center border border-[#0c3c1f] text-[#0c3c1f] rounded hover:bg-[#0c3c1f] hover:text-white transition-colors"
+          aria-label="Aumentar cantidad"
+        >
+          <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
+        </button>
+      </div>
+
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={handleAddToCart}
+        className="w-full bg-[#0c3c1f] text-white py-1.5 md:py-2 px-2 md:px-4 rounded-lg hover:bg-[#0c3c1f]/90 transition-colors text-[10px] md:text-sm font-medium"
+      >
+        Agregar
+      </motion.button>
+    </motion.div>
+  );
+}
+
+export const FlashDeals: React.FC = () => {
+  const { products: deals, loading } = useShopifyProducts(FLASH_DEALS_COLLECTION);
 
   const [timeLeft, setTimeLeft] = useState({
     hours: 11,
@@ -59,94 +187,9 @@ export const FlashDeals: React.FC = () => {
     ]
   };
 
-  const handleAddToCart = (deal: typeof deals[number]) => {
-    addToCart({
-      id: deal.id,
-      name: deal.name,
-      price: deal.price,
-      originalPrice: deal.originalPrice,
-      category: deal.category,
-      description: deal.description,
-      image: deal.image,
-      variantId: deal.variantId,
-      shopifyId: deal.shopifyId,
-      handle: deal.handle,
-      cantidadLabel: deal.cantidadLabel,
-    }, 1);
-  };
-
   if (!loading && deals.length === 0) {
     return null;
   }
-
-  const DealCard = ({ deal }: { deal: typeof deals[number] }) => {
-    const hasDiscount = deal.originalPrice && deal.originalPrice > deal.price;
-    const discountPercentage = hasDiscount
-      ? Math.round(((deal.originalPrice! - deal.price) / deal.originalPrice!) * 100)
-      : 0;
-
-    return (
-      <motion.div
-        whileHover={{ y: -5 }}
-        className="bg-white rounded-lg p-2 sm:p-4 relative"
-      >
-        {discountPercentage > 0 && (
-          <div className="absolute top-1 left-1 z-10 bg-[rgb(255,107,53)] text-white rounded-full w-10 h-10 md:w-16 md:h-16 flex flex-col items-center justify-center shadow-lg">
-            <span className="text-xs md:text-lg font-bold leading-none">{discountPercentage}%</span>
-            <span className="text-[8px] md:text-xs uppercase leading-none">OFF</span>
-          </div>
-        )}
-
-        <div className="relative mb-2 md:mb-4 mx-auto w-[85%]">
-          <div className="relative w-full aspect-square flex items-center justify-center">
-            <img
-              src={deal.image}
-              alt={deal.name}
-              className="relative w-[55%] h-[55%] object-contain"
-            />
-            <svg
-              className="absolute inset-0 w-full h-full z-20 pointer-events-none"
-              viewBox="0 0 100 100"
-            >
-              <path
-                d="M50 5 L95 50 L50 95 L5 50 Z"
-                fill="none"
-                stroke="#0c3c1f"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-        </div>
-
-        <h3 className="text-[#212121] text-xs md:text-sm font-medium mb-1 md:mb-2 text-center line-clamp-2 min-h-[32px] md:min-h-[40px]">
-          {deal.name}
-        </h3>
-
-        <div className="text-center mb-1.5 md:mb-3">
-          <div className="flex items-center justify-center gap-1 flex-wrap">
-            {hasDiscount && (
-              <span className="text-[10px] md:text-sm text-[#717182] line-through">
-                ${deal.originalPrice!.toFixed(2)}
-              </span>
-            )}
-            <span className="text-sm md:text-2xl font-bold text-[#0c3c1f]">
-              ${deal.price.toFixed(2)}
-            </span>
-          </div>
-        </div>
-
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => handleAddToCart(deal)}
-          className="w-full bg-[#0c3c1f] text-white py-1.5 md:py-2 px-2 md:px-4 rounded-lg hover:bg-[#0c3c1f]/90 transition-colors text-[10px] md:text-sm font-medium"
-        >
-          Agregar
-        </motion.button>
-      </motion.div>
-    );
-  };
 
   return (
     <section className="bg-white py-8 md:py-12 overflow-hidden">
@@ -202,7 +245,7 @@ export const FlashDeals: React.FC = () => {
                   className="shrink-0 snap-start"
                   style={{ width: 'calc((100% - 16px) / 3)' }}
                 >
-                  <DealCard deal={deal} />
+                  <FlashDealCard deal={deal} />
                 </div>
               ))}
             </div>
@@ -215,7 +258,7 @@ export const FlashDeals: React.FC = () => {
             <Slider {...sliderSettings}>
               {deals.map((deal) => (
                 <div key={deal.id} className="px-3">
-                  <DealCard deal={deal} />
+                  <FlashDealCard deal={deal} />
                 </div>
               ))}
             </Slider>

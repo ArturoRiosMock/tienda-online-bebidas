@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ShoppingCart, Menu, X, Search, MessageCircle, User, ChevronLeft, ChevronRight, Heart, PartyPopper } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { ShoppingCart, Menu, X, Search, MessageCircle, User, ChevronDown, Heart, PartyPopper } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
 import { SearchDrawer } from '@/app/components/SearchDrawer';
+import { resolveDesktopNav, type NavDropdownEntry } from '@/config/nav-desktop';
 
 const logo = PLACEHOLDER_IMAGES.logo;
 
@@ -20,11 +21,8 @@ interface HeaderProps {
 
 const announcements = [
   '¡Envios GRATIS en compras mayores a $2000 MXN!',
-  'Productos con precio atractivo. Mr. Brown, credibilidad construida desde 2018.',
   '¡Cotiza tu evento y hazlo inolvidable! Barras libres, eventos corporativos y más.',
 ];
-
-const FLASH_DEALS_HANDLE = 'ofertas-relampago';
 
 export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDrawerOpen, onSearchDrawerChange }: HeaderProps) => {
   const { getTotalItems } = useCart();
@@ -33,43 +31,9 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
   const { collections, loading: collectionsLoading } = useShopifyCollections();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
   const setSearchDrawerOpen = onSearchDrawerChange;
-  const navScrollRef = useRef<HTMLDivElement>(null);
 
-  // Filtrar colecciones: excluir la colección de ofertas relámpago del menú principal
-  const menuCollections = collections.filter(
-    (col) => col.handle !== FLASH_DEALS_HANDLE
-  );
-
-  const updateScrollArrows = useCallback(() => {
-    const el = navScrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 0);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
-  }, []);
-
-  const scrollNav = (direction: 'left' | 'right') => {
-    const el = navScrollRef.current;
-    if (!el) return;
-    const amount = 250;
-    el.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    const el = navScrollRef.current;
-    if (!el) return;
-    updateScrollArrows();
-    el.addEventListener('scroll', updateScrollArrows, { passive: true });
-    const ro = new ResizeObserver(updateScrollArrows);
-    ro.observe(el);
-    return () => {
-      el.removeEventListener('scroll', updateScrollArrows);
-      ro.disconnect();
-    };
-  }, [updateScrollArrows, menuCollections.length]);
+  const desktopNavItems = useMemo(() => resolveDesktopNav(collections), [collections]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -78,10 +42,36 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [mobileMenuOpen]);
+
   const handleCategoryClick = (collectionHandle: string) => {
     onCategoryClick(collectionHandle);
     setMobileMenuOpen(false);
-    setHoveredCategory(null);
+  };
+
+  const goToNavEntry = (entry: NavDropdownEntry) => {
+    if (entry.type === 'route') {
+      navigate(entry.path);
+      setMobileMenuOpen(false);
+      return;
+    }
+    handleCategoryClick(entry.handle);
   };
 
   return (
@@ -135,7 +125,12 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
               >
                 <Search className="w-6 h-6" />
               </button>
-              <button className="hidden lg:block p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <button
+                type="button"
+                className="hidden lg:block p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                onClick={() => navigate('/contacto')}
+                aria-label="Ir a contacto"
+              >
                 <MessageCircle className="w-6 h-6 text-[#212121]" />
               </button>
               <button className="hidden lg:block p-2 hover:bg-gray-100 rounded-lg transition-colors">
@@ -166,8 +161,12 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                 )}
               </button>
               <button
-                className="lg:hidden p-2"
+                type="button"
+                className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-primary-nav"
+                aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú de categorías'}
               >
                 {mobileMenuOpen ? <X className="w-6 h-6 text-[#212121]" /> : <Menu className="w-6 h-6 text-[#212121]" />}
               </button>
@@ -177,138 +176,183 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
       </div>
 
       {/* Navigation Menu - Desktop */}
-      <nav className="hidden lg:block border-b border-gray-200">
-        <div className="container mx-auto px-4 relative">
-          {/* Left Arrow */}
-          {canScrollLeft && (
+      <nav className="hidden lg:block border-b border-gray-200" aria-label="Categorías">
+        <div className="container mx-auto px-4">
+          <div className="flex w-full flex-wrap items-center justify-center gap-x-2 gap-y-2 py-3">
             <button
-              onClick={() => scrollNav('left')}
-              className="absolute left-0 top-0 bottom-0 z-10 flex items-center pl-1 pr-3 bg-gradient-to-r from-white via-white/95 to-transparent"
-              aria-label="Scroll categorías izquierda"
-            >
-              <ChevronLeft className="w-5 h-5 text-[#0c3c1f]" />
-            </button>
-          )}
-
-          {/* Scrollable Categories */}
-          <div
-            ref={navScrollRef}
-            className="flex items-center gap-6 py-3 overflow-x-auto scrollbar-hide"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-            <button
+              type="button"
               onClick={() => handleCategoryClick('Todos')}
-              className="flex items-center gap-1 text-[#212121] hover:text-[#0c3c1f] transition-colors font-medium text-sm whitespace-nowrap"
+              className="rounded-full px-3 py-1.5 text-sm font-semibold text-[#212121] transition-colors hover:bg-lime-400 hover:text-[#111827]"
             >
               Todos
             </button>
 
             {collectionsLoading ? (
-              <div className="flex gap-6">
+              <div className="flex flex-wrap gap-2">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="h-5 w-20 bg-gray-200 rounded animate-pulse" />
+                  <div key={i} className="h-8 w-24 bg-gray-200 rounded-full animate-pulse" />
                 ))}
               </div>
             ) : (
-              menuCollections.map((collection) => (
-                <div
-                  key={collection.id}
-                  className="relative"
-                  onMouseEnter={() => setHoveredCategory(collection.handle)}
-                  onMouseLeave={() => setHoveredCategory(null)}
-                >
+              desktopNavItems.map((item) =>
+                item.kind === 'link' ? (
                   <button
-                    onClick={() => handleCategoryClick(collection.handle)}
-                    className="flex items-center gap-1 text-[#212121] hover:text-[#0c3c1f] transition-colors font-medium text-sm whitespace-nowrap"
+                    key={item.id}
+                    type="button"
+                    onClick={() => goToNavEntry(item.entry)}
+                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-[#212121] transition-colors hover:bg-lime-400 hover:text-[#111827]"
                   >
-                    {collection.title}
+                    {item.title}
                   </button>
-                </div>
-              ))
+                ) : (
+                  <div key={item.id} className="group/nav relative">
+                    <button
+                      type="button"
+                      className="flex items-center gap-0.5 rounded-full px-3 py-1.5 text-sm font-semibold text-[#212121] transition-colors group-hover/nav:bg-lime-400 group-hover/nav:text-[#111827]"
+                      aria-haspopup="menu"
+                    >
+                      {item.title}
+                      <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover/nav:-rotate-180" aria-hidden />
+                    </button>
+                    <div className="pointer-events-none invisible absolute left-0 top-full z-50 pt-1 opacity-0 transition-opacity duration-150 group-hover/nav:visible group-hover/nav:opacity-100 group-hover/nav:pointer-events-auto">
+                      <div className="max-h-[min(70vh,420px)] min-w-[220px] overflow-y-auto rounded-xl border border-gray-100 bg-white py-2 shadow-xl">
+                        {item.entries.map((entry) => (
+                          <button
+                            key={entry.type === 'route' ? entry.path : entry.handle}
+                            type="button"
+                            onClick={() => goToNavEntry(entry)}
+                            className="block w-full px-4 py-2.5 text-left text-sm text-[#212121] transition-colors hover:bg-gray-50"
+                          >
+                            {entry.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )
+              )
             )}
 
             <button
+              type="button"
               onClick={() => navigate('/cotizar-evento')}
-              className="flex items-center gap-1.5 bg-[#FDB93A] text-[#212121] px-4 py-1.5 rounded-full hover:bg-[#FF8A00] transition-colors font-bold text-sm whitespace-nowrap flex-shrink-0"
+              className="flex items-center gap-1.5 rounded-full bg-[#FDB93A] px-4 py-1.5 text-sm font-bold text-[#212121] transition-colors hover:bg-[#FF8A00] flex-shrink-0"
             >
-              <PartyPopper className="w-4 h-4" />
+              <PartyPopper className="h-4 w-4" />
               Cotiza tu Evento
             </button>
           </div>
-
-          {/* Right Arrow */}
-          {canScrollRight && (
-            <button
-              onClick={() => scrollNav('right')}
-              className="absolute right-0 top-0 bottom-0 z-10 flex items-center pr-1 pl-3 bg-gradient-to-l from-white via-white/95 to-transparent"
-              aria-label="Scroll categorías derecha"
-            >
-              <ChevronRight className="w-5 h-5 text-[#0c3c1f]" />
-            </button>
-          )}
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile / tablet: mismo contenido que desktop, en panel deslizable */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="lg:hidden border-t border-gray-200 overflow-hidden"
+            transition={{ duration: 0.25 }}
+            className="lg:hidden border-t border-gray-200 bg-white"
+            id="mobile-primary-nav"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menú de navegación"
           >
-            <nav className="container mx-auto px-4 py-4 space-y-1">
-              {/* Mobile Search - opens fullscreen from header icon; here just a shortcut */}
+            <nav
+              className="container mx-auto max-h-[min(85dvh,calc(100vh-5rem))] overflow-y-auto overscroll-contain px-4 py-3 pb-[max(1rem,env(safe-area-inset-bottom))]"
+              aria-label="Categorías y enlaces"
+            >
               <button
                 type="button"
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setSearchDrawerOpen(true);
                 }}
-                className="flex items-center gap-2 w-full text-left text-[#212121] py-2 px-4 hover:bg-gray-100 rounded transition-colors font-medium mb-2 border border-gray-200 rounded-lg"
+                className="mb-3 flex min-h-[48px] w-full items-center gap-3 rounded-xl border border-gray-200 px-4 text-left text-sm font-medium text-[#212121] transition-colors hover:bg-gray-50 active:bg-gray-100"
               >
-                <Search className="w-5 h-5 text-[#0c3c1f]" />
+                <Search className="h-5 w-5 shrink-0 text-[#0c3c1f]" aria-hidden />
                 Buscar productos
               </button>
 
-              {/* "Todos" */}
               <button
+                type="button"
                 onClick={() => handleCategoryClick('Todos')}
-                className="block w-full text-left text-[#212121] py-2 px-4 hover:bg-gray-100 rounded transition-colors font-medium"
+                className="mb-2 flex min-h-[48px] w-full items-center rounded-xl px-4 text-left text-sm font-semibold text-[#0c3c1f] transition-colors hover:bg-gray-100 active:bg-gray-200"
               >
-                Todos los Productos
+                Todos los productos
               </button>
 
               {collectionsLoading ? (
-                <div className="space-y-2 px-4">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-8 bg-gray-200 rounded animate-pulse" />
+                <div className="space-y-2 py-2">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i} className="h-12 animate-pulse rounded-xl bg-gray-100" />
                   ))}
                 </div>
               ) : (
-                menuCollections.map((collection) => (
-                  <button
-                    key={collection.id}
-                    onClick={() => handleCategoryClick(collection.handle)}
-                    className="block w-full text-left text-[#212121] py-2 px-4 hover:bg-gray-100 rounded transition-colors font-medium"
-                  >
-                    {collection.title}
-                  </button>
-                ))
+                <div className="space-y-2">
+                  {desktopNavItems.map((item) =>
+                    item.kind === 'link' ? (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => goToNavEntry(item.entry)}
+                        className="flex min-h-[48px] w-full items-center rounded-xl px-4 text-left text-sm font-medium text-[#212121] transition-colors hover:bg-gray-100 active:bg-gray-200"
+                      >
+                        {item.title}
+                      </button>
+                    ) : (
+                      <details
+                        key={item.id}
+                        className="rounded-xl border border-gray-200 bg-gray-50/50 open:border-[#0c3c1f]/20 open:bg-white open:[&_summary_svg]:rotate-180"
+                      >
+                        <summary className="flex min-h-[48px] cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-[#0c3c1f] marker:content-none [&::-webkit-details-marker]:hidden">
+                          <span>{item.title}</span>
+                          <ChevronDown
+                            className="h-5 w-5 shrink-0 text-[#0c3c1f] transition-transform duration-200"
+                            aria-hidden
+                          />
+                        </summary>
+                        <div className="border-t border-gray-100 px-2 py-2">
+                          {item.entries.map((entry) => (
+                            <button
+                              key={entry.type === 'route' ? entry.path : entry.handle}
+                              type="button"
+                              onClick={() => goToNavEntry(entry)}
+                              className="flex min-h-[44px] w-full items-center rounded-lg px-4 py-2.5 text-left text-sm text-[#212121] transition-colors hover:bg-lime-400/30 active:bg-lime-400/50"
+                            >
+                              {entry.label}
+                            </button>
+                          ))}
+                        </div>
+                      </details>
+                    )
+                  )}
+                </div>
               )}
 
-              <div className="border-t border-gray-200 mt-2 pt-2">
+              <div className="mt-4 space-y-2 border-t border-gray-200 pt-4">
+                <p className="px-1 text-xs font-semibold uppercase tracking-wide text-[#717182]">Enlaces</p>
                 <button
+                  type="button"
+                  onClick={() => {
+                    navigate('/contacto');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex min-h-[44px] w-full items-center rounded-xl px-4 text-left text-sm font-medium text-[#212121] transition-colors hover:bg-gray-100"
+                >
+                  Contacto
+                </button>
+                <button
+                  type="button"
                   onClick={() => {
                     setMobileMenuOpen(false);
                     navigate('/cotizar-evento');
                   }}
-                  className="flex items-center gap-2 w-full text-left py-2.5 px-4 bg-[#FDB93A]/10 hover:bg-[#FDB93A]/20 rounded-lg transition-colors font-bold text-[#212121]"
+                  className="flex min-h-[48px] w-full items-center gap-2 rounded-xl bg-[#FDB93A]/15 px-4 py-3 text-left text-sm font-bold text-[#212121] transition-colors hover:bg-[#FDB93A]/25 active:bg-[#FDB93A]/35"
                 >
-                  <PartyPopper className="w-5 h-5 text-[#FF8A00]" />
-                  Cotiza tu Evento
+                  <PartyPopper className="h-5 w-5 shrink-0 text-[#FF8A00]" aria-hidden />
+                  Cotiza tu evento
                 </button>
               </div>
             </nav>

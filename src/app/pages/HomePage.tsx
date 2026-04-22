@@ -6,7 +6,6 @@ import { Hero } from '@/app/components/Hero';
 import { FlashDeals } from '@/app/components/FlashDeals';
 import { BrandsSection } from '@/app/components/BrandsSection';
 import { Newsletter } from '@/app/components/Newsletter';
-import { About } from '@/app/components/About';
 import { FAQ } from '@/app/components/FAQ';
 import { ProductCard } from '@/app/components/ProductCard';
 import { AdBanner, getInlineAdSlots } from '@/app/components/AdBanner';
@@ -61,8 +60,8 @@ export const HomePage: React.FC = () => {
   }, [products, inlineAds]);
 
   const midBannerAfter = 8;
-  const firstHalf = gridItems.slice(0, midBannerAfter);
-  const secondHalf = gridItems.slice(midBannerAfter);
+  const beforeMidBanner = gridItems.slice(0, midBannerAfter);
+  const afterMidBanner = gridItems.slice(midBannerAfter);
 
   return (
     <>
@@ -131,9 +130,12 @@ export const HomePage: React.FC = () => {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="h-60 sm:h-80 bg-gray-100 rounded-lg animate-pulse" />
+          <div className="flex gap-2 sm:gap-6 overflow-hidden">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="shrink-0 w-[calc((100%-0.5rem)/2)] lg:w-[calc((100%-3rem)/3)] xl:w-[calc((100%-4.5rem)/4)] h-60 sm:h-80 bg-gray-100 rounded-lg animate-pulse"
+              />
             ))}
           </div>
         ) : products.length === 0 ? (
@@ -142,39 +144,65 @@ export const HomePage: React.FC = () => {
           </p>
         ) : (
           <>
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-              {firstHalf.map((item, i) =>
-                item.kind === 'product' ? (
-                  <ProductCard
-                    key={`p-${item.product.id}`}
-                    product={item.product}
-                    onClick={() => navigate(`/producto/${item.product.handle || item.product.id}`)}
-                  />
-                ) : (
-                  <AdBanner key={`ad-${item.slotId}-${i}`} slotId={item.slotId} variant="inline-card" />
-                )
-              )}
+            <div
+              className="flex gap-2 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-3 sm:-mx-4 px-3 sm:px-4"
+              style={{ scrollbarWidth: 'thin' }}
+            >
+              {beforeMidBanner.map((item, i) => (
+                <div
+                  key={
+                    item.kind === 'product'
+                      ? `p-${item.product.id}`
+                      : `ad-${item.slotId}-${i}`
+                  }
+                  className="snap-start shrink-0 w-[calc((100%-0.5rem)/2)] lg:w-[calc((100%-3rem)/3)] xl:w-[calc((100%-4.5rem)/4)]"
+                >
+                  {item.kind === 'product' ? (
+                    <ProductCard
+                      product={item.product}
+                      onClick={() =>
+                        navigate(`/producto/${item.product.handle || item.product.id}`)
+                      }
+                    />
+                  ) : (
+                    <AdBanner slotId={item.slotId} variant="inline-card" />
+                  )}
+                </div>
+              ))}
             </div>
 
-            {secondHalf.length > 0 && (
+            {afterMidBanner.length > 0 && (
               <div className="my-4 sm:my-8">
                 <AdBanner slotId="home-products-mid" />
               </div>
             )}
 
-            {secondHalf.length > 0 && (
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-                {secondHalf.map((item, i) =>
-                  item.kind === 'product' ? (
-                    <ProductCard
-                      key={`p-${item.product.id}`}
-                      product={item.product}
-                      onClick={() => navigate(`/producto/${item.product.handle || item.product.id}`)}
-                    />
-                  ) : (
-                    <AdBanner key={`ad-${item.slotId}-${i}`} slotId={item.slotId} variant="inline-card" />
-                  )
-                )}
+            {afterMidBanner.length > 0 && (
+              <div
+                className="flex gap-2 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-3 sm:-mx-4 px-3 sm:px-4"
+                style={{ scrollbarWidth: 'thin' }}
+              >
+                {afterMidBanner.map((item, i) => (
+                  <div
+                    key={
+                      item.kind === 'product'
+                        ? `p-${item.product.id}`
+                        : `ad-${item.slotId}-${i}`
+                    }
+                    className="snap-start shrink-0 w-[calc((100%-0.5rem)/2)] lg:w-[calc((100%-3rem)/3)] xl:w-[calc((100%-4.5rem)/4)]"
+                  >
+                    {item.kind === 'product' ? (
+                      <ProductCard
+                        product={item.product}
+                        onClick={() =>
+                          navigate(`/producto/${item.product.handle || item.product.id}`)
+                        }
+                      />
+                    ) : (
+                      <AdBanner slotId={item.slotId} variant="inline-card" />
+                    )}
+                  </div>
+                ))}
               </div>
             )}
           </>
@@ -188,7 +216,6 @@ export const HomePage: React.FC = () => {
       </div>
 
       <Newsletter />
-      <About />
       <FAQ />
 
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">

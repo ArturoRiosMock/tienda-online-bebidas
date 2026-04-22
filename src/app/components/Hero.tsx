@@ -26,21 +26,21 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
   const slides: Slide[] = [
     {
       id: 1,
-      image: '/hero-barra-boda-2.png',
+      image: '/hero-barra-boda.webp',
       bgColor: '#f5f0e8',
       buttonText: 'COTIZA AHORA',
       buttonAction: () => navigate('/cotizar-evento')
     },
     {
       id: 2,
-      image: '/hero-barra-mixologia.png',
+      image: '/hero-barra-mixologia.webp',
       bgColor: '#3a4a35',
       buttonText: 'COTIZA AHORA',
       buttonAction: () => navigate('/cotizar-evento')
     },
     {
       id: 3,
-      image: '/hero-eventos-sociales.png',
+      image: '/hero-eventos-sociales.jpg',
       bgColor: '#f5f0e8',
       buttonText: 'COTIZA AHORA',
       buttonAction: () => navigate('/cotizar-evento')
@@ -55,11 +55,8 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
     // },
     {
       id: 5,
-      image: '/hero-best-sellers.png',
+      image: '/hero-best-sellers.webp',
       bgColor: '#4a5240',
-      title: 'Los favoritos del Club',
-      subtitle: 'Bacardi, Modelo Especial, Dobel Cristalino y más — los favoritos de Mr. Brown',
-      badge: 'LO MÁS VENDIDO',
       buttonText: 'COMPRE AHORA',
       buttonAction: onShopNowClick
     }

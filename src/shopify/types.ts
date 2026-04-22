@@ -148,4 +148,6 @@ export interface Product {
   handle?: string;
   /** Valor de la opción de variante "Cantidad" en Shopify (ej. "1 Botella") */
   cantidadLabel?: string;
+  vendor?: string;
+  tags?: string[];
 }

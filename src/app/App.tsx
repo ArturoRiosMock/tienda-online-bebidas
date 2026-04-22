@@ -28,7 +28,8 @@ function App() {
           <Route path="/categorias/:handle" element={<CollectionPage />} />
           <Route path="/producto/:handle" element={<ProductPage />} />
           <Route path="/cotizar-evento" element={<EventQuotePage />} />
-          <Route path="/sobre-nosotros" element={<SobreNosotrosPage />} />
+          <Route path="/page/sobre-nosotros" element={<SobreNosotrosPage />} />
+          <Route path="/sobre-nosotros" element={<Navigate to="/page/sobre-nosotros" replace />} />
           <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
           <Route path="/contacto" element={<ContactoPage />} />
           <Route path="/aviso-de-privacidad" element={<PolicyDocumentPage title="Política de Privacidad" blocks={privacyPolicy} />} />

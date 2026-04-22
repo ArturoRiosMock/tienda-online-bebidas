@@ -188,13 +188,32 @@ export const PurchaseTypeDialog = ({
                     control={control}
                     rules={{ required: 'El nombre de la escuela es obligatorio' }}
                     render={({ field }) => (
-                      <Input
-                        placeholder="Medicina, Universidad Mr. Brown"
+                      <Select
                         value={field.value ?? ''}
-                        onChange={field.onChange}
-                        onBlur={field.onBlur}
-                        className={errors.schoolName ? 'border-red-500' : ''}
-                      />
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger
+                          className={errors.schoolName ? 'border-red-500' : ''}
+                        >
+                          <SelectValue placeholder="-- Por favor seleccione --" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Colegio Irlandes Femenil">
+                            Colegio Irlandes Femenil
+                          </SelectItem>
+                          <SelectItem value="Ibero Ingenieria Quimica">
+                            Ibero Ingenieria Quimica
+                          </SelectItem>
+                          <SelectItem value="Prepa Tec Zona Esmeralda">
+                            Prepa Tec Zona Esmeralda
+                          </SelectItem>
+                          <SelectItem value="Alexander Bain">
+                            Alexander Bain
+                          </SelectItem>
+                          <SelectItem value="Del Bosque">Del Bosque</SelectItem>
+                          <SelectItem value="Humanitree">Humanitree</SelectItem>
+                        </SelectContent>
+                      </Select>
                     )}
                   />
                   {errors.schoolName && (

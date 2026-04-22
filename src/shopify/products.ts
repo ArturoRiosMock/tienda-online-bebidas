@@ -37,6 +37,8 @@ export const convertShopifyProductToAppProduct = (shopifyProduct: ShopifyProduct
     price: price,
     originalPrice: compareAtPrice || undefined,
     category: shopifyProduct.productType || 'General',
+    vendor: shopifyProduct.vendor || undefined,
+    tags: shopifyProduct.tags?.length ? [...shopifyProduct.tags] : undefined,
     description: shopifyProduct.description,
     descriptionHtml: shopifyProduct.descriptionHtml || undefined,
     image: firstImage?.url || '',

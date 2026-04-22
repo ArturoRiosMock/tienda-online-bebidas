@@ -37,7 +37,7 @@ export const Footer: React.FC = () => {
               Mr. Brown – HOUSE OF SPIRITS
             </p>
             <Link
-              to="/sobre-nosotros"
+              to="/page/sobre-nosotros"
               className="inline-flex items-center gap-2 text-[#0c3c1f] hover:underline text-sm"
             >
               <span className="w-6 h-6 bg-[#0c3c1f] rounded-full flex items-center justify-center text-white text-xs">→</span>
@@ -50,7 +50,7 @@ export const Footer: React.FC = () => {
             <div>
               <h4 className="text-[#212121] font-semibold mb-3">Información</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link to="/sobre-nosotros" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Sobre nosotros</Link></li>
+                <li><Link to="/page/sobre-nosotros" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Sobre nosotros</Link></li>
                 <li><Link to="/preguntas-frecuentes" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Preguntas frecuentes</Link></li>
                 <li><Link to="/contacto" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Contacto</Link></li>
                 <li><Link to="/cotizar-evento" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Cotiza tu evento</Link></li>
@@ -86,7 +86,7 @@ export const Footer: React.FC = () => {
                   <Instagram className="h-5 w-5" strokeWidth={1.75} />
                 </a>
                 <a
-                  href="https://www.tiktok.com/@mrbrown.mx"
+                  href="https://www.tiktok.com/@mrbrown.com.mx"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={socialIconLinkClass}

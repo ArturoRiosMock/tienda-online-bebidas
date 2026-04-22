@@ -23,6 +23,6 @@ export const about = {
     address: 'Avenida Contreras 267 int. 1, San Jerónimo Lídice, La Magdalena Contreras, CDMX, C.P. 10200',
     facebook: 'https://www.facebook.com/profile.php?id=100076305783446',
     instagram: 'https://www.instagram.com/mrbrown.mx/',
-    tiktok: 'https://www.tiktok.com/@mrbrown.mx',
+    tiktok: 'https://www.tiktok.com/@mrbrown.com.mx',
   },
 };

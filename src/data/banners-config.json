@@ -18,7 +18,7 @@
   },
   "slots": {
     "home-hero-below": {
-      "enabled": true,
+      "enabled": false,
       "type": "image_text_cta",
       "format": "full-width",
       "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&h=300&fit=crop",

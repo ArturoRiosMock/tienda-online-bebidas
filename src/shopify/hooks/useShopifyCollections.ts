@@ -36,7 +36,7 @@ export const useShopifyCollections = () => {
           return;
         }
 
-        const raw = await getCollections(50);
+        const raw = await getCollections(250);
         setCollections(raw.map(convertCollection));
       } catch (err) {
         console.error('Error fetching collections:', err);
