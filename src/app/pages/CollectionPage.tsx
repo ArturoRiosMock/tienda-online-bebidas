@@ -10,7 +10,7 @@ type GridItem =
   | { kind: 'product'; product: ReturnType<typeof useShopifyProducts>['products'][number] }
   | { kind: 'ad'; slotId: string };
 
-type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name';
+type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc';
 
 export const CollectionPage: React.FC = () => {
   const { handle } = useParams<{ handle: string }>();
@@ -20,20 +20,12 @@ export const CollectionPage: React.FC = () => {
 
   const [sortBy, setSortBy] = useState<SortOption>('default');
   const [vendorFilter, setVendorFilter] = useState('');
-  const [typeFilter, setTypeFilter] = useState('');
-  const [tagFilter, setTagFilter] = useState('');
   const [discountOnly, setDiscountOnly] = useState(false);
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
 
   useEffect(() => {
     setSortBy('default');
     setVendorFilter('');
-    setTypeFilter('');
-    setTagFilter('');
     setDiscountOnly(false);
-    setMinPrice('');
-    setMaxPrice('');
   }, [handle]);
 
   const currentCollection = collections.find((c) => c.handle === handle);
@@ -50,67 +42,32 @@ export const CollectionPage: React.FC = () => {
     return [...set].sort((a, b) => a.localeCompare(b, 'es'));
   }, [products]);
 
-  const typeOptions = useMemo(() => {
-    const set = new Set<string>();
-    for (const p of products) {
-      const t = p.category?.trim();
-      if (t) set.add(t);
-    }
-    return [...set].sort((a, b) => a.localeCompare(b, 'es'));
-  }, [products]);
-
-  const tagOptions = useMemo(() => {
-    const set = new Set<string>();
-    for (const p of products) {
-      for (const t of p.tags || []) {
-        const tag = t.trim();
-        if (tag) set.add(tag);
-      }
-    }
-    return [...set].sort((a, b) => a.localeCompare(b, 'es'));
-  }, [products]);
-
   const filteredProducts = useMemo(() => {
     let list = products.filter((p) => {
       if (vendorFilter && (p.vendor || '') !== vendorFilter) return false;
-      if (typeFilter && p.category !== typeFilter) return false;
-      if (tagFilter && !(p.tags || []).includes(tagFilter)) return false;
       if (discountOnly) {
         const hasDiscount = p.originalPrice != null && p.originalPrice > p.price;
         if (!hasDiscount) return false;
       }
-      const min = parseFloat(minPrice.replace(',', '.'));
-      if (minPrice.trim() !== '' && !Number.isNaN(min) && p.price < min) return false;
-      const max = parseFloat(maxPrice.replace(',', '.'));
-      if (maxPrice.trim() !== '' && !Number.isNaN(max) && p.price > max) return false;
       return true;
     });
 
     const sorted = [...list];
     if (sortBy === 'price-asc') sorted.sort((a, b) => a.price - b.price);
     else if (sortBy === 'price-desc') sorted.sort((a, b) => b.price - a.price);
-    else if (sortBy === 'name') sorted.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+    else if (sortBy === 'name-asc') sorted.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+    else if (sortBy === 'name-desc') sorted.sort((a, b) => b.name.localeCompare(a.name, 'es'));
 
     return sorted;
-  }, [products, sortBy, vendorFilter, typeFilter, tagFilter, discountOnly, minPrice, maxPrice]);
+  }, [products, sortBy, vendorFilter, discountOnly]);
 
   const filtersActive =
-    sortBy !== 'default' ||
-    Boolean(vendorFilter) ||
-    Boolean(typeFilter) ||
-    Boolean(tagFilter) ||
-    discountOnly ||
-    minPrice.trim() !== '' ||
-    maxPrice.trim() !== '';
+    sortBy !== 'default' || Boolean(vendorFilter) || discountOnly;
 
   const clearFilters = () => {
     setSortBy('default');
     setVendorFilter('');
-    setTypeFilter('');
-    setTagFilter('');
     setDiscountOnly(false);
-    setMinPrice('');
-    setMaxPrice('');
   };
 
   const gridItems = useMemo<GridItem[]>(() => {
@@ -232,7 +189,7 @@ export const CollectionPage: React.FC = () => {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <label className="flex flex-col gap-1">
                     <span className="text-xs font-medium text-[#717182]">Ordenar</span>
                     <select
@@ -243,7 +200,8 @@ export const CollectionPage: React.FC = () => {
                       <option value="default">Destacados</option>
                       <option value="price-asc">Precio: menor a mayor</option>
                       <option value="price-desc">Precio: mayor a menor</option>
-                      <option value="name">Nombre (A–Z)</option>
+                      <option value="name-asc">Nombre (A–Z)</option>
+                      <option value="name-desc">Nombre (Z–A)</option>
                     </select>
                   </label>
 
@@ -265,68 +223,7 @@ export const CollectionPage: React.FC = () => {
                     </label>
                   )}
 
-                  {typeOptions.length > 0 && (
-                    <label className="flex flex-col gap-1">
-                      <span className="text-xs font-medium text-[#717182]">Tipo</span>
-                      <select
-                        value={typeFilter}
-                        onChange={(e) => setTypeFilter(e.target.value)}
-                        className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-[#212121] focus:border-[#0c3c1f] focus:outline-none focus:ring-1 focus:ring-[#0c3c1f]"
-                      >
-                        <option value="">Todos</option>
-                        {typeOptions.map((t) => (
-                          <option key={t} value={t}>
-                            {t}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  )}
-
-                  {tagOptions.length > 0 && (
-                    <label className="flex flex-col gap-1">
-                      <span className="text-xs font-medium text-[#717182]">Etiqueta</span>
-                      <select
-                        value={tagFilter}
-                        onChange={(e) => setTagFilter(e.target.value)}
-                        className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-[#212121] focus:border-[#0c3c1f] focus:outline-none focus:ring-1 focus:ring-[#0c3c1f]"
-                      >
-                        <option value="">Todas</option>
-                        {tagOptions.map((t) => (
-                          <option key={t} value={t}>
-                            {t}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  )}
-
-                  <label className="flex flex-col gap-1 sm:col-span-2 xl:col-span-1">
-                    <span className="text-xs font-medium text-[#717182]">Precio (MXN)</span>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        placeholder="Mín."
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(e.target.value)}
-                        className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-[#212121] placeholder:text-gray-400 focus:border-[#0c3c1f] focus:outline-none focus:ring-1 focus:ring-[#0c3c1f]"
-                        aria-label="Precio mínimo"
-                      />
-                      <span className="text-[#717182] text-sm">—</span>
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        placeholder="Máx."
-                        value={maxPrice}
-                        onChange={(e) => setMaxPrice(e.target.value)}
-                        className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-[#212121] placeholder:text-gray-400 focus:border-[#0c3c1f] focus:outline-none focus:ring-1 focus:ring-[#0c3c1f]"
-                        aria-label="Precio máximo"
-                      />
-                    </div>
-                  </label>
-
-                  <label className="flex items-center gap-2 sm:col-span-2 xl:col-span-3 cursor-pointer select-none pt-1">
+                  <label className="flex items-center gap-2 sm:col-span-2 cursor-pointer select-none pt-1">
                     <input
                       type="checkbox"
                       checked={discountOnly}

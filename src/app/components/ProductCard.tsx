@@ -15,8 +15,11 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(1);
   const isFavorite = isInWishlist(product.id);
 
-  const cardDisplayDiscountPercent = 10;
-  const originalPrice = product.price / (1 - cardDisplayDiscountPercent / 100);
+  const hasDiscount =
+    typeof product.originalPrice === 'number' && product.originalPrice > product.price;
+  const discountPercent = hasDiscount
+    ? Math.round(((product.originalPrice! - product.price) / product.originalPrice!) * 100)
+    : 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -67,11 +70,13 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
       onClick={onClick}
       className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 relative cursor-pointer"
     >
-      {/* Discount Badge */}
-      <div className="absolute top-2 left-2 z-10 bg-[#FF6B35] text-white rounded-full w-10 h-10 sm:w-14 sm:h-14 flex flex-col items-center justify-center shadow-lg">
-        <span className="text-[10px] sm:text-sm font-bold leading-none">{cardDisplayDiscountPercent}%</span>
-        <span className="text-[7px] sm:text-[10px] uppercase leading-none mt-0.5">OFF</span>
-      </div>
+      {/* Discount Badge — solo si hay descuento real */}
+      {hasDiscount && (
+        <div className="absolute top-2 left-2 z-10 bg-[#FF6B35] text-white rounded-full w-10 h-10 sm:w-14 sm:h-14 flex flex-col items-center justify-center shadow-lg">
+          <span className="text-[10px] sm:text-sm font-bold leading-none">{discountPercent}%</span>
+          <span className="text-[7px] sm:text-[10px] uppercase leading-none mt-0.5">OFF</span>
+        </div>
+      )}
 
       {/* Favorite Button */}
       <button
@@ -109,11 +114,13 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
 
         {/* Pricing */}
         <div className="mb-2 sm:mb-3">
-          <p className="text-[10px] sm:text-xs text-[#717182] line-through mb-0.5 sm:mb-1">
-            De: ${originalPrice.toFixed(2)}
-          </p>
+          {hasDiscount && (
+            <p className="text-[10px] sm:text-xs text-[#717182] line-through mb-0.5 sm:mb-1">
+              De: ${product.originalPrice!.toFixed(2)}
+            </p>
+          )}
           <div className="flex items-baseline gap-0.5 sm:gap-1 mb-1 sm:mb-2 flex-wrap">
-            <span className="text-[10px] sm:text-xs text-[#212121]">por:</span>
+            {hasDiscount && <span className="text-[10px] sm:text-xs text-[#212121]">por:</span>}
             <span className="text-base sm:text-2xl font-bold text-[#0c3c1f]">
               ${product.price.toFixed(2)}
             </span>

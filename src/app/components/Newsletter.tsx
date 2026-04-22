@@ -35,47 +35,15 @@ export const Newsletter = () => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          
-          {/* Left Section - Promotion */}
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="lg:col-span-3 text-white"
-          >
-            <div className="border-2 border-white/30 rounded-lg p-6 backdrop-blur-sm bg-white/5">
-              <h3 className="text-3xl font-bold mb-4">¡APROVECHA!</h3>
-              <p className="text-xl mb-2">
-                <span className="font-bold text-2xl text-[#FDB93A]">+5%</span> de descuento
-              </p>
-              <p className="mb-6">en tu 1ª compra</p>
-              
-              <div className="mb-4">
-                <p className="text-sm mb-2">Cupón:</p>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="inline-block bg-gradient-to-r from-[#FF6B35] to-[#FF8A00] px-6 py-3 rounded-full shadow-lg"
-                >
-                  <span className="font-bold text-lg tracking-wider">BIENVENIDO</span>
-                </motion.div>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 
-              <p className="text-xs mt-6 opacity-80">
-                *Descuento se da en el momento del check-out.{' '}
-                Este descuento es válido para compras a partir de $2000 MXN
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Center Section - Image */}
-          <motion.div 
+          {/* Left Section - Image */}
+          <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="lg:col-span-4 flex justify-center"
+            className="flex justify-center"
           >
             <div className="relative">
               {/* Glow Effect */}
@@ -93,12 +61,11 @@ export const Newsletter = () => {
           </motion.div>
 
           {/* Right Section - Newsletter Form */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="lg:col-span-5"
           >
             <div className="bg-white rounded-lg p-8 shadow-2xl">
               <h3 className="text-2xl font-bold text-[#212121] mb-2">
