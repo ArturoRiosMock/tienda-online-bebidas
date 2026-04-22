@@ -181,8 +181,17 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
           <div className="flex w-full flex-wrap items-center justify-center gap-x-2 gap-y-2 py-3">
             <button
               type="button"
+              onClick={() => navigate('/cotizar-evento')}
+              className="flex items-center gap-1.5 rounded-full bg-[#FDB93A] px-4 py-1.5 text-sm font-bold text-[#212121] transition-colors hover:bg-[#FF8A00] flex-shrink-0"
+            >
+              <PartyPopper className="h-4 w-4" />
+              Cotiza tu Evento
+            </button>
+
+            <button
+              type="button"
               onClick={() => handleCategoryClick('Todos')}
-              className="rounded-full px-3 py-1.5 text-sm font-semibold text-[#212121] transition-colors hover:bg-lime-400 hover:text-[#111827]"
+              className="rounded-full px-3 py-1.5 text-sm font-semibold text-[#212121] transition-colors hover:bg-[#0a5028] hover:text-white"
             >
               Todos
             </button>
@@ -200,7 +209,7 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                     key={item.id}
                     type="button"
                     onClick={() => goToNavEntry(item.entry)}
-                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-[#212121] transition-colors hover:bg-lime-400 hover:text-[#111827]"
+                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-[#212121] transition-colors hover:bg-[#0a5028] hover:text-white"
                   >
                     {item.title}
                   </button>
@@ -208,39 +217,40 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                   <div key={item.id} className="group/nav relative">
                     <button
                       type="button"
-                      className="flex items-center gap-0.5 rounded-full px-3 py-1.5 text-sm font-semibold text-[#212121] transition-colors group-hover/nav:bg-lime-400 group-hover/nav:text-[#111827]"
+                      className="flex items-center gap-0.5 rounded-full px-3 py-1.5 text-sm font-semibold text-[#212121] transition-colors group-hover/nav:bg-[#0a5028] group-hover/nav:text-white"
                       aria-haspopup="menu"
                     >
                       {item.title}
                       <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover/nav:-rotate-180" aria-hidden />
                     </button>
-                    <div className="pointer-events-none invisible absolute left-0 top-full z-50 pt-1 opacity-0 transition-opacity duration-150 group-hover/nav:visible group-hover/nav:opacity-100 group-hover/nav:pointer-events-auto">
-                      <div className="max-h-[min(70vh,420px)] min-w-[220px] overflow-y-auto rounded-xl border border-gray-100 bg-white py-2 shadow-xl">
-                        {item.entries.map((entry) => (
-                          <button
-                            key={entry.type === 'route' ? entry.path : entry.handle}
-                            type="button"
-                            onClick={() => goToNavEntry(entry)}
-                            className="block w-full px-4 py-2.5 text-left text-sm text-[#212121] transition-colors hover:bg-gray-50"
-                          >
-                            {entry.label}
-                          </button>
-                        ))}
+                    <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-1 opacity-0 transition-opacity duration-150 group-hover/nav:visible group-hover/nav:opacity-100 group-hover/nav:pointer-events-auto">
+                      <div className="rounded-xl border border-gray-100 bg-white p-3 shadow-xl">
+                        <div
+                          className={`grid gap-x-2 gap-y-1 ${
+                            item.entries.length > 6
+                              ? 'grid-cols-3 w-[540px]'
+                              : item.entries.length > 3
+                              ? 'grid-cols-2 w-[380px]'
+                              : 'grid-cols-1 w-[220px]'
+                          }`}
+                        >
+                          {item.entries.map((entry) => (
+                            <button
+                              key={entry.type === 'route' ? entry.path : entry.handle}
+                              type="button"
+                              onClick={() => goToNavEntry(entry)}
+                              className="block w-full rounded-lg px-3 py-2 text-left text-sm text-[#212121] transition-colors hover:bg-[#0a5028] hover:text-white"
+                            >
+                              {entry.label}
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
                 )
               )
             )}
-
-            <button
-              type="button"
-              onClick={() => navigate('/cotizar-evento')}
-              className="flex items-center gap-1.5 rounded-full bg-[#FDB93A] px-4 py-1.5 text-sm font-bold text-[#212121] transition-colors hover:bg-[#FF8A00] flex-shrink-0"
-            >
-              <PartyPopper className="h-4 w-4" />
-              Cotiza tu Evento
-            </button>
           </div>
         </div>
       </nav>
@@ -319,7 +329,7 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                               key={entry.type === 'route' ? entry.path : entry.handle}
                               type="button"
                               onClick={() => goToNavEntry(entry)}
-                              className="flex min-h-[44px] w-full items-center rounded-lg px-4 py-2.5 text-left text-sm text-[#212121] transition-colors hover:bg-lime-400/30 active:bg-lime-400/50"
+                              className="flex min-h-[44px] w-full items-center rounded-lg px-4 py-2.5 text-left text-sm text-[#212121] transition-colors hover:bg-[#0a5028] hover:text-white active:bg-[#0a5028]/80 active:text-white"
                             >
                               {entry.label}
                             </button>

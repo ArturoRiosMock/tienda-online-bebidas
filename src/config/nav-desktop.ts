@@ -1,7 +1,5 @@
 import type { CollectionItem } from '@/shopify/hooks/useShopifyCollections';
 
-const FLASH_DEALS_HANDLE = 'ofertas-relampago';
-
 export type NavDropdownEntry =
   | { type: 'collection'; label: string; handle: string }
   | { type: 'route'; label: string; path: string };
@@ -40,25 +38,6 @@ type RawGroup =
  */
 const RAW_GROUPS: RawGroup[] = [
   {
-    id: 'ofertas',
-    title: 'Ofertas',
-    mode: 'link',
-    entry: { type: 'collection', label: 'Ofertas', handle: FLASH_DEALS_HANDLE },
-  },
-  {
-    id: 'vinos',
-    title: 'Vinos',
-    mode: 'dropdown',
-    children: [
-      { type: 'collection', label: 'Vino tinto', handle: 'vino-tinto' },
-      { type: 'collection', label: 'Vino blanco', handle: 'vino-blanco' },
-      { type: 'collection', label: 'Vino rosado', handle: 'vino-rosado' },
-      { type: 'collection', label: 'Espumoso', handle: 'espumoso' },
-      { type: 'collection', label: 'Champagne', handle: 'champagne' },
-      { type: 'collection', label: 'Sidra', handle: 'sidra' },
-    ],
-  },
-  {
     id: 'destilados',
     title: 'Destilados',
     mode: 'dropdown',
@@ -79,29 +58,41 @@ const RAW_GROUPS: RawGroup[] = [
     ],
   },
   {
-    id: 'acompanamientos',
-    title: 'Acompañamientos',
+    id: 'vinos',
+    title: 'Vinos',
     mode: 'dropdown',
     children: [
-      { type: 'collection', label: 'Complementos', handle: 'complementos' },
-      { type: 'collection', label: 'Otras bebidas', handle: 'otras-bebidas' },
+      { type: 'collection', label: 'Vino tinto', handle: 'vino-tinto' },
+      { type: 'collection', label: 'Vino blanco', handle: 'vino-blanco' },
+      { type: 'collection', label: 'Vino rosado', handle: 'vino-rosado' },
+      { type: 'collection', label: 'Espumoso', handle: 'espumoso' },
+      { type: 'collection', label: 'Champagne', handle: 'champagne' },
+      { type: 'collection', label: 'Sidra', handle: 'sidra' },
     ],
   },
   {
-    id: 'sin-alcohol',
-    title: 'Sin alcohol',
+    id: 'cervezas',
+    title: 'Cervezas',
     mode: 'link',
-    entry: { type: 'collection', label: 'Sin alcohol', handle: 'sin-alcohol' },
+    entry: { type: 'collection', label: 'Cervezas', handle: 'cervezas' },
   },
   {
-    id: 'ayuda',
-    title: 'Ayuda',
-    mode: 'dropdown',
-    children: [
-      { type: 'route', label: 'Preguntas frecuentes', path: '/preguntas-frecuentes' },
-      { type: 'route', label: 'Contacto', path: '/contacto' },
-      { type: 'route', label: 'Sobre nosotros', path: '/page/sobre-nosotros' },
-    ],
+    id: 'aguas',
+    title: 'Aguas',
+    mode: 'link',
+    entry: { type: 'collection', label: 'Aguas', handle: 'aguas' },
+  },
+  {
+    id: 'refrescos',
+    title: 'Refrescos',
+    mode: 'link',
+    entry: { type: 'collection', label: 'Refrescos', handle: 'refrescos' },
+  },
+  {
+    id: 'otras-bebidas',
+    title: 'Otras bebidas',
+    mode: 'link',
+    entry: { type: 'collection', label: 'Otras bebidas', handle: 'otras-bebidas' },
   },
 ];
 
@@ -122,27 +113,11 @@ function filterEntry(entry: NavDropdownEntry, collections: CollectionItem[]): Na
   return null;
 }
 
-function assignedHandlesFromRaw(): Set<string> {
-  const set = new Set<string>();
-  for (const g of RAW_GROUPS) {
-    if (g.mode === 'link' && g.entry.type === 'collection') {
-      set.add(g.entry.handle);
-    }
-    if (g.mode === 'dropdown') {
-      for (const c of g.children) {
-        if (c.type === 'collection') set.add(c.handle);
-      }
-    }
-  }
-  return set;
-}
-
 /**
- * Construye ítems de navegación: solo enlaces/colecciones que existen en la API,
- * más un desplegable "Más" con colecciones no listadas arriba.
+ * Construye ítems de navegación: solo enlaces/colecciones definidos en RAW_GROUPS
+ * y que existen en la API de Shopify.
  */
 export function resolveDesktopNav(collections: CollectionItem[]): ResolvedDesktopNavItem[] {
-  const assigned = assignedHandlesFromRaw();
   const out: ResolvedDesktopNavItem[] = [];
 
   for (const g of RAW_GROUPS) {
@@ -161,24 +136,6 @@ export function resolveDesktopNav(collections: CollectionItem[]): ResolvedDeskto
     } else {
       out.push({ kind: 'dropdown', id: g.id, title: g.title, entries });
     }
-  }
-
-  const unmapped = collections.filter(
-    (c) => c.handle !== FLASH_DEALS_HANDLE && !assigned.has(c.handle)
-  );
-
-  if (unmapped.length > 0) {
-    const entries: NavDropdownEntry[] = unmapped.map((c) => ({
-      type: 'collection' as const,
-      label: c.title,
-      handle: c.handle,
-    }));
-    out.push({
-      kind: 'dropdown',
-      id: 'mas-categorias',
-      title: 'Más',
-      entries,
-    });
   }
 
   return out;
