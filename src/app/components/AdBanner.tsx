@@ -42,6 +42,13 @@ const slots = bannersConfig.slots as Record<string, BannerSlot>;
 /** Publicidad global oculta salvo estos slots (temporal). */
 const VISIBLE_AD_SLOT_IDS = new Set<string>(['home-hero-below']);
 
+/** True solo si el slot está habilitado en configuración y permitido en la whitelist. */
+export function shouldRenderAdSlot(slotId: string): boolean {
+  if (!VISIBLE_AD_SLOT_IDS.has(slotId)) return false;
+  const slot = slots[slotId];
+  return Boolean(slot && slot.enabled);
+}
+
 const trackImpression = (slotId: string) => {
   console.log(`[AdBanner] impression: ${slotId}`, { timestamp: Date.now() });
 };
@@ -56,6 +63,8 @@ interface AdBannerProps {
   slotId: string;
   className?: string;
   variant?: AdBannerVariant;
+  /** Si se define, solo se renderiza el wrapper cuando hay banner visible (evita padding/margin vacío). */
+  containerClassName?: string;
 }
 
 const adLabel = (
@@ -84,7 +93,8 @@ const renderImageLink = (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, amount: 0.01 }}
+      transition={{ duration: 0.4 }}
       className={`relative w-full overflow-hidden rounded-xl group ${aspectMap[variant]} ${className}`}
       onClick={handleClick}
     >
@@ -146,7 +156,8 @@ const renderImageTextCtaInlineCard = (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, amount: 0.01 }}
+      transition={{ duration: 0.4 }}
       className={`relative overflow-hidden rounded-xl flex flex-col h-full ${className}`}
       style={{ backgroundColor: bgColor, color: textColor }}
     >
@@ -187,7 +198,8 @@ const renderImageTextCtaDefault = (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, amount: 0.01 }}
+      transition={{ duration: 0.4 }}
       className={`relative overflow-hidden rounded-xl ${className}`}
       style={{ backgroundColor: bgColor, color: textColor }}
     >
@@ -231,37 +243,48 @@ const renderImageTextCtaDefault = (
   );
 };
 
-export const AdBanner: React.FC<AdBannerProps> = ({ slotId, className = '', variant = 'default' }) => {
+export const AdBanner: React.FC<AdBannerProps> = ({
+  slotId,
+  className = '',
+  variant = 'default',
+  containerClassName,
+}) => {
   const slot = slots[slotId];
   const tracked = useRef(false);
-  const isVisibleSlot = VISIBLE_AD_SLOT_IDS.has(slotId);
+  const willRender = shouldRenderAdSlot(slotId);
 
   useEffect(() => {
-    if (!isVisibleSlot) return;
+    if (!willRender) return;
     if (slot?.enabled && !tracked.current) {
       trackImpression(slotId);
       tracked.current = true;
     }
-  }, [slotId, slot?.enabled, isVisibleSlot]);
+  }, [slotId, slot?.enabled, willRender]);
 
-  if (!isVisibleSlot) {
-    return <div className="hidden" aria-hidden />;
-  }
+  if (!willRender) return null;
 
-  if (!slot || !slot.enabled) return null;
+  const slotDefined = slots[slotId];
+  if (!slotDefined) return null;
 
-  if (slot.type === 'image_link') {
-    return renderImageLink(slot, slotId, variant, className);
-  }
+  let inner: React.ReactNode = null;
 
-  if (slot.type === 'image_text_cta') {
+  if (slotDefined.type === 'image_link') {
+    inner = renderImageLink(slotDefined, slotId, variant, className);
+  } else if (slotDefined.type === 'image_text_cta') {
     if (variant === 'inline-card') {
-      return renderImageTextCtaInlineCard(slot, slotId, className);
+      inner = renderImageTextCtaInlineCard(slotDefined, slotId, className);
+    } else {
+      inner = renderImageTextCtaDefault(slotDefined, slotId, variant, className);
     }
-    return renderImageTextCtaDefault(slot, slotId, variant, className);
   }
 
-  return null;
+  if (!inner) return null;
+
+  if (containerClassName) {
+    return <div className={containerClassName}>{inner}</div>;
+  }
+
+  return inner;
 };
 
 export const getInlineAdSlots = (page: 'home' | 'collection'): Array<{ slotId: string; position: number }> => {

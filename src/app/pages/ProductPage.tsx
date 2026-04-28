@@ -21,6 +21,10 @@ export const ProductPage: React.FC = () => {
       try {
         const fetched = await getProductByHandle(handle);
         if (fetched) {
+          if (fetched.handle && fetched.handle !== handle) {
+            navigate(`/producto/${fetched.handle}`, { replace: true });
+            return;
+          }
           setProduct(fetched);
         } else {
           setError('Producto no encontrado');
@@ -35,7 +39,7 @@ export const ProductPage: React.FC = () => {
 
     fetchProduct();
     window.scrollTo(0, 0);
-  }, [handle]);
+  }, [handle, navigate]);
 
   const handleProductClick = (p: Product) => {
     navigate(`/producto/${p.handle || p.id}`);

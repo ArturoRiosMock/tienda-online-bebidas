@@ -67,19 +67,19 @@ export const HomePage: React.FC = () => {
     <>
       <Hero onShopNowClick={scrollToProducts} />
 
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
-        <AdBanner slotId="home-hero-below" />
-      </div>
+      <AdBanner
+        slotId="home-hero-below"
+        containerClassName="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]"
+      />
 
       <FlashDeals />
 
       {/* Event Quote CTA */}
       <section className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-[100vw]">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
         >
           <Link
             to="/cotizar-evento"
@@ -172,9 +172,10 @@ export const HomePage: React.FC = () => {
             </div>
 
             {afterMidBanner.length > 0 && (
-              <div className="my-4 sm:my-8">
-                <AdBanner slotId="home-products-mid" />
-              </div>
+              <AdBanner
+                slotId="home-products-mid"
+                containerClassName="my-4 sm:my-8"
+              />
             )}
 
             {afterMidBanner.length > 0 && (
@@ -211,16 +212,19 @@ export const HomePage: React.FC = () => {
 
       <BrandsSection />
 
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
-        <AdBanner slotId="home-brands-below" />
-      </div>
+      <AdBanner
+        slotId="home-brands-below"
+        containerClassName="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]"
+      />
 
       <Newsletter />
       <FAQ />
 
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
-        <AdBanner slotId="home-faq-below" variant="leaderboard" />
-      </div>
+      <AdBanner
+        slotId="home-faq-below"
+        variant="leaderboard"
+        containerClassName="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]"
+      />
 
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">

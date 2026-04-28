@@ -41,7 +41,7 @@ export const Newsletter = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.01 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex justify-center"
           >
@@ -64,7 +64,7 @@ export const Newsletter = () => {
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.01 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <div className="bg-white rounded-lg p-8 shadow-2xl">

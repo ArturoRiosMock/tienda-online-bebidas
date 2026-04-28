@@ -18,7 +18,7 @@ export const FAQ = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.01 }}
             className="inline-flex items-center gap-2 bg-[#0c3c1f]/10 px-4 py-2 rounded-full mb-4"
           >
             <HelpCircle className="w-4 h-4 text-[#0c3c1f]" />
@@ -28,7 +28,7 @@ export const FAQ = () => {
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.01 }}
             transition={{ delay: 0.1 }}
             className="text-[#212121] mb-4"
           >
@@ -38,7 +38,7 @@ export const FAQ = () => {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.01 }}
             transition={{ delay: 0.2 }}
             className="text-[#717182] max-w-2xl mx-auto"
           >
@@ -52,7 +52,7 @@ export const FAQ = () => {
               key={index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.01 }}
               transition={{ delay: index * 0.07 }}
               className="mb-4"
             >
@@ -93,7 +93,7 @@ export const FAQ = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.01 }}
           className="text-center mt-12"
         >
           <div className="bg-gradient-to-r from-[#0c3c1f] to-[#0a5028] text-white rounded-xl p-8 max-w-2xl mx-auto">

@@ -124,16 +124,59 @@ export const getProductsByCollection = async (
   }
 };
 
+/**
+ * Convierte un handle/slug a un query de búsqueda legible.
+ * Ej: "ron-bacardi-blanco-980-ml" → "ron bacardi blanco 980 ml"
+ */
+const slugToSearchQuery = (slug: string): string =>
+  slug.replace(/[-_]+/g, ' ').trim();
+
+/**
+ * Busca el producto cuyo título coincida mejor con el slug solicitado.
+ * Devuelve el de mayor cantidad de palabras coincidentes.
+ */
+const findBestProductMatch = async (slug: string): Promise<Product | null> => {
+  const query = slugToSearchQuery(slug);
+  if (!query) return null;
+
+  try {
+    const results = await searchProducts(query, 10);
+    if (!results.length) return null;
+
+    const slugTokens = new Set(slug.toLowerCase().split(/[-_\s]+/).filter(Boolean));
+
+    let bestMatch: Product | null = null;
+    let bestScore = 0;
+
+    for (const product of results) {
+      const productTokens = product.name.toLowerCase().split(/[\s\-_/]+/).filter(Boolean);
+      const score = productTokens.filter((token) => slugTokens.has(token)).length;
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = product;
+      }
+    }
+
+    return bestScore >= 2 ? bestMatch : null;
+  } catch (error) {
+    console.error('Error searching product fallback:', error);
+    return null;
+  }
+};
+
 // Obtener un producto por handle
 export const getProductByHandle = async (handle: string): Promise<Product | null> => {
   try {
     const data: any = await shopifyClient.request(GET_PRODUCT_BY_HANDLE, { handle });
-    
-    if (!data.product) {
-      return null;
+
+    if (data.product) {
+      return convertShopifyProductToAppProduct(data.product);
     }
 
-    return convertShopifyProductToAppProduct(data.product);
+    console.warn(
+      `[Shopify] Handle "${handle}" no existe. Intentando fallback por búsqueda...`
+    );
+    return await findBestProductMatch(handle);
   } catch (error) {
     console.error('Error fetching product by handle:', error);
     return null;

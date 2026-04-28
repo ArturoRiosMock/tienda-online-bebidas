@@ -6,7 +6,7 @@ import Slider from 'react-slick';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
 import { FlashDeals } from '@/app/components/FlashDeals';
-import { AdBanner } from '@/app/components/AdBanner';
+import { AdBanner, shouldRenderAdSlot } from '@/app/components/AdBanner';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import type { Product } from '@/shopify/types';
@@ -376,14 +376,21 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
           </div>
         )}
 
-        <div className="mt-6 max-w-5xl mx-auto flex flex-col lg:flex-row gap-6">
-          <div className="flex-1">
-            <AdBanner slotId="product-description-below" />
+        {(shouldRenderAdSlot('product-description-below') ||
+          shouldRenderAdSlot('product-sidebar-rectangle')) && (
+          <div className="mt-6 max-w-5xl mx-auto flex flex-col lg:flex-row gap-6">
+            {shouldRenderAdSlot('product-description-below') && (
+              <div className="flex-1">
+                <AdBanner slotId="product-description-below" />
+              </div>
+            )}
+            {shouldRenderAdSlot('product-sidebar-rectangle') && (
+              <div className="hidden lg:block shrink-0 w-[300px]">
+                <AdBanner slotId="product-sidebar-rectangle" variant="sidebar" />
+              </div>
+            )}
           </div>
-          <div className="hidden lg:block shrink-0 w-[300px]">
-            <AdBanner slotId="product-sidebar-rectangle" variant="sidebar" />
-          </div>
-        </div>
+        )}
 
         {/* Productos Similares */}
         {similarProducts.length > 0 && (
@@ -509,9 +516,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
         `}</style>
       </div>
 
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
-        <AdBanner slotId="product-similar-below" className="max-w-5xl mx-auto" />
-      </div>
+      <AdBanner
+        slotId="product-similar-below"
+        className="max-w-5xl mx-auto"
+        containerClassName="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]"
+      />
 
       {/* Sección de Ofertas Relámpago */}
       <FlashDeals />

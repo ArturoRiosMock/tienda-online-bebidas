@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ChevronRight, SlidersHorizontal } from 'lucide-react';
 import { ProductCard } from '@/app/components/ProductCard';
-import { AdBanner, getInlineAdSlots } from '@/app/components/AdBanner';
+import { AdBanner, shouldRenderAdSlot } from '@/app/components/AdBanner';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
 
@@ -119,9 +119,11 @@ export const CollectionPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 pt-4 pb-0">
-        <AdBanner slotId="collection-header-below" variant="leaderboard" />
-      </div>
+      <AdBanner
+        slotId="collection-header-below"
+        variant="leaderboard"
+        containerClassName="container mx-auto px-4 pt-4 pb-0"
+      />
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8">
@@ -154,7 +156,9 @@ export const CollectionPage: React.FC = () => {
                 </nav>
               </div>
 
-              <AdBanner slotId="collection-sidebar-skyscraper" variant="sidebar" />
+              {shouldRenderAdSlot('collection-sidebar-skyscraper') && (
+                <AdBanner slotId="collection-sidebar-skyscraper" variant="sidebar" />
+              )}
             </div>
           </aside>
 
