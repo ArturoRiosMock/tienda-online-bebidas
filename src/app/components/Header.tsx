@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ShoppingCart, Menu, X, Search, MessageCircle, User, ChevronDown, Heart, PartyPopper } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
 import { SearchDrawer } from '@/app/components/SearchDrawer';
+import { MegaMenuPanel } from '@/app/components/MegaMenuPanel';
 import { resolveDesktopNav, type NavDropdownEntry } from '@/config/nav-desktop';
+import { DEFAULT_CATEGORY_ICON, getCategoryIcon, getNavGroupIcon } from '@/config/category-icons';
 
 const logo = PLACEHOLDER_IMAGES.logo;
 
@@ -28,7 +30,16 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
   const { getTotalItems } = useCart();
   const { totalItems: wishlistCount } = useWishlist();
   const navigate = useNavigate();
+  const location = useLocation();
   const { collections, loading: collectionsLoading } = useShopifyCollections();
+
+  const handleNewsletterClick = () => {
+    if (location.pathname === '/') {
+      document.getElementById('newsletter')?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/#newsletter');
+    }
+  };
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
   const setSearchDrawerOpen = onSearchDrawerChange;
@@ -72,6 +83,11 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
       return;
     }
     handleCategoryClick(entry.handle);
+  };
+
+  const MobileEntryIcon = ({ entry }: { entry: NavDropdownEntry }) => {
+    const Icon = entry.type === 'collection' ? getCategoryIcon(entry.handle) : DEFAULT_CATEGORY_ICON;
+    return <Icon className="h-5 w-5 shrink-0 text-[#0c3c1f]" aria-hidden />;
   };
 
   return (
@@ -133,7 +149,12 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
               >
                 <MessageCircle className="w-6 h-6 text-[#212121]" />
               </button>
-              <button className="hidden lg:block p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <button
+                type="button"
+                className="hidden lg:block p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                onClick={handleNewsletterClick}
+                aria-label="Ir al boletín"
+              >
                 <User className="w-6 h-6 text-[#212121]" />
               </button>
               <button
@@ -225,26 +246,15 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                     </button>
                     <div className="pointer-events-none invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-1 opacity-0 transition-opacity duration-150 group-hover/nav:visible group-hover/nav:opacity-100 group-hover/nav:pointer-events-auto">
                       <div className="rounded-xl border border-gray-100 bg-white p-3 shadow-xl">
-                        <div
-                          className={`grid gap-x-2 gap-y-1 ${
-                            item.entries.length > 6
-                              ? 'grid-cols-3 w-[540px]'
-                              : item.entries.length > 3
-                              ? 'grid-cols-2 w-[380px]'
-                              : 'grid-cols-1 w-[220px]'
-                          }`}
-                        >
-                          {item.entries.map((entry) => (
-                            <button
-                              key={entry.type === 'route' ? entry.path : entry.handle}
-                              type="button"
-                              onClick={() => goToNavEntry(entry)}
-                              className="block w-full rounded-lg px-3 py-2 text-left text-sm text-[#212121] transition-colors hover:bg-[#0a5028] hover:text-white"
-                            >
-                              {entry.label}
-                            </button>
-                          ))}
-                        </div>
+                        <MegaMenuPanel
+                          entries={item.entries}
+                          featuredImage={item.featuredImage}
+                          featuredTitle={item.featuredTitle}
+                          viewAllLabel={item.viewAllLabel}
+                          viewAllHandle={item.viewAllHandle}
+                          onSelectCategory={goToNavEntry}
+                          onViewAll={handleCategoryClick}
+                        />
                       </div>
                     </div>
                   </div>
@@ -301,23 +311,30 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {desktopNavItems.map((item) =>
-                    item.kind === 'link' ? (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => goToNavEntry(item.entry)}
-                        className="flex min-h-[48px] w-full items-center rounded-xl px-4 text-left text-sm font-medium text-[#212121] transition-colors hover:bg-gray-100 active:bg-gray-200"
-                      >
-                        {item.title}
-                      </button>
-                    ) : (
+                  {desktopNavItems.map((item) => {
+                    if (item.kind === 'link') {
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => goToNavEntry(item.entry)}
+                          className="flex min-h-[48px] w-full items-center rounded-xl px-4 text-left text-sm font-medium text-[#212121] transition-colors hover:bg-gray-100 active:bg-gray-200"
+                        >
+                          {item.title}
+                        </button>
+                      );
+                    }
+                    const SummaryIcon = getNavGroupIcon(item.id);
+                    return (
                       <details
                         key={item.id}
                         className="rounded-xl border border-gray-200 bg-gray-50/50 open:border-[#0c3c1f]/20 open:bg-white open:[&_summary_svg]:rotate-180"
                       >
                         <summary className="flex min-h-[48px] cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-[#0c3c1f] marker:content-none [&::-webkit-details-marker]:hidden">
-                          <span>{item.title}</span>
+                          <span className="flex min-w-0 flex-1 items-center gap-2">
+                            <SummaryIcon className="h-5 w-5 shrink-0 text-[#0c3c1f]" aria-hidden />
+                            <span className="min-w-0">{item.title}</span>
+                          </span>
                           <ChevronDown
                             className="h-5 w-5 shrink-0 text-[#0c3c1f] transition-transform duration-200"
                             aria-hidden
@@ -329,15 +346,25 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                               key={entry.type === 'route' ? entry.path : entry.handle}
                               type="button"
                               onClick={() => goToNavEntry(entry)}
-                              className="flex min-h-[44px] w-full items-center rounded-lg px-4 py-2.5 text-left text-sm text-[#212121] transition-colors hover:bg-[#0a5028] hover:text-white active:bg-[#0a5028]/80 active:text-white"
+                              className="flex min-h-[44px] w-full items-center gap-3 rounded-lg px-4 py-2.5 text-left text-sm text-[#212121] transition-colors hover:bg-[#0a5028] hover:text-white active:bg-[#0a5028]/80 active:text-white"
                             >
+                              <MobileEntryIcon entry={entry} />
                               {entry.label}
                             </button>
                           ))}
+                          {item.viewAllLabel && item.viewAllHandle ? (
+                            <button
+                              type="button"
+                              onClick={() => handleCategoryClick(item.viewAllHandle)}
+                              className="mt-1 flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[#0c3c1f]/25 bg-[#0c3c1f]/5 px-4 py-2.5 text-center text-sm font-semibold text-[#0c3c1f] transition-colors hover:bg-[#0c3c1f]/10 active:bg-[#0c3c1f]/15"
+                            >
+                              {item.viewAllLabel}
+                            </button>
+                          ) : null}
                         </div>
                       </details>
-                    )
-                  )}
+                    );
+                  })}
                 </div>
               )}
 

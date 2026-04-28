@@ -35,10 +35,18 @@ function CollectionRedirect() {
 }
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
+    if (hash) {
+      const id = hash.slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+        return;
+      }
+    }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
-  }, [pathname]);
+  }, [pathname, hash]);
   return null;
 }
 
@@ -49,6 +57,7 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/productos" element={<CollectionPage />} />
           <Route path="/categorias/:handle" element={<CollectionPage />} />
           <Route
             path="/producto/:handle"

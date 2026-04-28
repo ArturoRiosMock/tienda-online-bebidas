@@ -57,8 +57,8 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
       id: 5,
       image: '/hero-best-sellers.webp',
       bgColor: '#4a5240',
-      buttonText: 'COMPRE AHORA',
-      buttonAction: onShopNowClick
+      buttonText: 'VER BEST SELLERS',
+      buttonAction: () => navigate('/categorias/best-sellers')
     }
   ];
 
@@ -102,7 +102,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
   };
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden w-screen left-1/2 right-1/2 -translate-x-1/2">
       {/* Carousel Container */}
       <div className="relative h-[220px] md:h-[320px] lg:h-[420px]">
         <AnimatePresence initial={false} custom={direction} mode="wait">
@@ -125,7 +125,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
               <img
                 src={slides[currentSlide].image}
                 alt={slides[currentSlide].title ?? 'Mr. Brown Banner'}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover object-center"
               />
 
               {/* Overlay solo para slides con texto superpuesto */}

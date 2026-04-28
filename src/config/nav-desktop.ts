@@ -16,6 +16,10 @@ export type ResolvedDesktopNavItem =
       id: string;
       title: string;
       entries: NavDropdownEntry[];
+      featuredImage: string | null;
+      featuredTitle: string | null;
+      viewAllLabel?: string;
+      viewAllHandle: string | null;
     };
 
 type RawGroup =
@@ -30,6 +34,8 @@ type RawGroup =
       title: string;
       mode: 'dropdown';
       children: NavDropdownEntry[];
+      featuredHandle?: string;
+      viewAllLabel?: string;
     };
 
 /**
@@ -41,6 +47,8 @@ const RAW_GROUPS: RawGroup[] = [
     id: 'destilados',
     title: 'Destilados',
     mode: 'dropdown',
+    featuredHandle: 'tequila',
+    viewAllLabel: 'Ver todos los destilados',
     children: [
       { type: 'collection', label: 'Tequila', handle: 'tequila' },
       { type: 'collection', label: 'Whisky', handle: 'whisky' },
@@ -61,6 +69,8 @@ const RAW_GROUPS: RawGroup[] = [
     id: 'vinos',
     title: 'Vinos',
     mode: 'dropdown',
+    featuredHandle: 'vino-tinto',
+    viewAllLabel: 'Ver todos los vinos',
     children: [
       { type: 'collection', label: 'Vino tinto', handle: 'vino-tinto' },
       { type: 'collection', label: 'Vino blanco', handle: 'vino-blanco' },
@@ -105,6 +115,11 @@ function labelForHandle(collections: CollectionItem[], handle: string, fallback:
   return col?.title ?? fallback;
 }
 
+function firstCollectionHandle(entries: NavDropdownEntry[]): string | null {
+  const e = entries.find((x): x is Extract<NavDropdownEntry, { type: 'collection' }> => x.type === 'collection');
+  return e?.handle ?? null;
+}
+
 function filterEntry(entry: NavDropdownEntry, collections: CollectionItem[]): NavDropdownEntry | null {
   if (entry.type === 'route') return entry;
   if (collectionExists(collections, entry.handle)) {
@@ -134,7 +149,31 @@ export function resolveDesktopNav(collections: CollectionItem[]): ResolvedDeskto
     if (entries.length === 1) {
       out.push({ kind: 'link', id: g.id, title: g.title, entry: entries[0] });
     } else {
-      out.push({ kind: 'dropdown', id: g.id, title: g.title, entries });
+      let featuredCol: CollectionItem | null = null;
+      if (g.featuredHandle && collectionExists(collections, g.featuredHandle)) {
+        featuredCol = collections.find((c) => c.handle === g.featuredHandle) ?? null;
+      } else {
+        const first = entries.find((e): e is Extract<NavDropdownEntry, { type: 'collection' }> => e.type === 'collection');
+        if (first && collectionExists(collections, first.handle)) {
+          featuredCol = collections.find((c) => c.handle === first.handle) ?? null;
+        }
+      }
+
+      const viewAllHandle =
+        g.featuredHandle && collectionExists(collections, g.featuredHandle)
+          ? g.featuredHandle
+          : firstCollectionHandle(entries);
+
+      out.push({
+        kind: 'dropdown',
+        id: g.id,
+        title: g.title,
+        entries,
+        featuredImage: featuredCol?.image ?? null,
+        featuredTitle: featuredCol?.title ?? null,
+        viewAllLabel: g.viewAllLabel,
+        viewAllHandle,
+      });
     }
   }
 

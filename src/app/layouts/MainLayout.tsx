@@ -18,7 +18,7 @@ export const MainLayout: React.FC = () => {
 
   const handleCategoryClick = (collectionHandle: string) => {
     if (collectionHandle === 'Todos') {
-      navigate('/');
+      navigate('/productos');
     } else {
       navigate(`/categorias/${collectionHandle}`);
     }

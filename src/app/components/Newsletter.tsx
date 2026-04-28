@@ -26,7 +26,10 @@ export const Newsletter = () => {
   };
 
   return (
-    <section className="bg-gradient-to-r from-[#0c3c1f] to-[#0a5029] py-16 relative overflow-hidden">
+    <section
+      id="newsletter"
+      className="bg-gradient-to-r from-[#0c3c1f] to-[#0a5029] py-16 relative overflow-hidden scroll-mt-24"
+    >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
