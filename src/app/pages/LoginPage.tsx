@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Eye, EyeOff, LogIn, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
@@ -13,7 +13,8 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const from = (location.state as { from?: string })?.from || '/';
+  const from = (location.state as { from?: string; registered?: boolean })?.from || '/';
+  const justRegistered = (location.state as { registered?: boolean })?.registered === true;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +49,15 @@ export const LoginPage: React.FC = () => {
 
           {/* Form */}
           <div className="px-8 py-8">
+            {justRegistered && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-5 bg-green-50 text-green-700 border border-green-200 px-4 py-3 rounded-lg text-sm font-medium"
+              >
+                ¡Cuenta creada con éxito! Ya puedes iniciar sesión.
+              </motion.div>
+            )}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-[#212121] mb-1.5">
@@ -119,12 +129,12 @@ export const LoginPage: React.FC = () => {
             <div className="mt-6 text-center">
               <p className="text-sm text-[#717182]">
                 ¿No tienes cuenta?{' '}
-                <a
-                  href="#"
+                <Link
+                  to="/registro"
                   className="text-[#0055a2] font-medium hover:underline"
                 >
                   Regístrate aquí
-                </a>
+                </Link>
               </p>
             </div>
 

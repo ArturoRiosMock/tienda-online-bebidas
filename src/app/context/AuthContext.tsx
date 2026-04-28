@@ -8,12 +8,20 @@ export interface AuthUser {
   accessToken: string;
 }
 
+export interface RegisterInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
 interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<boolean>;
+  register: (input: RegisterInput) => Promise<{ success: boolean; error: string | null }>;
   logout: () => void;
   clearError: () => void;
 }
@@ -125,6 +133,43 @@ async function fetchCustomerInfo(accessToken: string) {
   }
 }
 
+async function shopifyCustomerCreate(input: RegisterInput): Promise<{ success: boolean; error: string | null }> {
+  const query = `
+    mutation customerCreate($input: CustomerCreateInput!) {
+      customerCreate(input: $input) {
+        customer { id email firstName lastName }
+        customerUserErrors { code field message }
+      }
+    }
+  `;
+
+  try {
+    const response = await fetch(getStorefrontApiUrl(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token': shopifyConfig.storefrontAccessToken,
+      },
+      body: JSON.stringify({ query, variables: { input } }),
+    });
+
+    const data = await response.json();
+    const result = data?.data?.customerCreate;
+
+    if (result?.customerUserErrors?.length > 0) {
+      return { success: false, error: result.customerUserErrors[0].message };
+    }
+
+    if (result?.customer?.id) {
+      return { success: true, error: null };
+    }
+
+    return { success: false, error: 'No se pudo crear la cuenta. Intenta de nuevo.' };
+  } catch {
+    return { success: false, error: 'Error de conexión con el servidor.' };
+  }
+}
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AuthUser | null>(loadStoredAuth);
   const [loading, setLoading] = useState(false);
@@ -171,6 +216,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return true;
   }, []);
 
+  const register = useCallback(async (input: RegisterInput): Promise<{ success: boolean; error: string | null }> => {
+    setLoading(true);
+    setError(null);
+
+    if (isShopifyConfigured()) {
+      const result = await shopifyCustomerCreate(input);
+      setLoading(false);
+      if (!result.success) setError(result.error);
+      return result;
+    }
+
+    await new Promise((r) => setTimeout(r, 800));
+    setLoading(false);
+    return { success: true, error: null };
+  }, []);
+
   const logout = useCallback(() => {
     setUser(null);
     setError(null);
@@ -185,6 +246,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       loading,
       error,
       login,
+      register,
       logout,
       clearError,
     }}>

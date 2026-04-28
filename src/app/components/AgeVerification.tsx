@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
 
-const COOKIE_NAME = 'mr-brown-age-verified';
+const COOKIE_NAME = 'bebify-age-verified';
 const COOKIE_DAYS = 30;
 
 type AgeStatus = 'pending' | 'verified' | 'rejected';
@@ -74,7 +74,7 @@ export const AgeVerification: React.FC<{ children: React.ReactNode }> = ({ child
             >
               <img
                 src={PLACEHOLDER_IMAGES.logo}
-                alt="Mr. Brown"
+                alt="Bebify"
                 className="h-20 mx-auto mb-6 object-contain"
               />
 
@@ -83,7 +83,7 @@ export const AgeVerification: React.FC<{ children: React.ReactNode }> = ({ child
               </h2>
 
               <p className="text-[#717182] text-sm leading-relaxed mb-8">
-                En Mr. Brown promovemos el consumo responsable.<br />
+                En Bebify promovemos el consumo responsable.<br />
                 Este sitio es solo para mayores de 18 años.<br />
                 Confirma tu edad antes de seguir.
               </p>
@@ -122,7 +122,7 @@ export const AgeVerification: React.FC<{ children: React.ReactNode }> = ({ child
             >
               <img
                 src={PLACEHOLDER_IMAGES.logo}
-                alt="Mr. Brown"
+                alt="Bebify"
                 className="h-20 mx-auto mb-6 object-contain"
               />
 

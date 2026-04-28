@@ -169,10 +169,14 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Disclaimer */}
+          {/* Disclaimer NOM-142-SSA1/SCFI-2014 */}
           <div className="mt-8 p-4 bg-white/5 border border-white/10 rounded-lg">
-            <h4 className="text-white font-bold mb-1">BEBA CON MODERACIÓN</h4>
-            <p className="text-gray-300 text-sm">No compartir con menores de 18 años</p>
+            <p className="text-white font-bold text-sm uppercase tracking-wide">
+              PROHIBIDA SU VENTA A MENORES DE 18 AÑOS
+            </p>
+            <p className="text-gray-300 text-sm mt-1 uppercase tracking-wide">
+              EL ABUSO EN EL CONSUMO DE ESTE PRODUCTO ES NOCIVO PARA LA SALUD
+            </p>
           </div>
         </div>
       </div>

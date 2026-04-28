@@ -9,6 +9,7 @@ import { Cart } from '@/app/components/Cart';
 import { WishlistDrawer } from '@/app/components/WishlistDrawer';
 import { AddToCartAnimation } from '@/app/components/AddToCartAnimation';
 import { AgeVerification } from '@/app/components/AgeVerification';
+import { CookieBanner } from '@/app/components/CookieBanner';
 
 export const MainLayout: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -52,6 +53,7 @@ export const MainLayout: React.FC = () => {
             <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
             <WishlistDrawer isOpen={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
             <AddToCartAnimation onAnimationComplete={handleCartAnimationComplete} />
+            <CookieBanner />
           </div>
         </WishlistProvider>
       </CartProvider>

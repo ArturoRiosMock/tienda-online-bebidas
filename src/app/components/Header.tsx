@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ShoppingCart, Menu, X, MapPin, Package, Search, MessageCircle, ChevronLeft, ChevronRight, Heart, LogIn, LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { ShoppingCart, Menu, X, MapPin, Package, Search, MessageCircle, Heart, LogIn, LogOut, ChevronDown, ChevronUp, Wine } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
-import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
 import { SearchDrawer } from '@/app/components/SearchDrawer';
 
 const logo = PLACEHOLDER_IMAGES.logo;
@@ -25,57 +24,79 @@ const announcements = [
   '¿Aún no tienes cuenta? Regístrate y accede a precios exclusivos B2B.'
 ];
 
-const FLASH_DEALS_HANDLE = 'ofertas-relampago';
-
 /** Código postal + botón Rastreo en la barra oscura (reactivar cuando haya integración). */
 const SHOW_HEADER_LOCATION_AND_TRACKING = false;
+
+interface MenuLink {
+  type: 'link';
+  label: string;
+  handle: string;
+}
+
+interface MenuAccordion {
+  type: 'accordion';
+  label: string;
+  icon: 'destilados' | 'vinos';
+  children: { label: string; handle: string; image: string }[];
+}
+
+type MenuItem = MenuLink | MenuAccordion;
+
+const MENU_ITEMS: MenuItem[] = [
+  { type: 'link', label: 'Todos los productos', handle: 'Todos' },
+  {
+    type: 'accordion',
+    label: 'Destilados',
+    icon: 'destilados',
+    children: [
+      { label: 'Tequila', handle: 'tequila', image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop' },
+      { label: 'Whisky', handle: 'whisky', image: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=300&fit=crop' },
+      { label: 'Ron', handle: 'ron', image: 'https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&h=300&fit=crop' },
+      { label: 'Brandy', handle: 'brandy', image: 'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&h=300&fit=crop' },
+      { label: 'Vodka', handle: 'vodka', image: 'https://images.unsplash.com/photo-1550985616-10810253b84d?w=400&h=300&fit=crop' },
+      { label: 'Cognac', handle: 'cognac', image: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=300&fit=crop' },
+      { label: 'Mezcal', handle: 'mezcal', image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&h=300&fit=crop' },
+      { label: 'Ginebra', handle: 'ginebra', image: 'https://images.unsplash.com/photo-1559628233-100c798642d6?w=400&h=300&fit=crop' },
+      { label: 'Jerez', handle: 'jerez', image: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop' },
+      { label: 'Aperitivo', handle: 'aperitivo', image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop' },
+      { label: 'Destilados Sin Alcohol', handle: 'destilados-sin-alcohol', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop' },
+    ],
+  },
+  {
+    type: 'accordion',
+    label: 'Vinos',
+    icon: 'vinos',
+    children: [
+      { label: 'Vino Tinto', handle: 'vino-tinto', image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop' },
+      { label: 'Vino Blanco', handle: 'vino-blanco', image: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop' },
+      { label: 'Vino Rosado', handle: 'vino-rosado', image: 'https://images.unsplash.com/photo-1560148218-1a83060f7b32?w=400&h=300&fit=crop' },
+      { label: 'Espumosos', handle: 'espumosos', image: 'https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=400&h=300&fit=crop' },
+      { label: 'Champagne', handle: 'champagne', image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&h=300&fit=crop' },
+    ],
+  },
+  { type: 'link', label: 'Cervezas', handle: 'cervezas' },
+  { type: 'link', label: 'Aguas', handle: 'aguas' },
+  { type: 'link', label: 'Refrescos', handle: 'refrescos' },
+  { type: 'link', label: 'Otras bebidas', handle: 'otras-bebidas' },
+];
+
+const STATIC_LINKS = [
+  { label: 'Blog', href: '/blog' },
+  { label: 'Regístrate aquí', href: '/registro' },
+];
 
 export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDrawerOpen, onSearchDrawerChange }: HeaderProps) => {
   const { getTotalItems } = useCart();
   const { totalItems: wishlistCount } = useWishlist();
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
-  const { collections, loading: collectionsLoading } = useShopifyCollections();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [hoveredChild, setHoveredChild] = useState<string | null>(null);
+  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   const [zipCode, setZipCode] = useState('');
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
   const setSearchDrawerOpen = onSearchDrawerChange;
-  const navScrollRef = useRef<HTMLDivElement>(null);
-
-  // Filtrar colecciones: excluir la colección de ofertas relámpago del menú principal
-  const menuCollections = collections.filter(
-    (col) => col.handle !== FLASH_DEALS_HANDLE
-  );
-
-  const updateScrollArrows = useCallback(() => {
-    const el = navScrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 0);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
-  }, []);
-
-  const scrollNav = (direction: 'left' | 'right') => {
-    const el = navScrollRef.current;
-    if (!el) return;
-    const amount = 250;
-    el.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    const el = navScrollRef.current;
-    if (!el) return;
-    updateScrollArrows();
-    el.addEventListener('scroll', updateScrollArrows, { passive: true });
-    const ro = new ResizeObserver(updateScrollArrows);
-    ro.observe(el);
-    return () => {
-      el.removeEventListener('scroll', updateScrollArrows);
-      ro.disconnect();
-    };
-  }, [updateScrollArrows, menuCollections.length]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -225,66 +246,102 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
 
       {/* Navigation Menu - Desktop */}
       <nav className="hidden lg:block border-b border-gray-200">
-        <div className="container mx-auto px-4 relative">
-          {/* Left Arrow */}
-          {canScrollLeft && (
-            <button
-              onClick={() => scrollNav('left')}
-              className="absolute left-0 top-0 bottom-0 z-10 flex items-center pl-1 pr-3 bg-gradient-to-r from-white via-white/95 to-transparent"
-              aria-label="Scroll categorías izquierda"
-            >
-              <ChevronLeft className="w-5 h-5 text-[#0055a2]" />
-            </button>
-          )}
-
-          {/* Scrollable Categories */}
-          <div
-            ref={navScrollRef}
-            className="flex items-center gap-6 py-3 overflow-x-auto scrollbar-hide"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-            <button
-              onClick={() => handleCategoryClick('Todos')}
-              className="flex items-center gap-1 text-[#212121] hover:text-[#0055a2] transition-colors font-medium text-sm whitespace-nowrap"
-            >
-              Todos
-            </button>
-
-            {collectionsLoading ? (
-              <div className="flex gap-6">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="h-5 w-20 bg-gray-200 rounded animate-pulse" />
-                ))}
-              </div>
-            ) : (
-              menuCollections.map((collection) => (
-                <div
-                  key={collection.id}
-                  className="relative"
-                  onMouseEnter={() => setHoveredCategory(collection.handle)}
-                  onMouseLeave={() => setHoveredCategory(null)}
-                >
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-1 py-2">
+            {MENU_ITEMS.map((item) => (
+              <div
+                key={item.label}
+                className="relative"
+                onMouseEnter={() => item.type === 'accordion' ? setHoveredCategory(item.label) : undefined}
+                onMouseLeave={() => { setHoveredCategory(null); setHoveredChild(null); }}
+              >
+                {item.type === 'link' ? (
                   <button
-                    onClick={() => handleCategoryClick(collection.handle)}
-                    className="flex items-center gap-1 text-[#212121] hover:text-[#0055a2] transition-colors font-medium text-sm whitespace-nowrap"
+                    onClick={() => handleCategoryClick(item.handle)}
+                    className="flex items-center gap-1 text-[#212121] hover:text-[#0055a2] transition-colors font-medium text-sm whitespace-nowrap px-3 py-2 rounded hover:bg-gray-50"
                   >
-                    {collection.title}
+                    {item.label}
                   </button>
-                </div>
-              ))
-            )}
-          </div>
+                ) : (
+                  <>
+                    <button
+                      className="flex items-center gap-1 text-[#212121] hover:text-[#0055a2] transition-colors font-medium text-sm whitespace-nowrap px-3 py-2 rounded hover:bg-gray-50"
+                    >
+                      {item.label}
+                      <ChevronDown className="w-3.5 h-3.5 ml-0.5" />
+                    </button>
+                    {hoveredCategory === item.label && (() => {
+                      const activeChild = item.children.find(c => c.handle === hoveredChild) ?? item.children[0];
+                      return (
+                        <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 rounded-xl shadow-2xl overflow-hidden"
+                          style={{ width: 640 }}
+                        >
+                          <div className="flex">
+                            {/* Left: grid of sub-categories */}
+                            <div className="flex-1 p-4">
+                              <div className="grid grid-cols-3 gap-1">
+                                {item.children.map((child) => (
+                                  <button
+                                    key={child.handle}
+                                    onMouseEnter={() => setHoveredChild(child.handle)}
+                                    onClick={() => { handleCategoryClick(child.handle); setHoveredChild(null); }}
+                                    className={`text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                                      (hoveredChild ?? item.children[0].handle) === child.handle
+                                        ? 'bg-[#f0f7ff] text-[#0055a2] font-semibold'
+                                        : 'text-[#212121] hover:bg-gray-50 hover:text-[#0055a2]'
+                                    }`}
+                                  >
+                                    {child.label}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
 
-          {/* Right Arrow */}
-          {canScrollRight && (
-            <button
-              onClick={() => scrollNav('right')}
-              className="absolute right-0 top-0 bottom-0 z-10 flex items-center pr-1 pl-3 bg-gradient-to-l from-white via-white/95 to-transparent"
-              aria-label="Scroll categorías derecha"
-            >
-              <ChevronRight className="w-5 h-5 text-[#0055a2]" />
-            </button>
-          )}
+                            {/* Right: image preview */}
+                            <div className="w-52 bg-gray-50 border-l border-gray-100 flex flex-col">
+                              <div className="flex-1 overflow-hidden">
+                                <img
+                                  src={activeChild.image}
+                                  alt={activeChild.label}
+                                  className="w-full h-40 object-cover"
+                                />
+                              </div>
+                              <div className="p-3">
+                                <p className="text-sm font-semibold text-[#212121] mb-2">{activeChild.label}</p>
+                                <button
+                                  onClick={() => handleCategoryClick(item.handle === 'destilados' ? 'destilados' : item.children[0].handle)}
+                                  className="w-full bg-[#1a3a2a] text-white text-xs font-semibold py-2 px-3 rounded-lg hover:bg-[#0f2a1a] transition-colors"
+                                >
+                                  Ver todos los {item.label.toLowerCase()}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </>
+                )}
+              </div>
+            ))}
+
+            {/* Separador */}
+            <div className="w-px h-5 bg-gray-300 mx-2" />
+
+            {STATIC_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className={
+                  link.href === '/registro'
+                    ? 'flex items-center gap-1.5 bg-[#0055a2] text-white px-4 py-2 rounded-lg hover:bg-[#004488] transition-colors text-sm font-medium whitespace-nowrap'
+                    : 'flex items-center gap-1 text-[#212121] hover:text-[#0055a2] transition-colors font-medium text-sm whitespace-nowrap px-3 py-2 rounded hover:bg-gray-50'
+                }
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </nav>
 
@@ -329,37 +386,76 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                   setMobileMenuOpen(false);
                   setSearchDrawerOpen(true);
                 }}
-                className="flex items-center gap-2 w-full text-left text-[#212121] py-2 px-4 hover:bg-gray-100 rounded transition-colors font-medium mb-2 border border-gray-200 rounded-lg"
+                className="flex items-center gap-2 w-full text-left text-[#212121] py-2 px-4 hover:bg-gray-100 rounded-lg transition-colors font-medium mb-2 border border-gray-200"
               >
                 <Search className="w-5 h-5 text-[#0055a2]" />
                 Buscar productos
               </button>
 
-              {/* "Todos" */}
-              <button
-                onClick={() => handleCategoryClick('Todos')}
-                className="block w-full text-left text-[#212121] py-2 px-4 hover:bg-gray-100 rounded transition-colors font-medium"
-              >
-                Todos los Productos
-              </button>
-
-              {collectionsLoading ? (
-                <div className="space-y-2 px-4">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-8 bg-gray-200 rounded animate-pulse" />
-                  ))}
-                </div>
-              ) : (
-                menuCollections.map((collection) => (
+              {/* Menu items */}
+              {MENU_ITEMS.map((item) => (
+                item.type === 'link' ? (
                   <button
-                    key={collection.id}
-                    onClick={() => handleCategoryClick(collection.handle)}
-                    className="block w-full text-left text-[#212121] py-2 px-4 hover:bg-gray-100 rounded transition-colors font-medium"
+                    key={item.handle}
+                    onClick={() => handleCategoryClick(item.handle)}
+                    className="block w-full text-left text-[#212121] py-3 px-4 hover:bg-gray-50 transition-colors font-medium border-b border-gray-100 last:border-0"
                   >
-                    {collection.title}
+                    {item.label}
                   </button>
-                ))
-              )}
+                ) : (
+                  <div key={item.label} className="border-b border-gray-100">
+                    <button
+                      onClick={() => setOpenAccordion(openAccordion === item.label ? null : item.label)}
+                      className="flex items-center justify-between w-full text-left text-[#212121] py-3 px-4 hover:bg-gray-50 transition-colors font-medium"
+                    >
+                      <span className="flex items-center gap-2">
+                        {item.label}
+                      </span>
+                      {openAccordion === item.label
+                        ? <ChevronUp className="w-4 h-4 text-gray-400" />
+                        : <ChevronDown className="w-4 h-4 text-gray-400" />}
+                    </button>
+                    <AnimatePresence>
+                      {openAccordion === item.label && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden bg-gray-50"
+                        >
+                          {item.children.map((child) => (
+                            <button
+                              key={child.handle}
+                              onClick={() => handleCategoryClick(child.handle)}
+                              className="block w-full text-left text-[#444] py-2.5 pl-8 pr-4 hover:bg-blue-50 hover:text-[#0055a2] transition-colors text-sm border-t border-gray-100"
+                            >
+                              {child.label}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                )
+              ))}
+
+              {/* ENLACES */}
+              <div className="pt-3">
+                <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase px-4 pb-1">
+                  ENLACES
+                </p>
+                {STATIC_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full text-left text-[#212121] py-2.5 px-4 hover:bg-gray-50 transition-colors font-medium border-b border-gray-100 last:border-0"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             </nav>
           </motion.div>
         )}
