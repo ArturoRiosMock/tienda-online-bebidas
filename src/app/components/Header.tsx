@@ -247,7 +247,7 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
       {/* Navigation Menu - Desktop */}
       <nav className="hidden lg:block border-b border-gray-200">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-1 py-2">
+          <div className="flex items-center justify-center gap-1 py-2">
             {MENU_ITEMS.map((item) => (
               <div
                 key={item.label}
