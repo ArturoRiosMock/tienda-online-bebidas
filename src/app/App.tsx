@@ -78,6 +78,10 @@ function App() {
           <Route path="/aviso-de-privacidad" element={<PolicyDocumentPage title="Política de Privacidad" blocks={privacyPolicy} />} />
           <Route path="/politica-de-reembolso" element={<PolicyDocumentPage title="Política de Reembolso" blocks={refundPolicy} />} />
           <Route path="/terminos-de-servicio" element={<PolicyDocumentPage title="Términos del Servicio" blocks={termsOfService} />} />
+          {/* Redirects desde URLs estándar de Shopify (/policies/*) hacia las rutas internas */}
+          <Route path="/policies/privacy-policy" element={<Navigate to="/aviso-de-privacidad" replace />} />
+          <Route path="/policies/refund-policy" element={<Navigate to="/politica-de-reembolso" replace />} />
+          <Route path="/policies/terms-of-service" element={<Navigate to="/terminos-de-servicio" replace />} />
           {/* Catch-all: cualquier ruta no reconocida → 404 */}
           <Route path="*" element={<NotFoundPage />} />
         </Route>

@@ -1,10 +1,12 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { SlidersHorizontal } from 'lucide-react';
 import { ProductCard } from '@/app/components/ProductCard';
 import { AdBanner, getInlineAdSlots, shouldRenderAdSlot } from '@/app/components/AdBanner';
+import { Breadcrumbs } from '@/app/components/Breadcrumbs';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
+import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
 
 type GridItem =
   | { kind: 'product'; product: ReturnType<typeof useShopifyProducts>['products'][number] }
@@ -32,6 +34,18 @@ export const CollectionPage: React.FC = () => {
   const collectionTitle = !handle
     ? 'Todos los productos'
     : currentCollection?.title || handle.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) || 'Colección';
+
+  const canonicalPath = handle ? `/categorias/${handle}` : '/productos';
+  const collectionDescription = !handle
+    ? 'Todos los productos disponibles en Mr. Brown: tequila, whisky, mezcal, vinos, cervezas y más, con envío rápido en CDMX.'
+    : `Compra ${collectionTitle.toLowerCase()} premium en Mr. Brown. Filtra por marca, precio y descuentos. Envío rápido en CDMX y zona metropolitana.`;
+
+  useDocumentMeta({
+    title: collectionTitle,
+    description: collectionDescription,
+    canonicalPath,
+    imageAlt: handle ? `${collectionTitle} — Mr. Brown` : undefined,
+  });
 
   const inlineAds = useMemo(() => getInlineAdSlots('collection'), []);
 
@@ -102,13 +116,13 @@ export const CollectionPage: React.FC = () => {
     <div className="min-h-[60vh]">
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center gap-2 text-sm text-[#717182]">
-            <Link to="/" className="hover:text-[#0c3c1f] transition-colors">
-              Inicio
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <span className="text-[#0c3c1f] font-medium">{collectionTitle}</span>
-          </div>
+          <Breadcrumbs
+            items={[
+              { label: 'Inicio', to: '/' },
+              ...(handle ? [{ label: 'Categorías', to: '/productos' }] : []),
+              { label: collectionTitle, to: canonicalPath },
+            ]}
+          />
         </div>
       </div>
 

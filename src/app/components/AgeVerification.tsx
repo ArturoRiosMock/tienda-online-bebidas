@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
 
 const COOKIE_NAME = 'mr-brown-age-verified';
+const STORAGE_KEY = 'mr-brown-age-verified';
 const COOKIE_DAYS = 30;
 
 type AgeStatus = 'pending' | 'verified' | 'rejected';
@@ -17,11 +18,28 @@ const setCookie = (name: string, value: string, days: number) => {
   document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires};path=/;SameSite=Lax`;
 };
 
+const safeGetLocal = (key: string): string | null => {
+  try {
+    return typeof window !== 'undefined' ? window.localStorage.getItem(key) : null;
+  } catch {
+    return null;
+  }
+};
+
+const safeSetLocal = (key: string, value: string) => {
+  try {
+    if (typeof window !== 'undefined') window.localStorage.setItem(key, value);
+  } catch {
+    /* almacenamiento bloqueado (modo privado, cookies/storage deshabilitado) */
+  }
+};
+
 export const AgeVerification: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [status, setStatus] = useState<AgeStatus>(() => {
-    const stored = getCookie(COOKIE_NAME);
-    if (stored === 'true') return 'verified';
-    if (stored === 'false') return 'rejected';
+    const cookie = getCookie(COOKIE_NAME);
+    const local = safeGetLocal(STORAGE_KEY);
+    if (cookie === 'true' || local === 'true') return 'verified';
+    if (cookie === 'false' || local === 'false') return 'rejected';
     return 'pending';
   });
 
@@ -36,11 +54,13 @@ export const AgeVerification: React.FC<{ children: React.ReactNode }> = ({ child
 
   const handleConfirmAge = () => {
     setCookie(COOKIE_NAME, 'true', COOKIE_DAYS);
+    safeSetLocal(STORAGE_KEY, 'true');
     setStatus('verified');
   };
 
   const handleRejectAge = () => {
     setCookie(COOKIE_NAME, 'false', 1);
+    safeSetLocal(STORAGE_KEY, 'false');
     setStatus('rejected');
   };
 
@@ -66,6 +86,9 @@ export const AgeVerification: React.FC<{ children: React.ReactNode }> = ({ child
             className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
           >
             <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="age-gate-title"
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: -10 }}
@@ -78,7 +101,7 @@ export const AgeVerification: React.FC<{ children: React.ReactNode }> = ({ child
                 className="h-20 mx-auto mb-6 object-contain"
               />
 
-              <h2 className="text-2xl font-bold text-[#212121] mb-4">
+              <h2 id="age-gate-title" className="text-2xl font-bold text-[#212121] mb-4">
                 CONFIRMA TU EDAD
               </h2>
 
@@ -96,12 +119,18 @@ export const AgeVerification: React.FC<{ children: React.ReactNode }> = ({ child
                   Soy menor de edad.
                 </button>
                 <button
+                  autoFocus
                   onClick={handleConfirmAge}
                   className="flex-1 py-3 px-4 bg-[#212121] text-white rounded-lg font-bold text-sm hover:bg-[#333] transition-colors"
                 >
                   Tengo más de 18 años.
                 </button>
               </div>
+
+              <p className="text-[10px] sm:text-xs text-[#717182] leading-relaxed mt-6 pt-4 border-t border-gray-100">
+                Beber con moderación. La venta y suministro de bebidas alcohólicas a menores de 18 años
+                está estrictamente prohibida conforme al artículo 220 de la Ley General de Salud.
+              </p>
             </motion.div>
           </motion.div>
         )}

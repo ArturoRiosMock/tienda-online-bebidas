@@ -39,6 +39,10 @@ export const privacyPolicy: PolicyBlock[] = [
     body: 'La Empresa podrá divulgar sus datos personales a aquellos terceros que, en virtud de los servicios y productos ofrecidos, necesiten conocerlos para cumplir cabalmente con los mismos. Cualquier transferencia sin consentimiento se realizará de acuerdo con el Artículo 37 de la LFPDPPP.',
   },
   {
+    title: 'Uso de Cookies y Tecnologías Similares',
+    body: 'El Portal utiliza cookies y tecnologías similares para distintos fines: (a) cookies esenciales (carrito, sesión, verificación de edad y seguridad), necesarias para el funcionamiento del Portal y que no requieren consentimiento; (b) cookies de análisis, que nos permiten entender de forma agregada cómo se utiliza el Portal; y (c) cookies de marketing, que permiten personalizar la publicidad y medir la eficacia de las campañas. El Usuario puede aceptar, rechazar o personalizar las cookies no esenciales en cualquier momento mediante el banner de consentimiento mostrado al ingresar al Portal o a través del enlace "Configurar cookies" disponible en el pie de página. La revocación del consentimiento es tan sencilla como su otorgamiento, conforme al artículo 8 de la LFPDPPP.',
+  },
+  {
     title: 'Modificaciones al Aviso de Privacidad',
     body: 'El presente aviso de privacidad puede sufrir modificaciones, cambios o actualizaciones derivadas, entre otras cosas, por nuevos requerimientos legales, necesidades propias de la Empresa o cambios en nuestro modelo de negocio. Cualquier modificación le será notificada a través de los medios disponibles en el Portal.',
   },
@@ -46,15 +50,27 @@ export const privacyPolicy: PolicyBlock[] = [
 
 export const refundPolicy: PolicyBlock[] = [
   {
-    body: 'La satisfacción de nuestros Usuarios sobre nuestros productos y servicios es lo más importante para nosotros, por lo que ponemos a tu disposición la siguiente Política de Cambios y Devoluciones.',
+    body: 'La satisfacción de nuestros Usuarios sobre nuestros productos y servicios es lo más importante para nosotros, por lo que ponemos a tu disposición la siguiente Política de Cambios y Devoluciones, redactada conforme a la Ley Federal de Protección al Consumidor (LFPC) y a la normativa aplicable a la venta de bebidas alcohólicas en los Estados Unidos Mexicanos.',
   },
   {
     title: 'Devoluciones',
-    body: 'La política de devoluciones admite cualquier devolución, a excepción de los siguientes productos: Maskkings, productos perecederos y productos que contengan gas (refrescos, hard seltzer, cervezas, champañas, espumosos, etc.).',
+    body: 'La política de devoluciones admite cualquier devolución, a excepción de los siguientes productos: Maskkings, productos perecederos y productos que contengan gas (refrescos, hard seltzer, cervezas, champañas, espumosos, etc.). Por motivos sanitarios y de seguridad alimentaria, las botellas de bebidas alcohólicas que hayan sido abiertas, manipuladas, o cuyo sello de garantía esté dañado, no son susceptibles de devolución, salvo que el daño sea atribuible a la Empresa o al transportista (ver "Producto Dañado en la Entrega").',
+  },
+  {
+    title: 'Producto Dañado en la Entrega',
+    body: 'Si el producto llega con daños visibles (botella rota, sello de garantía vulnerado, fugas, etiqueta deteriorada por golpes durante el transporte, etc.):\n\n1. El Usuario debe revisar el pedido al momento de la entrega y, de ser posible, rechazarlo en presencia del repartidor o tomar fotografías del paquete y del producto antes de abrirlo.\n\n2. Debe notificar a contacto@mrbrown.com.mx dentro de las 48 horas siguientes a la entrega, adjuntando: número de pedido, fotografías del daño (paquete exterior y producto), y descripción breve del incidente.\n\n3. La Empresa cubrirá íntegramente el reemplazo del producto o, a elección del Usuario, el reembolso del importe pagado, incluyendo los gastos de envío originales. La logística de retorno será coordinada y costeada por la Empresa.',
+  },
+  {
+    title: 'Pedido Incorrecto',
+    body: 'Si el Usuario recibe un producto distinto al solicitado (sabor, presentación, marca, capacidad o cantidad de botellas):\n\n1. Notificar a contacto@mrbrown.com.mx dentro de los 5 días siguientes a la entrega, adjuntando fotografías del producto recibido y del comprobante de compra.\n\n2. La Empresa coordinará y costeará la recolección del producto entregado por error y el envío del producto correcto, sin cargo adicional para el Usuario.\n\n3. Si el producto solicitado ya no se encuentra en existencia, el Usuario podrá optar entre: (a) un reemplazo por un producto de valor equivalente, o (b) el reembolso íntegro del importe pagado por dicho artículo, incluyendo proporcionalmente los gastos de envío.',
+  },
+  {
+    title: 'Derecho de Desistimiento',
+    body: 'Conforme al artículo 56 de la Ley Federal de Protección al Consumidor, el Usuario tiene derecho a desistirse de la compra, sin necesidad de justificación, dentro de los 5 días hábiles siguientes a la entrega del producto, siempre que se cumpla lo siguiente:\n\n1. El producto debe encontrarse en su empaque original, sin abrir y con el sello de garantía intacto.\n\n2. El Usuario debe enviar la solicitud por correo a contacto@mrbrown.com.mx, indicando número de pedido y motivo (no obligatorio).\n\n3. El reembolso se realizará al mismo medio de pago utilizado en la compra dentro de los 10 días hábiles siguientes a la recepción y verificación del producto en buen estado.\n\n4. Los gastos de envío de retorno corren por cuenta del Usuario, salvo que el desistimiento se origine por una falla atribuible a la Empresa.',
   },
   {
     title: 'Proceso de Devolución',
-    body: '1. Tiempo para la devolución: Debes solicitar la devolución dentro de los 14 días siguientes a la fecha en que recibiste tus productos.\n\n2. Condiciones: El producto debe encontrarse en perfectas condiciones, sin daños evidentes, en las mismas condiciones en que fue entregado, con empaque y etiquetado original, y debes presentar tu ticket de compra o correo de confirmación.\n\n3. Forma de devolución: Debe solicitarse vía correo electrónico a contacto@mrbrown.com.mx. Los gastos de envío corren por cuenta del Usuario.\n\n4. Reembolso: Se realizará mediante transferencia electrónica de fondos. Los reembolsos a tarjeta solo aplican a la misma tarjeta con que se realizó el pago.',
+    body: '1. Tiempo para la devolución: Debes solicitar la devolución dentro de los 14 días siguientes a la fecha en que recibiste tus productos.\n\n2. Condiciones: El producto debe encontrarse en perfectas condiciones, sin daños evidentes, en las mismas condiciones en que fue entregado, con empaque y etiquetado original, y debes presentar tu ticket de compra o correo de confirmación.\n\n3. Forma de devolución: Debe solicitarse vía correo electrónico a contacto@mrbrown.com.mx. Los gastos de envío corren por cuenta del Usuario, salvo en los casos descritos en "Producto Dañado en la Entrega" o "Pedido Incorrecto".\n\n4. Reembolso: Se realizará mediante transferencia electrónica de fondos. Los reembolsos a tarjeta solo aplican a la misma tarjeta con que se realizó el pago.',
   },
   {
     title: 'Cambios',
@@ -65,8 +81,12 @@ export const refundPolicy: PolicyBlock[] = [
     body: '1. Tiempo para cambios: Debes solicitarlo dentro de los 2 días siguientes a la fecha en que recibiste tus productos.\n\n2. Condiciones: El producto no debe haber sido abierto o manipulado, debe tener su empaque y etiquetado original, y debes presentar tu comprobante de compra.\n\n3. Los cambios se realizarán por un producto que llegue al mismo valor. Si eliges uno de menor valor, no se abonará la diferencia; si es de mayor valor, deberás cubrir el faltante.\n\n4. Cualquier cambio debe ser llevado directamente a Av. Contreras 267 - 1, San Jerónimo Lídice, Magdalena Contreras, C.P. 10200, CDMX.',
   },
   {
+    title: 'Procedimiento de Garantía',
+    body: 'Para hacer efectiva la garantía sobre productos defectuosos:\n\n1. El Usuario debe enviar a contacto@mrbrown.com.mx: número de pedido, descripción detallada del defecto, fotografías del producto y de su etiquetado/lote, y comprobante de compra.\n\n2. La Empresa realizará una verificación dentro de los 5 días hábiles siguientes y, en caso de que la garantía proceda, ofrecerá al Usuario: (a) reposición del producto por uno idéntico, (b) cambio por un producto de valor equivalente, o (c) reembolso íntegro del importe pagado, a elección del Usuario.\n\n3. Plazo de resolución: hasta 10 días hábiles desde la confirmación de procedencia de la garantía. La Empresa informará por correo el estatus en cada etapa.\n\n4. Esta garantía no cubre daños derivados de manejo incorrecto, almacenamiento inadecuado o consumo posterior a la fecha de caducidad indicada en el envase.',
+  },
+  {
     title: 'Contacto',
-    body: 'El Usuario puede contactar al personal de www.mrbrown.com.mx para cualquier aclaración relacionada con la presente política en contacto@mrbrown.com.mx.',
+    body: 'El Usuario puede contactar al personal de www.mrbrown.com.mx para cualquier aclaración relacionada con la presente política en contacto@mrbrown.com.mx. Asimismo, en caso de inconformidad, puede acudir a la Procuraduría Federal del Consumidor (PROFECO) — www.profeco.gob.mx, teléfono 800 468 8722.',
   },
 ];
 
@@ -104,11 +124,19 @@ export const termsOfService: PolicyBlock[] = [
   },
   {
     title: '9. Cookies',
-    body: 'El Usuario que tenga acceso al Portal conviene en recibir archivos Cookie. Generalmente las Cookies son aceptadas automáticamente; el Usuario puede cambiar la configuración de su navegador en cualquier momento.',
+    body: 'El Portal utiliza cookies esenciales para su correcto funcionamiento (carrito, sesión, verificación de edad y seguridad) y, sujeto al consentimiento del Usuario, cookies de análisis y de marketing. Al ingresar por primera vez al Portal se mostrará un banner de consentimiento que permite aceptar, rechazar o personalizar las cookies no esenciales. El Usuario puede revisar o modificar sus preferencias en cualquier momento mediante el enlace "Configurar cookies" disponible en el pie de página del Portal, en cumplimiento de la LFPDPPP. Para mayor detalle sobre los tipos de cookies, sus finalidades y los derechos del titular, se sugiere consultar el Aviso de Privacidad.',
   },
   {
     title: '11. Claves de Acceso',
     body: 'El Usuario, al crear una cuenta en el Portal, declara, bajo protesta de decir verdad, que tiene como mínimo 18 años de edad o la mayoría de edad legal en su jurisdicción.',
+  },
+  {
+    title: '12. Venta de Bebidas Alcohólicas y Verificación de Edad',
+    body: 'La venta y suministro de bebidas alcohólicas en el Portal está estrictamente prohibida a menores de 18 años, conforme al artículo 220 de la Ley General de Salud y demás normativa aplicable en los Estados Unidos Mexicanos. Al realizar una compra, el Usuario declara, bajo protesta de decir verdad, ser mayor de 18 años. La Empresa verifica activamente la mayoría de edad del comprador mediante: (i) un control de acceso al ingresar al Portal, (ii) confirmación expresa al momento de finalizar la compra y (iii) verificación de identificación oficial vigente al momento de la entrega del pedido. La Empresa se reserva el derecho de rechazar o cancelar pedidos cuando no sea posible acreditar la mayoría de edad del receptor, sin obligación de reembolso de los gastos de envío adicionales en que se hubiera incurrido. El Usuario es el único responsable del uso final del producto y se compromete a no proporcionar bebidas alcohólicas a menores de edad. El consumo de bebidas alcohólicas debe realizarse de manera responsable. La Empresa no será responsable, en la medida máxima permitida por la legislación aplicable, por daños, lesiones, perjuicios o consecuencias de cualquier naturaleza derivados del consumo irresponsable, indebido, abusivo o ilegal de los productos adquiridos en el Portal por parte del Usuario o de terceros, así como del incumplimiento por parte del Usuario de su obligación de no proporcionar dichos productos a menores de edad.',
+  },
+  {
+    title: '12.1 Restricciones Geográficas de Entrega',
+    body: 'La venta y entrega de bebidas alcohólicas a través del Portal se limita al territorio de los Estados Unidos Mexicanos y, dentro del mismo, exclusivamente a las zonas en las que la legislación local permita la comercialización y el reparto de bebidas alcohólicas. La Empresa se reserva el derecho de rechazar o cancelar pedidos cuya dirección de entrega se encuentre fuera de las zonas habilitadas, sin responsabilidad alguna salvo el reembolso del importe del pedido cuando corresponda. El Usuario es el único responsable de proporcionar una dirección de entrega válida y ubicada dentro de las zonas permitidas, así como de cumplir con cualquier requisito local adicional aplicable a la recepción de bebidas alcohólicas.',
   },
   {
     title: '13. Leyes Aplicables y Jurisdicción',

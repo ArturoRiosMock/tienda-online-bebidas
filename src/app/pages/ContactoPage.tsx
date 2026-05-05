@@ -2,8 +2,16 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Mail, MapPin, Clock, ExternalLink } from 'lucide-react';
 import { about } from '@/content/mrbrown/about';
+import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
 
 export const ContactoPage: React.FC = () => {
+  useDocumentMeta({
+    title: 'Contacto',
+    description:
+      'Contacto Mr. Brown: correo, dirección en La Magdalena Contreras (CDMX), zonas de entrega y horarios. Atención por email y redes sociales.',
+    canonicalPath: '/contacto',
+  });
+
   return (
     <>
       <section className="bg-gradient-to-r from-[#0c3c1f] to-[#1a5c35] py-12 md:py-16">
@@ -53,7 +61,7 @@ export const ContactoPage: React.FC = () => {
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="bg-white rounded-xl border border-gray-100 p-6 flex items-start gap-4 shadow-sm">
             <div className="w-11 h-11 bg-[#FDB93A]/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <ExternalLink className="w-5 h-5 text-[#FF8A00]" />
+              <ExternalLink className="w-5 h-5 text-[#0c3c1f]" aria-hidden />
             </div>
             <div>
               <h3 className="font-bold text-[#212121] mb-2">Redes sociales</h3>

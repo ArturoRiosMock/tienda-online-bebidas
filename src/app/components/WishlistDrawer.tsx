@@ -61,8 +61,12 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({ isOpen, onClose 
                   Mis Favoritos ({totalItems})
                 </h2>
               </div>
-              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <X className="w-5 h-5" />
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Cerrar lista de favoritos"
+              >
+                <X className="w-5 h-5" aria-hidden />
               </button>
             </div>
 
@@ -111,8 +115,9 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({ isOpen, onClose 
                           <button
                             onClick={() => removeItem(item.id)}
                             className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                            aria-label={`Eliminar ${item.name} de favoritos`}
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" aria-hidden />
                           </button>
                         </div>
                       </div>

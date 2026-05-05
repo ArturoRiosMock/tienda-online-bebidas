@@ -1,5 +1,6 @@
 import { shopifyClient, GET_PRODUCTS, GET_PRODUCTS_BY_COLLECTION, GET_PRODUCT_BY_HANDLE, GET_COLLECTIONS, SEARCH_PRODUCTS } from './queries';
 import type { ShopifyProduct, ShopifyCollection, Product, ShopifyVariant } from './types';
+import { extractAlcoholAttributes } from './productAttributes';
 
 /**
  * Servicio para interactuar con Shopify Storefront API
@@ -30,6 +31,7 @@ export const convertShopifyProductToAppProduct = (shopifyProduct: ShopifyProduct
     : null;
 
   const allImages = shopifyProduct.images.edges.map(e => e.node.url).filter(Boolean);
+  const alcoholAttrs = extractAlcoholAttributes(shopifyProduct);
 
   return {
     id: parseInt(shopifyProduct.id.split('/').pop() || '0'),
@@ -47,6 +49,10 @@ export const convertShopifyProductToAppProduct = (shopifyProduct: ShopifyProduct
     variantId: firstVariant?.id,
     handle: shopifyProduct.handle,
     cantidadLabel: cantidadFromVariant(firstVariant),
+    abvLabel: alcoholAttrs.abvLabel,
+    volumeLabel: alcoholAttrs.volumeLabel,
+    beverageType: alcoholAttrs.beverageType,
+    origin: alcoholAttrs.origin,
   };
 };
 

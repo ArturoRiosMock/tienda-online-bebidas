@@ -1,9 +1,18 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Award, Heart, Users, Sparkles, MapPin, Mail, ExternalLink } from 'lucide-react';
+import { Award, Heart, Users, Sparkles, MapPin, Mail, ExternalLink, ShieldCheck } from 'lucide-react';
 import { about } from '@/content/mrbrown/about';
+import { formatLicense, hasLicenseInfo, LICENSE_AUTHORITY } from '@/content/mrbrown/business-info';
+import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
 
 export const SobreNosotrosPage: React.FC = () => {
+  useDocumentMeta({
+    title: 'Sobre Nosotros',
+    description:
+      'Mr. Brown — House of Spirits desde 2018: curadores de experiencias premium en bebidas. Selección, mixología y barras para eventos en CDMX.',
+    canonicalPath: '/page/sobre-nosotros',
+  });
+
   return (
     <>
       {/* Hero */}
@@ -91,6 +100,20 @@ export const SobreNosotrosPage: React.FC = () => {
                 <a href={`mailto:${about.contact.email}`} className="text-[#0c3c1f] text-sm hover:underline">{about.contact.email}</a>
               </div>
             </div>
+            {hasLicenseInfo() && (
+              <div className="flex items-start gap-3 bg-gray-50 rounded-xl p-5 md:col-span-2">
+                <ShieldCheck className="w-5 h-5 text-[#0c3c1f] mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-[#212121] mb-1">Licencia para venta de bebidas alcohólicas</h4>
+                  <p className="text-[#717182] text-sm">{formatLicense()}</p>
+                  {LICENSE_AUTHORITY && (
+                    <p className="text-[#717182] text-xs mt-1">
+                      Emitida por {LICENSE_AUTHORITY}.
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-4 mt-6">

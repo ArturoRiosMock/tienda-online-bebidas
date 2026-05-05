@@ -82,9 +82,16 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
       <button
         onClick={handleFavoriteClick}
         className="absolute top-2 right-2 z-10 w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow"
+        aria-label={
+          isFavorite
+            ? `Quitar ${product.name} de favoritos`
+            : `Agregar ${product.name} a favoritos`
+        }
+        aria-pressed={isFavorite}
       >
         <Heart
           className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+          aria-hidden
         />
       </button>
 
@@ -128,9 +135,17 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
         </div>
 
         {product.cantidadLabel && (
-          <p className="text-[10px] sm:text-xs text-[#717182] mb-2 sm:mb-3 leading-snug">
+          <p className="text-[10px] sm:text-xs text-[#717182] mb-1 leading-snug">
             <span className="font-semibold text-[#212121]">Cantidad:</span>{' '}
             {product.cantidadLabel}
+          </p>
+        )}
+
+        {(product.abvLabel || product.volumeLabel || product.origin) && (
+          <p className="text-[10px] sm:text-xs text-[#717182] mb-2 sm:mb-3 leading-snug">
+            {[product.abvLabel, product.volumeLabel, product.origin]
+              .filter(Boolean)
+              .join(' · ')}
           </p>
         )}
 
@@ -139,8 +154,9 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
           <button
             onClick={decrementQuantity}
             className="w-8 h-8 flex items-center justify-center border border-[#0c3c1f] text-[#0c3c1f] rounded hover:bg-[#0c3c1f] hover:text-white transition-colors"
+            aria-label="Disminuir cantidad"
           >
-            <Minus className="w-4 h-4" />
+            <Minus className="w-4 h-4" aria-hidden />
           </button>
           <input
             type="number"
@@ -148,12 +164,15 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
             onChange={handleQuantityInputChange}
             onClick={handleQuantityInputClick}
             className="w-12 h-8 text-center border border-gray-300 rounded text-[#212121] font-medium"
+            aria-label={`Cantidad de ${product.name}`}
+            min={1}
           />
           <button
             onClick={incrementQuantity}
             className="w-8 h-8 flex items-center justify-center border border-[#0c3c1f] text-[#0c3c1f] rounded hover:bg-[#0c3c1f] hover:text-white transition-colors"
+            aria-label="Aumentar cantidad"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4" aria-hidden />
           </button>
           <motion.button
             onClick={handleAddToCart}

@@ -9,7 +9,10 @@ import { Newsletter } from '@/app/components/Newsletter';
 import { FAQ } from '@/app/components/FAQ';
 import { ProductCard } from '@/app/components/ProductCard';
 import { AdBanner, getInlineAdSlots } from '@/app/components/AdBanner';
+import { JsonLd } from '@/app/components/JsonLd';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
+import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
+import { organizationSchema, websiteSchema } from '@/content/mrbrown/seo-defaults';
 
 /** Handle esperado; si Admin usa otro, el fallback por título lo corrige. */
 const HOME_FEATURED_COLLECTION_HANDLE = 'los-favoritos-del-club';
@@ -26,6 +29,13 @@ export const HomePage: React.FC = () => {
     HOME_FEATURED_COLLECTION_HANDLE,
     HOME_FEATURED_COLLECTION_TITLE
   );
+
+  useDocumentMeta({
+    // Sin `title` → usa DEFAULT_TITLE (ya optimizado para la home).
+    description:
+      'Compra bebidas premium en línea: tequila, whisky, mezcal, vinos y mixología con envío rápido en CDMX. 100% originales y barras para eventos sociales y corporativos.',
+    canonicalPath: '/',
+  });
 
   const scrollToProducts = () => {
     productsRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -65,6 +75,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <>
+      <JsonLd schema={[organizationSchema(), websiteSchema()]} />
       <Hero onShopNowClick={scrollToProducts} />
 
       <AdBanner

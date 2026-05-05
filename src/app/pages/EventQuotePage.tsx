@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/components/ui/select';
+import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
 
 const EVENT_TYPES = [
   'Boda',
@@ -78,6 +79,13 @@ const initialForm: FormData = {
 export const EventQuotePage: React.FC = () => {
   const [form, setForm] = useState<FormData>(initialForm);
   const [submitted, setSubmitted] = useState(false);
+
+  useDocumentMeta({
+    title: 'Cotiza tu Evento',
+    description:
+      'Solicita una cotización para bodas, cumpleaños, fiestas corporativas o XV años en CDMX. Barras libres, mixología y bebidas premium a medida con Mr. Brown.',
+    canonicalPath: '/cotizar-evento',
+  });
 
   const set = (field: keyof FormData, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));

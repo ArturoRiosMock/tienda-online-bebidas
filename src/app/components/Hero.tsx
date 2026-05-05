@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AlcoholWarning } from '@/app/components/AlcoholWarning';
 
 interface HeroProps {
   onShopNowClick: () => void;
@@ -194,6 +195,9 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
                   </motion.div>
                 </div>
               </div>
+
+              {/* Advertencia legal NOM-142-SSA1/SCFI-2014 */}
+              <AlcoholWarning variant="hero" />
             </div>
           </motion.div>
         </AnimatePresence>
@@ -202,21 +206,25 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
         <button
           onClick={handlePrev}
           className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#212121] p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
-          aria-label="Previous slide"
+          aria-label="Diapositiva anterior"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-6 h-6" aria-hidden />
         </button>
 
         <button
           onClick={handleNext}
           className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#212121] p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
-          aria-label="Next slide"
+          aria-label="Diapositiva siguiente"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-6 h-6" aria-hidden />
         </button>
 
         {/* Dots Indicators */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
+        <div
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30"
+          role="tablist"
+          aria-label="Selector de diapositiva"
+        >
           {slides.map((_, index) => (
             <button
               key={index}
@@ -226,7 +234,9 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
                   ? 'w-8 h-3 bg-white rounded-full'
                   : 'w-3 h-3 bg-white/50 rounded-full hover:bg-white/75'
               }`}
-              aria-label={`Go to slide ${index + 1}`}
+              role="tab"
+              aria-selected={index === currentSlide}
+              aria-label={`Ir a la diapositiva ${index + 1} de ${slides.length}`}
             />
           ))}
         </div>

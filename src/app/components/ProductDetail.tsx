@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Share2, Heart, ShoppingCart, Star, Minus, Plus } from 'lucide-react';
+import { Share2, Heart, ShoppingCart, Star, Minus, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
 import Slider from 'react-slick';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
 import { FlashDeals } from '@/app/components/FlashDeals';
 import { AdBanner, shouldRenderAdSlot } from '@/app/components/AdBanner';
+import { Breadcrumbs } from '@/app/components/Breadcrumbs';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import type { Product } from '@/shopify/types';
@@ -117,15 +118,15 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
       {/* Breadcrumb */}
       <div className="bg-white border-b">
         <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-3 max-w-[100vw]">
-          <div className="flex items-center gap-2 text-sm text-[#717182]">
-            <Link to="/" className="hover:text-[#0c3c1f] transition-colors">
-              Inicio
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <span className="text-[#0c3c1f]">{product.category || 'Producto'}</span>
-            <ChevronRight className="w-4 h-4" />
-            <span className="text-[#717182] truncate max-w-[200px]">{product.name}</span>
-          </div>
+          <Breadcrumbs
+            items={[
+              { label: 'Inicio', to: '/' },
+              ...(product.category
+                ? [{ label: product.category, to: '/productos' }]
+                : []),
+              { label: product.name },
+            ]}
+          />
         </div>
       </div>
 
@@ -153,7 +154,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
                   )}
                 </div>
                 {images.length > 1 && (
-                  <div className="flex gap-1 mt-1.5 overflow-x-auto">
+                  <div className="flex gap-1 mt-1.5 overflow-x-auto" role="tablist" aria-label="Galería de imágenes">
                     {images.map((img, idx) => (
                       <button
                         key={idx}
@@ -161,8 +162,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
                         className={`shrink-0 border-2 rounded p-0.5 w-10 h-10 flex items-center justify-center transition-colors ${
                           selectedImage === idx ? 'border-[#0c3c1f]' : 'border-gray-200'
                         }`}
+                        role="tab"
+                        aria-selected={selectedImage === idx}
+                        aria-label={`Ver imagen ${idx + 1} de ${images.length}`}
                       >
-                        <img src={img} alt={`Vista ${idx + 1}`} className="w-full h-full object-contain" />
+                        <img src={img} alt="" className="w-full h-full object-contain" />
                       </button>
                     ))}
                   </div>
@@ -194,12 +198,28 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
 
             <div ref={ctaRef} className="flex gap-2 mb-3">
               <div className="flex items-center border border-gray-300 rounded-lg shrink-0">
-                <button onClick={() => handleQuantityChange(-1)} className="p-2 hover:bg-gray-50" disabled={quantity <= 1}>
-                  <Minus className="w-4 h-4" />
+                <button
+                  onClick={() => handleQuantityChange(-1)}
+                  className="p-2 hover:bg-gray-50"
+                  disabled={quantity <= 1}
+                  aria-label="Disminuir cantidad"
+                >
+                  <Minus className="w-4 h-4" aria-hidden />
                 </button>
-                <input type="text" value={quantity} readOnly className="w-10 text-center border-x border-gray-300 text-sm" />
-                <button onClick={() => handleQuantityChange(1)} className="p-2 hover:bg-gray-50" disabled={quantity >= 99}>
-                  <Plus className="w-4 h-4" />
+                <input
+                  type="text"
+                  value={quantity}
+                  readOnly
+                  className="w-10 text-center border-x border-gray-300 text-sm"
+                  aria-label="Cantidad"
+                />
+                <button
+                  onClick={() => handleQuantityChange(1)}
+                  className="p-2 hover:bg-gray-50"
+                  disabled={quantity >= 99}
+                  aria-label="Aumentar cantidad"
+                >
+                  <Plus className="w-4 h-4" aria-hidden />
                 </button>
               </div>
               <button
@@ -219,8 +239,13 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
                 <Share2 className="w-3.5 h-3.5" />
                 Compartir
               </button>
-              <button onClick={handleToggleFavorite} className={`p-2 rounded-lg border transition-colors ${isFavorite ? 'bg-red-50 border-red-200' : 'border-gray-300 hover:bg-gray-50'}`}>
-                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-[#0c3c1f]'}`} />
+              <button
+                onClick={handleToggleFavorite}
+                className={`p-2 rounded-lg border transition-colors ${isFavorite ? 'bg-red-50 border-red-200' : 'border-gray-300 hover:bg-gray-50'}`}
+                aria-label={isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                aria-pressed={isFavorite}
+              >
+                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-[#0c3c1f]'}`} aria-hidden />
               </button>
             </div>
           </div>
@@ -232,7 +257,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
               <div className={`flex gap-4 ${images.length > 1 ? '' : 'justify-center'}`}>
                 {/* Thumbnails verticales */}
                 {images.length > 1 && (
-                  <div className="flex flex-col gap-2 shrink-0 w-16">
+                  <div className="flex flex-col gap-2 shrink-0 w-16" role="tablist" aria-label="Galería de imágenes">
                     {images.map((img, idx) => (
                       <button
                         key={idx}
@@ -242,8 +267,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
                             ? 'border-[#0c3c1f] shadow-md'
                             : 'border-gray-200 hover:border-gray-400'
                         }`}
+                        role="tab"
+                        aria-selected={selectedImage === idx}
+                        aria-label={`Ver imagen ${idx + 1} de ${images.length}`}
                       >
-                        <img src={img} alt={`Vista ${idx + 1}`} className="w-full h-full object-contain" />
+                        <img src={img} alt="" className="w-full h-full object-contain" />
                       </button>
                     ))}
                   </div>
@@ -301,8 +329,13 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
                     <Share2 className="w-4 h-4" />
                     <span className="text-xs">Compartir</span>
                   </button>
-                  <button onClick={handleToggleFavorite} className={`p-2 rounded-full border transition-colors ${isFavorite ? 'bg-red-50 border-red-200' : 'border-gray-300 hover:bg-gray-50'}`}>
-                    <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-[#0c3c1f]'}`} />
+                  <button
+                    onClick={handleToggleFavorite}
+                    className={`p-2 rounded-full border transition-colors ${isFavorite ? 'bg-red-50 border-red-200' : 'border-gray-300 hover:bg-gray-50'}`}
+                    aria-label={isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                    aria-pressed={isFavorite}
+                  >
+                    <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-[#0c3c1f]'}`} aria-hidden />
                   </button>
                 </div>
               </div>
@@ -327,12 +360,28 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
 
               <div ref={ctaRef} className="flex gap-3">
                 <div className="flex items-center border border-gray-300 rounded-lg shrink-0">
-                  <button onClick={() => handleQuantityChange(-1)} className="p-3 hover:bg-gray-50 transition-colors" disabled={quantity <= 1}>
-                    <Minus className="w-4 h-4" />
+                  <button
+                    onClick={() => handleQuantityChange(-1)}
+                    className="p-3 hover:bg-gray-50 transition-colors"
+                    disabled={quantity <= 1}
+                    aria-label="Disminuir cantidad"
+                  >
+                    <Minus className="w-4 h-4" aria-hidden />
                   </button>
-                  <input type="text" value={quantity} readOnly className="w-14 text-center border-x border-gray-300 font-medium" />
-                  <button onClick={() => handleQuantityChange(1)} className="p-3 hover:bg-gray-50 transition-colors" disabled={quantity >= 99}>
-                    <Plus className="w-4 h-4" />
+                  <input
+                    type="text"
+                    value={quantity}
+                    readOnly
+                    className="w-14 text-center border-x border-gray-300 font-medium"
+                    aria-label="Cantidad"
+                  />
+                  <button
+                    onClick={() => handleQuantityChange(1)}
+                    className="p-3 hover:bg-gray-50 transition-colors"
+                    disabled={quantity >= 99}
+                    aria-label="Aumentar cantidad"
+                  >
+                    <Plus className="w-4 h-4" aria-hidden />
                   </button>
                 </div>
                 <button
@@ -346,6 +395,49 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
             </div>
           </div>
         </div>
+
+        {/* Información del producto (NOM-142-SSA1/SCFI-2014) */}
+        {(product.abvLabel || product.volumeLabel || product.beverageType || product.origin || product.vendor) && (
+          <div className="bg-white rounded-lg p-6 shadow-sm mt-6 max-w-5xl mx-auto">
+            <h2 className="text-[#0c3c1f] text-xl font-bold mb-4">Información del producto</h2>
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+              {product.beverageType && (
+                <div className="flex justify-between border-b border-gray-100 pb-2">
+                  <dt className="text-sm text-[#717182]">Tipo</dt>
+                  <dd className="text-sm font-semibold text-[#212121]">{product.beverageType}</dd>
+                </div>
+              )}
+              {product.abvLabel && (
+                <div className="flex justify-between border-b border-gray-100 pb-2">
+                  <dt className="text-sm text-[#717182]">Graduación alcohólica</dt>
+                  <dd className="text-sm font-semibold text-[#212121]">{product.abvLabel}</dd>
+                </div>
+              )}
+              {product.volumeLabel && (
+                <div className="flex justify-between border-b border-gray-100 pb-2">
+                  <dt className="text-sm text-[#717182]">Contenido neto</dt>
+                  <dd className="text-sm font-semibold text-[#212121]">{product.volumeLabel}</dd>
+                </div>
+              )}
+              {product.origin && (
+                <div className="flex justify-between border-b border-gray-100 pb-2">
+                  <dt className="text-sm text-[#717182]">Origen</dt>
+                  <dd className="text-sm font-semibold text-[#212121]">{product.origin}</dd>
+                </div>
+              )}
+              {product.vendor && (
+                <div className="flex justify-between border-b border-gray-100 pb-2">
+                  <dt className="text-sm text-[#717182]">Marca</dt>
+                  <dd className="text-sm font-semibold text-[#212121]">{product.vendor}</dd>
+                </div>
+              )}
+            </dl>
+            <p className="mt-4 text-[11px] text-[#717182] italic">
+              EL ABUSO EN EL CONSUMO DE ESTE PRODUCTO ES NOCIVO PARA LA SALUD.
+              Prohibida su venta a menores de 18 años.
+            </p>
+          </div>
+        )}
 
         {/* Descripción del producto - sección completa */}
         {(product.descriptionHtml || product.description) && (

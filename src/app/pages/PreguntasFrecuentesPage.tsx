@@ -2,14 +2,37 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { faqs } from '@/content/mrbrown/faq';
+import { JsonLd } from '@/app/components/JsonLd';
+import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
+
+const faqPageSchema = (items: Array<{ question: string; answer: string }>) => ({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((it) => ({
+    '@type': 'Question',
+    name: it.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: it.answer,
+    },
+  })),
+});
 
 export const PreguntasFrecuentesPage: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggle = (i: number) => setOpenIndex(openIndex === i ? null : i);
 
+  useDocumentMeta({
+    title: 'Preguntas Frecuentes',
+    description:
+      'Resuelve tus dudas sobre métodos de pago, envíos en CDMX, tiempos de entrega, devoluciones y compra de bebidas alcohólicas en Mr. Brown.',
+    canonicalPath: '/preguntas-frecuentes',
+  });
+
   return (
     <>
+      <JsonLd schema={faqPageSchema(faqs)} />
       <section className="bg-gradient-to-r from-[#0c3c1f] to-[#1a5c35] py-12 md:py-16">
         <div className="container mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-3">

@@ -219,12 +219,21 @@ export const SearchDrawer = ({ isOpen, onClose, onOpenCart }: SearchDrawerProps)
                               <p className="text-[#0c3c1f] font-bold text-sm mb-1.5">${product.price.toFixed(2)} MXN</p>
                               <div className="flex items-center gap-2">
                                 <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
-                                  <button onClick={() => setQuantity(product.id, qty - 1)} className="p-1.5 hover:bg-gray-100 transition-colors" disabled={qty <= 1}>
-                                    <Minus className="w-3.5 h-3.5" />
+                                  <button
+                                    onClick={() => setQuantity(product.id, qty - 1)}
+                                    className="p-1.5 hover:bg-gray-100 transition-colors"
+                                    disabled={qty <= 1}
+                                    aria-label={`Disminuir cantidad de ${product.name}`}
+                                  >
+                                    <Minus className="w-3.5 h-3.5" aria-hidden />
                                   </button>
-                                  <span className="px-3 text-sm font-medium min-w-[2rem] text-center">{qty}</span>
-                                  <button onClick={() => setQuantity(product.id, qty + 1)} className="p-1.5 hover:bg-gray-100 transition-colors">
-                                    <Plus className="w-3.5 h-3.5" />
+                                  <span className="px-3 text-sm font-medium min-w-[2rem] text-center" aria-live="polite">{qty}</span>
+                                  <button
+                                    onClick={() => setQuantity(product.id, qty + 1)}
+                                    className="p-1.5 hover:bg-gray-100 transition-colors"
+                                    aria-label={`Aumentar cantidad de ${product.name}`}
+                                  >
+                                    <Plus className="w-3.5 h-3.5" aria-hidden />
                                   </button>
                                 </div>
                                 <motion.button

@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import { useLocation } from 'react-router-dom';
 import type { PolicyBlock } from '@/content/mrbrown/policies';
+import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
 
 interface PolicyDocumentPageProps {
   title: string;
@@ -8,6 +10,21 @@ interface PolicyDocumentPageProps {
 }
 
 export const PolicyDocumentPage: React.FC<PolicyDocumentPageProps> = ({ title, blocks }) => {
+  const { pathname } = useLocation();
+
+  // Primer bloque sin título → suele ser el resumen introductorio. Sirve como meta description.
+  const intro = blocks.find((b) => b.body && !b.title)?.body
+    ?? blocks[0]?.body
+    ?? '';
+  const description =
+    intro.replace(/\s+/g, ' ').trim().slice(0, 160).replace(/\s\S*$/, '…') || `${title} — Mr. Brown`;
+
+  useDocumentMeta({
+    title,
+    description,
+    canonicalPath: pathname,
+  });
+
   return (
     <>
       <section className="bg-gradient-to-r from-[#0c3c1f] to-[#1a5c35] py-12 md:py-16">

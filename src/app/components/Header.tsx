@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ShoppingCart, Menu, X, Search, MessageCircle, User, ChevronDown, Heart, PartyPopper } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, MessageCircle, User, ChevronDown, Heart, PartyPopper, Truck } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
@@ -95,6 +95,19 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
       {/* Announcement Bar */}
       <div className="bg-gradient-to-r from-[#FDB93A] to-[#FF8A00] py-2 overflow-hidden">
         <div className="container mx-auto px-3 sm:px-4 max-w-[100vw]">
+          {/* Desktop: ambos mensajes lado a lado con separador */}
+          <div className="hidden md:flex items-center justify-center gap-6 text-sm font-medium text-[#212121]">
+            <span className="flex items-center gap-2">
+              <Truck className="h-4 w-4 shrink-0" aria-hidden />
+              ¡Envíos GRATIS en compras mayores a $2.000 MXN!
+            </span>
+            <span className="h-4 w-px bg-[#212121]/30" aria-hidden />
+            <span className="flex items-center gap-2">
+              <PartyPopper className="h-4 w-4 shrink-0" aria-hidden />
+              ¡Cotiza tu evento y hazlo inolvidable!
+            </span>
+          </div>
+          {/* Mobile: carrusel rotativo */}
           <AnimatePresence mode="wait">
             <motion.p
               key={currentAnnouncementIndex}
@@ -102,7 +115,7 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-center text-sm text-[#212121] font-medium"
+              className="md:hidden text-center text-sm text-[#212121] font-medium"
             >
               {announcements[currentAnnouncementIndex]}
             </motion.p>
@@ -173,8 +186,9 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                 onClick={onCartClick}
                 data-cart-icon
                 className="relative bg-[#0c3c1f] text-white p-2 rounded-lg hover:bg-[#0a3019] transition-colors"
+                aria-label={`Abrir carrito de compras${getTotalItems() > 0 ? ` (${getTotalItems()} artículos)` : ''}`}
               >
-                <ShoppingCart className="w-6 h-6" />
+                <ShoppingCart className="w-6 h-6" aria-hidden />
                 {getTotalItems() > 0 && (
                   <span className="absolute -top-2 -right-2 bg-[#FF6B35] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
                     {getTotalItems()}
@@ -388,7 +402,7 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                   }}
                   className="flex min-h-[48px] w-full items-center gap-2 rounded-xl bg-[#FDB93A]/15 px-4 py-3 text-left text-sm font-bold text-[#212121] transition-colors hover:bg-[#FDB93A]/25 active:bg-[#FDB93A]/35"
                 >
-                  <PartyPopper className="h-5 w-5 shrink-0 text-[#FF8A00]" aria-hidden />
+                  <PartyPopper className="h-5 w-5 shrink-0 text-[#0c3c1f]" aria-hidden />
                   Cotiza tu evento
                 </button>
               </div>

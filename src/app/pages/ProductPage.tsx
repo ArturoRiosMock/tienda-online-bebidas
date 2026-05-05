@@ -1,9 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ProductDetail } from '@/app/components/ProductDetail';
+import { JsonLd } from '@/app/components/JsonLd';
 import { getProductByHandle } from '@/shopify/products';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
+import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
+import { absoluteUrl } from '@/content/mrbrown/seo-defaults';
 import type { Product } from '@/shopify/types';
+
+const truncate = (text: string, max: number) => {
+  if (!text) return '';
+  const cleaned = text.replace(/\s+/g, ' ').trim();
+  if (cleaned.length <= max) return cleaned;
+  return `${cleaned.slice(0, max - 1).trimEnd()}…`;
+};
+
+const buildProductSchema = (product: Product) => {
+  const path = product.handle ? `/producto/${product.handle}` : `/producto/${product.id}`;
+  const canonical = absoluteUrl(path);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: product.images?.length ? product.images : product.image ? [product.image] : undefined,
+    description:
+      product.description?.replace(/\s+/g, ' ').trim().slice(0, 500) || undefined,
+    sku: product.shopifyId,
+    brand: product.vendor
+      ? { '@type': 'Brand', name: product.vendor }
+      : undefined,
+    category: product.category || undefined,
+    offers: {
+      '@type': 'Offer',
+      url: canonical,
+      priceCurrency: 'MXN',
+      price: product.price.toFixed(2),
+      availability: 'https://schema.org/InStock',
+      itemCondition: 'https://schema.org/NewCondition',
+    },
+  };
+};
 
 export const ProductPage: React.FC = () => {
   const { handle } = useParams<{ handle: string }>();
@@ -45,6 +81,35 @@ export const ProductPage: React.FC = () => {
     navigate(`/producto/${p.handle || p.id}`);
   };
 
+  const metaDescription = product
+    ? truncate(
+        [
+          product.vendor && `Marca: ${product.vendor}.`,
+          product.beverageType && `Tipo: ${product.beverageType}.`,
+          product.abvLabel && `Graduación ${product.abvLabel}.`,
+          product.volumeLabel && `Contenido ${product.volumeLabel}.`,
+          `Precio $${product.price.toFixed(2)} MXN.`,
+          'Compra en Mr. Brown con envío rápido en CDMX.',
+          product.description ? truncate(product.description, 80) : '',
+        ]
+          .filter(Boolean)
+          .join(' '),
+        160,
+      )
+    : undefined;
+
+  useDocumentMeta({
+    title: product?.name,
+    description: metaDescription,
+    canonicalPath: product?.handle ? `/producto/${product.handle}` : undefined,
+    ogImage: product?.image,
+    imageAlt: product ? `${product.name} — Mr. Brown` : undefined,
+    ogType: 'product',
+    priceAmount: product?.price,
+    priceCurrency: 'MXN',
+    availability: product ? 'in stock' : undefined,
+  });
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-12">
@@ -76,11 +141,14 @@ export const ProductPage: React.FC = () => {
   }
 
   return (
-    <ProductDetail
-      product={product}
-      allProducts={allProducts}
-      onBack={() => navigate(-1)}
-      onProductClick={handleProductClick}
-    />
+    <>
+      <JsonLd schema={buildProductSchema(product)} />
+      <ProductDetail
+        product={product}
+        allProducts={allProducts}
+        onBack={() => navigate(-1)}
+        onProductClick={handleProductClick}
+      />
+    </>
   );
 };

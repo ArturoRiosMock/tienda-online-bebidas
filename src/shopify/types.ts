@@ -150,4 +150,12 @@ export interface Product {
   cantidadLabel?: string;
   vendor?: string;
   tags?: string[];
+  /** Graduación alcohólica (ej. "40% Vol.") — NOM-142-SSA1/SCFI-2014 */
+  abvLabel?: string;
+  /** Contenido neto / capacidad (ej. "750 ml") — NOM-142-SSA1/SCFI-2014 */
+  volumeLabel?: string;
+  /** Tipo de bebida (ej. "Whisky", "Tequila") — NOM-142-SSA1/SCFI-2014 */
+  beverageType?: string;
+  /** País / región de origen (ej. "México") — NOM-142-SSA1/SCFI-2014 */
+  origin?: string;
 }

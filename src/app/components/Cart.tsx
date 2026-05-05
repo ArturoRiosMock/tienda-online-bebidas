@@ -67,24 +67,27 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 bg-black/50 z-50"
-            onClick={onClose}
-          />
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col"
-          >
+    <>
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <motion.div
+              key="cart-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="fixed inset-0 bg-black/50 z-50"
+              onClick={onClose}
+            />
+            <motion.div
+              key="cart-drawer"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+              className="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col"
+            >
             <div className="bg-[#0c3c1f] text-white p-5 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5" />
@@ -93,8 +96,9 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
               <button
                 onClick={onClose}
                 className="hover:bg-white/10 p-2 rounded-lg transition-colors"
+                aria-label="Cerrar carrito"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" aria-hidden />
               </button>
             </div>
 
@@ -146,25 +150,28 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                               onClick={() => updateQuantity(itemId(item), item.quantity - 1)}
                               disabled={cartLoading}
                               className="bg-white border border-gray-200 p-1 rounded-md hover:bg-gray-100 disabled:opacity-50 transition-colors"
+                              aria-label={`Disminuir cantidad de ${item.name}`}
                             >
-                              <Minus className="w-3.5 h-3.5" />
+                              <Minus className="w-3.5 h-3.5" aria-hidden />
                             </button>
-                            <span className="text-[#212121] font-medium min-w-[1.5rem] text-center text-sm">
+                            <span className="text-[#212121] font-medium min-w-[1.5rem] text-center text-sm" aria-live="polite">
                               {item.quantity}
                             </span>
                             <button
                               onClick={() => updateQuantity(itemId(item), item.quantity + 1)}
                               disabled={cartLoading}
                               className="bg-white border border-gray-200 p-1 rounded-md hover:bg-gray-100 disabled:opacity-50 transition-colors"
+                              aria-label={`Aumentar cantidad de ${item.name}`}
                             >
-                              <Plus className="w-3.5 h-3.5" />
+                              <Plus className="w-3.5 h-3.5" aria-hidden />
                             </button>
                             <button
                               onClick={() => removeFromCart(itemId(item))}
                               disabled={cartLoading}
                               className="ml-auto text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded-md disabled:opacity-50 transition-colors"
+                              aria-label={`Eliminar ${item.name} del carrito`}
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="w-4 h-4" aria-hidden />
                             </button>
                           </div>
                         </div>
@@ -202,9 +209,10 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                 </button>
               </motion.div>
             )}
-          </motion.div>
-        </>
-      )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       <PurchaseTypeDialog
         open={showPurchaseType}
@@ -212,6 +220,6 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
         onConfirm={handleConfirmPurchaseType}
         loading={checkoutLoading}
       />
-    </AnimatePresence>
+    </>
   );
 };

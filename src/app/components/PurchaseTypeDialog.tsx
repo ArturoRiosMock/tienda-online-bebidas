@@ -13,6 +13,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/app/components/ui/radio-group';
 import { Label } from '@/app/components/ui/label';
 import { Input } from '@/app/components/ui/input';
+import { Checkbox } from '@/app/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -44,6 +45,7 @@ export const PurchaseTypeDialog = ({
   loading,
 }: PurchaseTypeDialogProps) => {
   const [purchaseType, setPurchaseType] = useState<PurchaseType>('personal');
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
 
   const {
     handleSubmit,
@@ -54,11 +56,13 @@ export const PurchaseTypeDialog = ({
 
   const handleClose = () => {
     setPurchaseType('personal');
+    setAgeConfirmed(false);
     reset();
     onClose();
   };
 
   const handleContinue = () => {
+    if (!ageConfirmed) return;
     if (purchaseType === 'personal') {
       onConfirm(null);
       return;
@@ -280,6 +284,29 @@ export const PurchaseTypeDialog = ({
           )}
         </AnimatePresence>
 
+        <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
+          <p className="text-[#212121] text-xs leading-relaxed mb-3">
+            Al continuar al pago, declaro bajo protesta de decir verdad que tengo 18 años o más.
+            Mr. Brown verificará la identificación oficial vigente del comprador al momento de la entrega.
+            La venta y suministro de bebidas alcohólicas a menores de 18 años está estrictamente
+            prohibida conforme al artículo 220 de la Ley General de Salud.
+          </p>
+          <label
+            htmlFor="age-confirm-checkout"
+            className="flex items-start gap-2 cursor-pointer select-none"
+          >
+            <Checkbox
+              id="age-confirm-checkout"
+              checked={ageConfirmed}
+              onCheckedChange={(value) => setAgeConfirmed(value === true)}
+              className="mt-0.5"
+            />
+            <span className="text-[#212121] text-xs font-semibold leading-snug">
+              Confirmo que soy mayor de edad y acepto la verificación de identificación al momento de la entrega.
+            </span>
+          </label>
+        </div>
+
         <DialogFooter className="mt-2 gap-2 sm:gap-0">
           <button
             type="button"
@@ -292,8 +319,8 @@ export const PurchaseTypeDialog = ({
           <button
             type="button"
             onClick={handleContinue}
-            disabled={loading}
-            className="flex-1 sm:flex-none py-2.5 px-5 bg-[#0c3c1f] text-white rounded-lg font-bold text-sm hover:bg-[#0a3019] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            disabled={loading || !ageConfirmed}
+            className="flex-1 sm:flex-none py-2.5 px-5 bg-[#0c3c1f] text-white rounded-lg font-bold text-sm hover:bg-[#0a3019] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
               <>

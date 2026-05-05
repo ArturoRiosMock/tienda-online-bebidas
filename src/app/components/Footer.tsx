@@ -2,6 +2,8 @@ import React from 'react';
 import { ArrowUp, Facebook, Instagram } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
+import { useCookieConsent } from '@/app/context/CookieConsentContext';
+import { formatLicense, hasLicenseInfo } from '@/content/mrbrown/business-info';
 
 const socialIconLinkClass =
   'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#212121] transition-colors hover:bg-white hover:text-[#0c3c1f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0c3c1f]';
@@ -15,6 +17,7 @@ function TikTokGlyph({ className }: { className?: string }) {
 }
 
 export const Footer: React.FC = () => {
+  const { openPanel } = useCookieConsent();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -62,6 +65,15 @@ export const Footer: React.FC = () => {
                 <li><Link to="/aviso-de-privacidad" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Política de privacidad</Link></li>
                 <li><Link to="/politica-de-reembolso" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Política de reembolso</Link></li>
                 <li><Link to="/terminos-de-servicio" className="text-[#212121] hover:text-[#0c3c1f] transition-colors">Términos de servicio</Link></li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={openPanel}
+                    className="text-left text-[#212121] hover:text-[#0c3c1f] transition-colors"
+                  >
+                    Configurar cookies
+                  </button>
+                </li>
               </ul>
             </div>
             <div>
@@ -103,6 +115,18 @@ export const Footer: React.FC = () => {
           <div className="p-4 bg-white/50 rounded-lg">
             <h4 className="text-[#212121] font-bold mb-1">BEBA CON MODERACIÓN</h4>
             <p className="text-[#212121] text-sm">No compartir con menores de 18 años.</p>
+            <p className="text-[#212121] text-xs font-bold uppercase tracking-wide mt-3 pt-3 border-t border-gray-300">
+              EL ABUSO EN EL CONSUMO DE ESTE PRODUCTO ES NOCIVO PARA LA SALUD
+            </p>
+            <p className="text-[#717182] text-[11px] mt-1">
+              Prohibida su venta a menores de 18 años. Conforme al artículo 220 de la
+              Ley General de Salud y la NOM-142-SSA1/SCFI-2014.
+            </p>
+            {hasLicenseInfo() && (
+              <p className="text-[#212121] text-xs mt-2">
+                {formatLicense()}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -122,9 +146,9 @@ export const Footer: React.FC = () => {
             <button
               onClick={scrollToTop}
               className="w-10 h-10 rounded-full border-2 border-[#0c3c1f] flex items-center justify-center hover:bg-[#0c3c1f] hover:text-white transition-colors group"
-              aria-label="Scroll to top"
+              aria-label="Volver al inicio de la página"
             >
-              <ArrowUp className="w-5 h-5 text-[#0c3c1f] group-hover:text-white" />
+              <ArrowUp className="w-5 h-5 text-[#0c3c1f] group-hover:text-white" aria-hidden />
             </button>
           </div>
         </div>

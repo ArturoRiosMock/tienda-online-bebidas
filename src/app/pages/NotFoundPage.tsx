@@ -1,8 +1,16 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
 
 export const NotFoundPage: React.FC = () => {
   const { pathname } = useLocation();
+
+  useDocumentMeta({
+    title: 'Página no encontrada',
+    description: 'La página solicitada no existe en Mr. Brown. Vuelve al inicio para seguir comprando.',
+    canonicalPath: pathname,
+    noindex: true,
+  });
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center bg-gray-50 px-4">

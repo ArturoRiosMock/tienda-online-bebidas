@@ -17,6 +17,14 @@ export interface Product {
   cantidadLabel?: string;
   vendor?: string;
   tags?: string[];
+  /** Graduación alcohólica (NOM-142-SSA1/SCFI-2014) */
+  abvLabel?: string;
+  /** Contenido neto / capacidad (NOM-142-SSA1/SCFI-2014) */
+  volumeLabel?: string;
+  /** Tipo de bebida (NOM-142-SSA1/SCFI-2014) */
+  beverageType?: string;
+  /** País / región de origen (NOM-142-SSA1/SCFI-2014) */
+  origin?: string;
 }
 
 export interface CartItem extends Omit<Product, 'id'> {
