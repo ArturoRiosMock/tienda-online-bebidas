@@ -128,12 +128,21 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
         <div className="container mx-auto px-3 sm:px-4 max-w-[100vw]">
           <div className="flex items-center justify-between py-3 sm:py-4 gap-2 sm:gap-4 min-w-0">
             {/* Logo */}
-            <img
-              src={logo}
-              alt="Mr. Brown"
-              className="h-9 sm:h-10 md:h-12 flex-shrink-0 cursor-pointer max-h-12 object-contain"
-              onClick={() => handleCategoryClick('Todos')}
-            />
+            <button
+              type="button"
+              onClick={() => {
+                navigate('/');
+                setMobileMenuOpen(false);
+              }}
+              className="flex-shrink-0"
+              aria-label="Ir al inicio"
+            >
+              <img
+                src={logo}
+                alt="Mr. Brown"
+                className="h-9 sm:h-10 md:h-12 max-h-12 object-contain"
+              />
+            </button>
 
             {/* Search Trigger - Desktop */}
             <button
