@@ -231,6 +231,17 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
               Todos
             </button>
 
+            <button
+              type="button"
+              onClick={() => {
+                navigate('/blog');
+                setMobileMenuOpen(false);
+              }}
+              className="rounded-full px-3 py-1.5 text-sm font-semibold text-[#212121] transition-colors hover:bg-[#0a5028] hover:text-white"
+            >
+              Blog
+            </button>
+
             {collectionsLoading ? (
               <div className="flex flex-wrap gap-2">
                 {[1, 2, 3, 4, 5].map((i) => (
@@ -315,6 +326,17 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                 className="mb-2 flex min-h-[48px] w-full items-center rounded-xl px-4 text-left text-sm font-semibold text-[#0c3c1f] transition-colors hover:bg-gray-100 active:bg-gray-200"
               >
                 Todos los productos
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate('/blog');
+                }}
+                className="mb-2 flex min-h-[48px] w-full items-center rounded-xl px-4 text-left text-sm font-semibold text-[#0c3c1f] transition-colors hover:bg-gray-100 active:bg-gray-200"
+              >
+                Blog
               </button>
 
               {collectionsLoading ? (

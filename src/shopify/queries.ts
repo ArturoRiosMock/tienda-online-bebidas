@@ -516,6 +516,105 @@ export const REMOVE_FROM_CART = `
   }
 `;
 
+// === BLOG ===
+
+/**
+ * Lista artículos del blog principal de Shopify.
+ * Si no se pasa `blogHandle`, se usa el primer blog disponible (Shopify crea
+ * uno por defecto llamado "news").
+ */
+export const GET_ARTICLES = `
+  query GetArticles($first: Int!, $blogHandle: String) {
+    blog(handle: $blogHandle) {
+      id
+      handle
+      title
+      articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) {
+        edges {
+          node {
+            id
+            handle
+            title
+            excerpt
+            publishedAt
+            tags
+            authorV2 {
+              name
+            }
+            image {
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/** Lista todos los artículos del shop (atajo cuando no se conoce el blog handle). */
+export const GET_ALL_ARTICLES = `
+  query GetAllArticles($first: Int!) {
+    articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) {
+      edges {
+        node {
+          id
+          handle
+          title
+          excerpt
+          publishedAt
+          tags
+          authorV2 {
+            name
+          }
+          blog {
+            handle
+            title
+          }
+          image {
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
+    }
+  }
+`;
+
+/** Trae un artículo concreto por su handle, dentro de un blog específico. */
+export const GET_ARTICLE_BY_HANDLE = `
+  query GetArticleByHandle($blogHandle: String!, $articleHandle: String!) {
+    blog(handle: $blogHandle) {
+      id
+      handle
+      title
+      articleByHandle(handle: $articleHandle) {
+        id
+        handle
+        title
+        excerpt
+        contentHtml
+        publishedAt
+        tags
+        authorV2 {
+          name
+          bio
+        }
+        image {
+          url
+          altText
+          width
+          height
+        }
+      }
+    }
+  }
+`;
+
 // Query para buscar productos
 export const SEARCH_PRODUCTS = `
   query SearchProducts($query: String!, $first: Int!) {

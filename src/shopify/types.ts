@@ -121,6 +121,48 @@ export interface ShopifyCartLine {
   };
 }
 
+// === BLOG ===
+
+export interface ShopifyArticleImage {
+  url: string;
+  altText: string | null;
+  width?: number | null;
+  height?: number | null;
+}
+
+export interface ShopifyArticleAuthor {
+  name: string;
+  bio?: string | null;
+}
+
+export interface ShopifyArticle {
+  id: string;
+  handle: string;
+  title: string;
+  excerpt: string | null;
+  contentHtml?: string;
+  publishedAt: string;
+  tags: string[];
+  authorV2: ShopifyArticleAuthor | null;
+  image: ShopifyArticleImage | null;
+  blog?: { handle: string; title: string } | null;
+}
+
+/** Tipo simplificado usado en componentes (lista o detalle). */
+export interface BlogArticle {
+  id: string;
+  handle: string;
+  title: string;
+  excerpt: string;
+  contentHtml?: string;
+  publishedAt: string;
+  tags: string[];
+  authorName?: string;
+  authorBio?: string;
+  image?: { url: string; alt: string };
+  blogHandle?: string;
+}
+
 // Tipo para checkout
 export interface ShopifyCheckout {
   id: string;

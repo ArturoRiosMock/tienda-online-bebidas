@@ -10,6 +10,8 @@ import { EventQuotePage } from '@/app/pages/EventQuotePage';
 import { SobreNosotrosPage } from '@/app/pages/SobreNosotrosPage';
 import { PreguntasFrecuentesPage } from '@/app/pages/PreguntasFrecuentesPage';
 import { ContactoPage } from '@/app/pages/ContactoPage';
+import { BlogPage } from '@/app/pages/BlogPage';
+import { ArticlePage } from '@/app/pages/ArticlePage';
 import { PolicyDocumentPage } from '@/app/pages/PolicyDocumentPage';
 import { ErrorBoundary } from '@/app/components/ErrorBoundary';
 import { privacyPolicy, refundPolicy, termsOfService } from '@/content/mrbrown/policies';
@@ -32,6 +34,12 @@ function ProductRedirect() {
 function CollectionRedirect() {
   const { handle } = useParams<{ handle: string }>();
   return <Navigate to={`/categorias/${handle}`} replace />;
+}
+
+/** Redirige /blogs/:blogHandle/:handle (URL estándar de Shopify) → /blog/:handle */
+function ShopifyArticleRedirect() {
+  const { handle } = useParams<{ handle: string }>();
+  return <Navigate to={`/blog/${handle}`} replace />;
 }
 
 function ScrollToTop() {
@@ -75,6 +83,11 @@ function App() {
           <Route path="/sobre-nosotros" element={<Navigate to="/page/sobre-nosotros" replace />} />
           <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
           <Route path="/contacto" element={<ContactoPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:handle" element={<ArticlePage />} />
+          {/* Redirects desde URLs estándar de Shopify (/blogs/*) hacia las rutas internas */}
+          <Route path="/blogs/:blogHandle/:handle" element={<ShopifyArticleRedirect />} />
+          <Route path="/blogs/:blogHandle" element={<Navigate to="/blog" replace />} />
           <Route path="/aviso-de-privacidad" element={<PolicyDocumentPage title="Política de Privacidad" blocks={privacyPolicy} />} />
           <Route path="/politica-de-reembolso" element={<PolicyDocumentPage title="Política de Reembolso" blocks={refundPolicy} />} />
           <Route path="/terminos-de-servicio" element={<PolicyDocumentPage title="Términos del Servicio" blocks={termsOfService} />} />
