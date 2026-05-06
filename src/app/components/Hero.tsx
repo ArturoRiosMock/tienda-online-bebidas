@@ -59,7 +59,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
       image: '/hero-best-sellers.webp',
       bgColor: '#4a5240',
       buttonText: 'VER BEST SELLERS',
-      buttonAction: () => navigate('/categorias/best-sellers')
+      buttonAction: () => navigate('/categorias/promo-mundialista')
     }
   ];
 
