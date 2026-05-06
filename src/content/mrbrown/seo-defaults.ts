@@ -9,11 +9,10 @@ export const SITE_NAME = 'Mr. Brown';
 export const SITE_URL = 'https://www.mrbrown.com.mx';
 export const SITE_LOGO = `${SITE_URL}/favicon.png`;
 
-export const DEFAULT_TITLE =
-  'Mr. Brown | Bebidas Premium en CDMX — Tequila, Whisky, Mezcal y Más';
+export const DEFAULT_TITLE = 'Vinos, Licores y más.. Mr. Brown';
 
 export const DEFAULT_DESCRIPTION =
-  'Compra bebidas premium en línea: tequila, whisky, mezcal, vinos y mixología con envío rápido en CDMX y zona metropolitana. 100% originales y barras para eventos.';
+  'Vinos, licores y bebidas premium en línea: tequila, whisky, mezcal, gin y mixología con envío rápido en CDMX y zona metropolitana. 100% originales y barras para eventos.';
 
 /** Sufijo para concatenar al final de los títulos por página. */
 export const TITLE_SUFFIX = ` | ${SITE_NAME}`;
