@@ -6,6 +6,7 @@ import { HomePage } from '@/app/pages/HomePage';
 import { CollectionPage } from '@/app/pages/CollectionPage';
 import { ProductPage } from '@/app/pages/ProductPage';
 import { BlogPage } from '@/app/pages/BlogPage';
+import { BlogPostPage } from '@/app/pages/BlogPostPage';
 import { LoginPage } from '@/app/pages/LoginPage';
 import { RegisterPage } from '@/app/pages/RegisterPage';
 import { PrivacyPolicyPage } from '@/app/pages/PrivacyPolicyPage';
@@ -27,6 +28,7 @@ function App() {
               <Route path="/categorias/:handle" element={<CollectionPage />} />
               <Route path="/producto/:handle" element={<ProductPage />} />
               <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:blogHandle/:articleHandle" element={<BlogPostPage />} />
             </Route>
             <Route path="/admin/banners" element={<AdminBannersPage />} />
           </Routes>

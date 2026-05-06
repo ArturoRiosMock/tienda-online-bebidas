@@ -492,6 +492,105 @@ export const REMOVE_FROM_CART = `
   }
 `;
 
+// Query para obtener artículos de blog (cross-blog)
+export const GET_ARTICLES = `
+  query GetArticles($first: Int!) {
+    articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) {
+      edges {
+        node {
+          id
+          handle
+          title
+          excerpt
+          excerptHtml
+          publishedAt
+          tags
+          image {
+            url
+            altText
+            width
+            height
+          }
+          authorV2 {
+            name
+          }
+          blog {
+            id
+            handle
+            title
+          }
+        }
+      }
+    }
+  }
+`;
+
+// Query para obtener un artículo específico de un blog
+export const GET_ARTICLE_BY_HANDLE = `
+  query GetArticleByHandle($blogHandle: String!, $articleHandle: String!) {
+    blog(handle: $blogHandle) {
+      id
+      handle
+      title
+      articleByHandle(handle: $articleHandle) {
+        id
+        handle
+        title
+        content
+        contentHtml
+        excerpt
+        excerptHtml
+        publishedAt
+        tags
+        image {
+          url
+          altText
+          width
+          height
+        }
+        authorV2 {
+          name
+          bio
+        }
+        blog {
+          id
+          handle
+          title
+        }
+      }
+    }
+  }
+`;
+
+// Query para listar blogs (canales) con preview de artículos
+export const GET_BLOGS = `
+  query GetBlogs($first: Int!) {
+    blogs(first: $first) {
+      edges {
+        node {
+          id
+          handle
+          title
+          articles(first: 1, sortKey: PUBLISHED_AT, reverse: true) {
+            edges {
+              node {
+                id
+                handle
+                title
+                publishedAt
+                image {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 // Query para buscar productos
 export const SEARCH_PRODUCTS = `
   query SearchProducts($query: String!, $first: Int!) {

@@ -131,6 +131,70 @@ export interface ShopifyCheckout {
   };
 }
 
+// Tipos para Blog / Articles
+export interface ShopifyImageRef {
+  url: string;
+  altText: string | null;
+  width?: number;
+  height?: number;
+}
+
+export interface ShopifyBlogRef {
+  id: string;
+  handle: string;
+  title: string;
+}
+
+export interface ShopifyArticleListNode {
+  id: string;
+  handle: string;
+  title: string;
+  excerpt: string | null;
+  excerptHtml: string | null;
+  publishedAt: string;
+  tags: string[];
+  image: ShopifyImageRef | null;
+  authorV2: { name: string } | null;
+  blog: ShopifyBlogRef;
+}
+
+export interface ShopifyArticleDetail {
+  id: string;
+  handle: string;
+  title: string;
+  content: string;
+  contentHtml: string;
+  excerpt: string | null;
+  excerptHtml: string | null;
+  publishedAt: string;
+  tags: string[];
+  image: ShopifyImageRef | null;
+  authorV2: { name: string; bio: string | null } | null;
+  blog: ShopifyBlogRef;
+}
+
+/** Modelo plano que usa la app para renderizar tarjetas de artículo */
+export interface BlogArticle {
+  id: string;
+  handle: string;
+  title: string;
+  excerpt: string;
+  excerptHtml?: string;
+  publishedAt: string;
+  tags: string[];
+  image: string | null;
+  imageAlt: string;
+  author: string | null;
+  blogHandle: string;
+  blogTitle: string;
+}
+
+/** Modelo plano para el detalle */
+export interface BlogArticleDetail extends BlogArticle {
+  contentHtml: string;
+  authorBio: string | null;
+}
+
 // Tipo convertido al formato de la app
 export interface Product {
   id: number;
