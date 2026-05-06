@@ -45,7 +45,7 @@ export const PurchaseTypeDialog = ({
   loading,
 }: PurchaseTypeDialogProps) => {
   const [purchaseType, setPurchaseType] = useState<PurchaseType>('personal');
-  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [ageConfirmed, setAgeConfirmed] = useState(true);
 
   const {
     handleSubmit,
@@ -283,29 +283,6 @@ export const PurchaseTypeDialog = ({
             </motion.div>
           )}
         </AnimatePresence>
-
-        <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
-          <p className="text-[#212121] text-xs leading-relaxed mb-3">
-            Al continuar al pago, declaro bajo protesta de decir verdad que tengo 18 años o más.
-            Mr. Brown verificará la identificación oficial vigente del comprador al momento de la entrega.
-            La venta y suministro de bebidas alcohólicas a menores de 18 años está estrictamente
-            prohibida conforme al artículo 220 de la Ley General de Salud.
-          </p>
-          <label
-            htmlFor="age-confirm-checkout"
-            className="flex items-start gap-2 cursor-pointer select-none"
-          >
-            <Checkbox
-              id="age-confirm-checkout"
-              checked={ageConfirmed}
-              onCheckedChange={(value) => setAgeConfirmed(value === true)}
-              className="mt-0.5"
-            />
-            <span className="text-[#212121] text-xs font-semibold leading-snug">
-              Confirmo que soy mayor de edad y acepto la verificación de identificación al momento de la entrega.
-            </span>
-          </label>
-        </div>
 
         <DialogFooter className="mt-2 gap-2 sm:gap-0">
           <button
