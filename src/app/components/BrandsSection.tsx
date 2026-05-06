@@ -26,15 +26,15 @@ const brands: Brand[] = [
   {
     id: 'felix',
     name: 'Félix',
-    handle: 'felix-shorle',
-    titleFallback: 'Felix Shorle',
+    handle: 'felix-schorle',
+    titleFallback: 'Felix Schorle',
     image: '/brands/felix.png',
   },
   {
     id: 'condesa-gin',
     name: 'Condesa Gin',
-    handle: 'condesa-gin',
-    titleFallback: 'Condesa Gin',
+    handle: 'condesa',
+    titleFallback: 'Condesa',
     image: '/brands/condesa-gin.png',
   },
   {
