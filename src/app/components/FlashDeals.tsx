@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import Slider from 'react-slick';
-import { Zap, Minus, Plus } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Zap, Minus, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useCart } from '@/app/context/CartContext';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 import type { Product } from '@/app/context/CartContext';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 
 const FLASH_DEALS_COLLECTION = 'ofertas-relampago';
 
@@ -172,19 +169,13 @@ export const FlashDeals: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const sliderSettings = {
-    dots: true,
-    infinite: deals.length > 5,
-    speed: 500,
-    slidesToShow: Math.min(5, deals.length || 1),
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    pauseOnHover: true,
-    responsive: [
-      { breakpoint: 1280, settings: { slidesToShow: Math.min(4, deals.length || 1), slidesToScroll: 1 } },
-      { breakpoint: 1024, settings: { slidesToShow: Math.min(3, deals.length || 1), slidesToScroll: 1 } }
-    ]
+  const desktopScrollerRef = useRef<HTMLDivElement>(null);
+
+  /** Scrollea el carrusel horizontalmente una "página" (= ancho visible). */
+  const scrollByPage = (direction: 1 | -1) => {
+    const el = desktopScrollerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: el.clientWidth * direction * 0.8, behavior: 'smooth' });
   };
 
   if (!loading && deals.length === 0) {
@@ -252,16 +243,40 @@ export const FlashDeals: React.FC = () => {
           </div>
         )}
 
-        {/* Desktop: carrusel Slider */}
+        {/* Desktop: scroll horizontal nativo con snap */}
         {!loading && deals.length > 0 && (
-          <div className="hidden md:block flash-deals-slider">
-            <Slider {...sliderSettings}>
+          <div className="hidden md:block relative">
+            <div
+              ref={desktopScrollerRef}
+              className="flash-deals-desktop-scroll flex gap-6 overflow-x-auto pb-4 -mx-4 px-4 snap-x snap-mandatory scroll-smooth"
+            >
               {deals.map((deal) => (
-                <div key={deal.id} className="px-3">
+                <div
+                  key={deal.id}
+                  className="shrink-0 snap-start"
+                  style={{ width: 'calc((100% - 96px) / 5)' }}
+                >
                   <FlashDealCard deal={deal} />
                 </div>
               ))}
-            </Slider>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => scrollByPage(-1)}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-10 w-10 h-10 flex items-center justify-center bg-white/95 text-[#0c3c1f] rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all"
+              aria-label="Anterior"
+            >
+              <ChevronLeft className="w-6 h-6" aria-hidden />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollByPage(1)}
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-10 w-10 h-10 flex items-center justify-center bg-white/95 text-[#0c3c1f] rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all"
+              aria-label="Siguiente"
+            >
+              <ChevronRight className="w-6 h-6" aria-hidden />
+            </button>
           </div>
         )}
       </div>
@@ -269,22 +284,15 @@ export const FlashDeals: React.FC = () => {
       <style>{`
         .flash-deals-mobile-scroll::-webkit-scrollbar { display: none; }
         .flash-deals-mobile-scroll { scrollbar-width: none; -ms-overflow-style: none; }
-        .flash-deals-slider .slick-dots { bottom: -35px; }
-        .flash-deals-slider .slick-dots li button:before { color: #0c3c1f; font-size: 8px; }
-        .flash-deals-slider .slick-dots li.slick-active button:before { color: #0c3c1f; }
-        .flash-deals-slider .slick-prev,
-        .flash-deals-slider .slick-next {
-          width: 40px;
-          height: 40px;
-          z-index: 10;
-          background: rgba(255, 255, 255, 0.95);
-          border-radius: 9999px;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+        .flash-deals-desktop-scroll::-webkit-scrollbar { display: none; }
+        .flash-deals-desktop-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+
+        @media (max-width: 1279px) {
+          .flash-deals-desktop-scroll > div { width: calc((100% - 72px) / 4) !important; }
         }
-        .flash-deals-slider .slick-prev { left: 8px; }
-        .flash-deals-slider .slick-next { right: 8px; }
-        .flash-deals-slider .slick-prev:before,
-        .flash-deals-slider .slick-next:before { color: #0c3c1f; font-size: 28px; opacity: 1; line-height: 40px; }
+        @media (max-width: 1023px) {
+          .flash-deals-desktop-scroll > div { width: calc((100% - 48px) / 3) !important; }
+        }
       `}</style>
     </section>
   );
