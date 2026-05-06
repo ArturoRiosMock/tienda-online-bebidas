@@ -5,6 +5,7 @@ import { MainLayout } from '@/app/layouts/MainLayout';
 import { HomePage } from '@/app/pages/HomePage';
 import { CollectionPage } from '@/app/pages/CollectionPage';
 import { ProductPage } from '@/app/pages/ProductPage';
+import { BlogPage } from '@/app/pages/BlogPage';
 import { LoginPage } from '@/app/pages/LoginPage';
 import { RegisterPage } from '@/app/pages/RegisterPage';
 import { PrivacyPolicyPage } from '@/app/pages/PrivacyPolicyPage';
@@ -25,6 +26,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/categorias/:handle" element={<CollectionPage />} />
               <Route path="/producto/:handle" element={<ProductPage />} />
+              <Route path="/blog" element={<BlogPage />} />
             </Route>
             <Route path="/admin/banners" element={<AdminBannersPage />} />
           </Routes>

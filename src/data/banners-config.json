@@ -31,7 +31,7 @@
       "targetBlank": false
     },
     "home-products-mid": {
-      "enabled": true,
+      "enabled": false,
       "type": "image_link",
       "format": "billboard",
       "image": "https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=1200&h=250&fit=crop",

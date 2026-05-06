@@ -9,7 +9,7 @@ import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const FLASH_DEALS_COLLECTION = 'ofertas-relampago';
+const FLASH_DEALS_COLLECTION = 'el-buen-fin-llego-a-bebify';
 
 export const FlashDeals: React.FC = () => {
   const { addToCart } = useCart();
@@ -178,11 +178,11 @@ export const FlashDeals: React.FC = () => {
             >
               <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-white" />
             </motion.div>
-            <h2 className="text-[#0055a2] text-lg sm:text-xl">Ofertas Relámpago</h2>
+            <h2 className="text-[#0055a2] text-lg sm:text-xl">Los Mejores Descuentos Del Mes</h2>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto min-w-0">
-            <span className="text-[#212121] font-medium text-sm sm:text-base shrink-0">Las ofertas terminan en:</span>
+            <span className="text-[#212121] font-medium text-sm sm:text-base shrink-0">Los descuentos terminan en:</span>
             <div className="flex gap-1.5 sm:gap-2 shrink-0">
               <div className="bg-[#0055a2] text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg min-w-[52px] sm:min-w-[60px] text-center">
                 <div className="text-xl sm:text-2xl font-bold">{String(timeLeft.hours).padStart(2, '0')}</div>

@@ -1,44 +1,101 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 
 interface FAQItem {
   question: string;
-  answer: string;
+  answer: React.ReactNode;
 }
+
+const SUPPORT_WHATSAPP_NUMBER = '5215512345678';
+const SUPPORT_WHATSAPP_MESSAGE = 'Hola, necesito asistencia con mi cuenta Bebify.';
+const SUPPORT_WHATSAPP_URL = `https://wa.me/${SUPPORT_WHATSAPP_NUMBER}?text=${encodeURIComponent(SUPPORT_WHATSAPP_MESSAGE)}`;
+const SUPPORT_EMAIL = 'hola@gpbebidas.mx';
+
+const linkClass = 'text-[#0055a2] underline underline-offset-2 hover:text-[#003d7a] transition-colors';
 
 const faqs: FAQItem[] = [
   {
+    question: '¿Bebify es para cualquier negocio?',
+    answer:
+      'Trabajamos con centros de consumo en CDMX y Área Metropolitana que buscan eficiencia operativa y tienen un consumo semanal desde $3,500 MXN.'
+  },
+  {
     question: '¿Cómo me registro como cliente en Bebify?',
-    answer: 'Regístrate directamente en nuestra plataforma con los datos de tu negocio (centro de consumo, restaurante, bar, etc.). Una vez verificada tu cuenta, tendrás acceso a todo nuestro catálogo con precios exclusivos B2B.'
+    answer: (
+      <>
+        Da click en{' '}
+        <Link to="/registro" className={linkClass}>
+          este vínculo
+        </Link>{' '}
+        y regístrate directamente para comenzar a aprovechar todos los beneficios de trabajar con
+        Bebify, solo necesitas llenar un formulario, tu Constancia de Situación Fiscal y Opinión de
+        Cumplimiento.
+      </>
+    )
   },
   {
     question: '¿Cuál es el tiempo de entrega?',
-    answer: 'Realizamos entregas en menos de 24 horas en toda la CDMX. Nuestra plataforma tecnológica garantiza pedidos sin errores y entregas rápidas y confiables para que tu negocio nunca se quede sin stock.'
+    answer:
+      'Realizamos entregas a partir de 24 a 48 horas en toda la CDMX: nuestra plataforma tecnológica facilita la carga de pedidos sin errores y entregas rápidas y confiables para que tu negocio nunca se quede sin stock.'
   },
   {
     question: '¿Cómo puedo ver los precios de los productos?',
-    answer: 'Los precios son exclusivos para clientes registrados. Una vez que inicies sesión con tu cuenta, podrás ver todos los precios y realizar pedidos. Esto nos permite ofrecer precios competitivos B2B a nuestros clientes.'
+    answer:
+      'Los precios son exclusivos para clientes registrados. Una vez que inicies sesión con tu cuenta, podrás ver todos los precios y realizar pedidos. Esto nos permite ofrecer precios competitivos B2B a nuestros clientes.'
   },
   {
     question: '¿Cuáles son los métodos de pago?',
-    answer: 'Aceptamos tarjetas de crédito y débito (Visa, Mastercard, American Express), transferencias bancarias y pagos por depósito. Todos los pagos son procesados de forma segura. Para clientes recurrentes, ofrecemos condiciones de crédito.'
+    answer: (
+      <>
+        Aceptamos pagos por transferencia y algunos de nuestros clientes frecuentes pueden solicitar
+        a través de su ejecutivo de cuenta, días de crédito*, a partir de su 6to pedido, si cuentan
+        con historial de compras frecuentes.
+        <br />
+        <span className="text-xs italic">*Sujeto a autorización de crédito.</span>
+      </>
+    )
   },
   {
     question: '¿Hay pedido mínimo?',
-    answer: 'Consulta con nuestro equipo de ventas las condiciones de pedido mínimo. Trabajamos para adaptarnos a las necesidades de cada centro de consumo, desde pequeños bares hasta grandes restaurantes y cadenas.'
+    answer:
+      'Nuestro modelo está diseñado para optimizar costos y operación, por lo que trabajamos con un pedido mínimo semanal de $3,500 MXN, asegurando mejores precios, disponibilidad y servicio continuo.'
   },
   {
     question: '¿Qué variedad de productos manejan?',
-    answer: 'Contamos con más de 2,000 productos disponibles de más de 300 proveedores: destilados (whisky, vodka, tequila, gin, ron, mezcal), vinos, champagne, cervezas artesanales, nacionales e importadas, refrescos, aguas y más.'
+    answer:
+      'Contamos con más de 2,000 productos disponibles de más de 300 proveedores: destilados (whisky, vodka, tequila, gin, ron, mezcal), vinos, champagne, cervezas artesanales, nacionales e importadas, refrescos, aguas y más.'
   },
   {
     question: '¿Puedo devolver un producto?',
-    answer: 'Sí, aceptamos devoluciones si el producto llega en mal estado o con defectos. Contacta a nuestro servicio al cliente con fotos del producto y procesaremos tu devolución o cambio de inmediato.'
+    answer:
+      'En Bebify cuidamos que cada pedido llegue correctamente desde el origen. Por eso, nuestra plataforma valida la orden en tres etapas antes de confirmarlo. Este nivel de control nos permite garantizar precisión en cada entrega, por lo que los cambios se realizan únicamente en caso de producto en mal estado. Así aseguramos una operación ágil, sin errores y sin complicaciones para tu equipo.'
   },
   {
     question: '¿Cómo contacto a servicio al cliente?',
-    answer: 'Puedes contactarnos a través de nuestra página de contacto, por WhatsApp o por correo electrónico. Nuestro equipo de soporte está disponible de lunes a viernes para atender todas tus dudas y solicitudes.'
+    answer: (
+      <>
+        Gracias por tu interés en contactar con nosotros; solo da click en{' '}
+        <a
+          href={SUPPORT_WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={linkClass}
+        >
+          esta liga
+        </a>{' '}
+        y un ejecutivo te asistirá en breve, o escríbenos a{' '}
+        <a href={`mailto:${SUPPORT_EMAIL}`} className={linkClass}>
+          {SUPPORT_EMAIL}
+        </a>
+        .
+        <br />
+        <br />
+        Nuestro equipo de soporte está disponible de Lunes a Viernes, de 9:00 am a 06:00 pm para
+        atender todas tus dudas y solicitudes.
+      </>
+    )
   }
 ];
 
@@ -94,12 +151,14 @@ export const FAQ = () => {
               transition={{ delay: index * 0.1 }}
               className="mb-4"
             >
-              <button
-                onClick={() => toggleFAQ(index)}
-                className="w-full bg-white rounded-lg p-6 text-left hover:shadow-md transition-shadow duration-300 border border-gray-100"
-              >
-                <div className="flex items-center justify-between">
-                  <h3 className="text-[#212121] pr-8">
+              <div className="bg-white rounded-lg hover:shadow-md transition-shadow duration-300 border border-gray-100 overflow-hidden">
+                <button
+                  onClick={() => toggleFAQ(index)}
+                  aria-expanded={openIndex === index}
+                  aria-controls={`faq-panel-${index}`}
+                  className="w-full p-6 text-left flex items-center justify-between gap-4"
+                >
+                  <h3 className="text-[#212121]">
                     {faq.question}
                   </h3>
                   <motion.div
@@ -109,24 +168,25 @@ export const FAQ = () => {
                   >
                     <ChevronDown className="w-5 h-5 text-[#0055a2]" />
                   </motion.div>
-                </div>
-                
-                <AnimatePresence>
+                </button>
+
+                <AnimatePresence initial={false}>
                   {openIndex === index && (
                     <motion.div
+                      id={`faq-panel-${index}`}
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3 }}
                       className="overflow-hidden"
                     >
-                      <p className="text-[#717182] mt-4 leading-relaxed">
+                      <div className="text-[#717182] px-6 pb-6 leading-relaxed">
                         {faq.answer}
-                      </p>
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </button>
+              </div>
             </motion.div>
           ))}
         </div>

@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Hero } from '@/app/components/Hero';
 import { FlashDeals } from '@/app/components/FlashDeals';
@@ -6,66 +6,34 @@ import { BrandsSection } from '@/app/components/BrandsSection';
 import { Newsletter } from '@/app/components/Newsletter';
 import { About } from '@/app/components/About';
 import { FAQ } from '@/app/components/FAQ';
-import { ProductCard } from '@/app/components/ProductCard';
-import { AdBanner, getInlineAdSlots } from '@/app/components/AdBanner';
-import { CollectionProductFilters } from '@/app/components/CollectionProductFilters';
-import {
-  defaultCollectionFilterState,
-  filterAndSortProducts,
-  hasActiveFilters,
-} from '@/app/utils/collectionFilters';
+import { ProductsCarousel } from '@/app/components/ProductsCarousel';
+import { AdBanner } from '@/app/components/AdBanner';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 
-type GridItem =
-  | { kind: 'product'; product: ReturnType<typeof useShopifyProducts>['products'][number] }
-  | { kind: 'ad'; slotId: string };
+const PRODUCTS_PER_CAROUSEL = 12;
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const productsRef = useRef<HTMLElement>(null);
+  const productsRef = useRef<HTMLDivElement>(null);
   const { products, loading, error } = useShopifyProducts();
-  const [filters, setFilters] = useState(defaultCollectionFilterState);
-
-  const filteredProducts = useMemo(
-    () => filterAndSortProducts(products, filters),
-    [products, filters]
-  );
 
   const scrollToProducts = () => {
     productsRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const inlineAds = useMemo(() => getInlineAdSlots('home'), []);
+  const featuredProducts = useMemo(
+    () => products.slice(0, PRODUCTS_PER_CAROUSEL),
+    [products]
+  );
 
-  const gridItems = useMemo<GridItem[]>(() => {
-    const items: GridItem[] = [];
-    let adIndex = 0;
-    let productIndex = 0;
-    let position = 0;
+  const moreProducts = useMemo(
+    () => products.slice(PRODUCTS_PER_CAROUSEL, PRODUCTS_PER_CAROUSEL * 2),
+    [products]
+  );
 
-    while (productIndex < filteredProducts.length || adIndex < inlineAds.length) {
-      if (adIndex < inlineAds.length && position === inlineAds[adIndex].position - 1) {
-        items.push({ kind: 'ad', slotId: inlineAds[adIndex].slotId });
-        adIndex++;
-        position++;
-        continue;
-      }
-
-      if (productIndex < filteredProducts.length) {
-        items.push({ kind: 'product', product: filteredProducts[productIndex] });
-        productIndex++;
-        position++;
-      } else {
-        break;
-      }
-    }
-
-    return items;
-  }, [filteredProducts, inlineAds]);
-
-  const midBannerAfter = 8;
-  const firstHalf = gridItems.slice(0, midBannerAfter);
-  const secondHalf = gridItems.slice(midBannerAfter);
+  const handleProductClick = (handleOrId: string) => {
+    navigate(`/producto/${handleOrId}`);
+  };
 
   return (
     <>
@@ -77,92 +45,42 @@ export const HomePage: React.FC = () => {
 
       <FlashDeals />
 
-      <section ref={productsRef} className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 max-w-[100vw]">
-        <div className="flex items-center justify-between mb-4 sm:mb-6 gap-2 min-w-0 flex-wrap">
-          <h2 className="text-[#212121]">Todos los Productos</h2>
-          {!loading && (
-            <p className="text-[#717182] text-sm sm:text-base">
-              {hasActiveFilters(filters) && products.length > 0
-                ? `${filteredProducts.length} de ${products.length} productos`
-                : `${products.length} productos`}
-            </p>
-          )}
-        </div>
-
-        {!loading && products.length > 0 && (
-          <CollectionProductFilters
-            products={products}
-            value={filters}
-            onChange={setFilters}
-            disabled={loading}
-          />
-        )}
-
+      <div ref={productsRef}>
         {error && (
-          <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
-            {error}
+          <div className="container mx-auto px-3 sm:px-4 mt-4">
+            <div className="p-4 bg-red-50 text-red-700 rounded-lg">{error}</div>
           </div>
         )}
 
-        {loading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="h-60 sm:h-80 bg-gray-100 rounded-lg animate-pulse" />
-            ))}
-          </div>
-        ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-16 rounded-xl border border-gray-200 bg-gray-50 px-4">
-            <p className="text-[#717182] text-lg mb-4">
-              Ningún producto coincide con los filtros seleccionados.
-            </p>
-            <button
-              type="button"
-              onClick={() => setFilters(defaultCollectionFilterState())}
-              className="inline-block bg-[#0055a2] text-white px-6 py-3 rounded-lg hover:bg-[#003d7a] transition-colors font-medium"
-            >
-              Limpiar filtros
-            </button>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-              {firstHalf.map((item, i) =>
-                item.kind === 'product' ? (
-                  <ProductCard
-                    key={`p-${item.product.id}`}
-                    product={item.product}
-                    onClick={() => navigate(`/producto/${item.product.handle || item.product.id}`)}
-                  />
-                ) : (
-                  <AdBanner key={`ad-${item.slotId}-${i}`} slotId={item.slotId} variant="inline-card" />
-                )
-              )}
+        {loading && (
+          <section className="container mx-auto px-3 sm:px-4 py-8 sm:py-10 max-w-[100vw]">
+            <div className="h-7 w-40 bg-gray-100 rounded mb-6 animate-pulse" />
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-72 bg-gray-100 rounded-lg animate-pulse" />
+              ))}
             </div>
+          </section>
+        )}
 
-            {secondHalf.length > 0 && (
-              <div className="my-4 sm:my-8">
-                <AdBanner slotId="home-products-mid" />
-              </div>
-            )}
+        {!loading && (
+          <>
+            <ProductsCarousel
+              title="Productos Destacados"
+              products={featuredProducts}
+              onProductClick={(p) => handleProductClick(p.handle || p.id)}
+            />
 
-            {secondHalf.length > 0 && (
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-                {secondHalf.map((item, i) =>
-                  item.kind === 'product' ? (
-                    <ProductCard
-                      key={`p-${item.product.id}`}
-                      product={item.product}
-                      onClick={() => navigate(`/producto/${item.product.handle || item.product.id}`)}
-                    />
-                  ) : (
-                    <AdBanner key={`ad-${item.slotId}-${i}`} slotId={item.slotId} variant="inline-card" />
-                  )
-                )}
-              </div>
+            {moreProducts.length > 0 && (
+              <ProductsCarousel
+                title="Sigue Explorando"
+                products={moreProducts}
+                onProductClick={(p) => handleProductClick(p.handle || p.id)}
+              />
             )}
           </>
         )}
-      </section>
+      </div>
 
       <BrandsSection />
 
@@ -180,13 +98,13 @@ export const HomePage: React.FC = () => {
 
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-[#0055a2]/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-[#0055a2] text-2xl">🚚</span>
               </div>
               <h3 className="text-[#212121] mb-2">Entregas Exprés</h3>
-              <p className="text-[#717182]">Envíos en menos de 24 horas en CDMX</p>
+              <p className="text-[#717182]">Entregas a partir de 24 a 48 horas en toda la CDMX y área Metropolitana</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-[#0055a2]/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -202,6 +120,17 @@ export const HomePage: React.FC = () => {
               <h3 className="text-[#212121] mb-2">Servicio al Cliente</h3>
               <p className="text-[#717182]">¿Alguna pregunta? Contáctanos</p>
             </div>
+            <button
+              type="button"
+              onClick={() => navigate('/blog')}
+              className="text-center group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0055a2] focus-visible:ring-offset-2 rounded-lg"
+            >
+              <div className="w-16 h-16 bg-[#0055a2]/10 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors group-hover:bg-[#0055a2]/20">
+                <span className="text-[#0055a2] text-2xl">📰</span>
+              </div>
+              <h3 className="text-[#212121] mb-2 group-hover:text-[#0055a2] transition-colors">Blog</h3>
+              <p className="text-[#717182]">Tendencias, guías y novedades del mundo de las bebidas</p>
+            </button>
           </div>
         </div>
       </section>
