@@ -19,9 +19,12 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(1);
   const isFavorite = isInWishlist(product.id);
 
-  // Calculate discount and pricing
-  const originalPrice = product.price * 1.35; // 35% markup to show discount
-  const discountPercentage = Math.round(((originalPrice - product.price) / originalPrice) * 100);
+  // Descuento real: solo cuando el producto trae un compareAtPrice mayor al precio actual.
+  const hasDiscount =
+    typeof product.originalPrice === 'number' && product.originalPrice > product.price;
+  const discountPercentage = hasDiscount
+    ? Math.round(((product.originalPrice! - product.price) / product.originalPrice!) * 100)
+    : 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -72,12 +75,6 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
       onClick={onClick}
       className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-200 relative cursor-pointer"
     >
-      {/* Discount Badge */}
-      <div className="absolute top-2 left-2 z-10 bg-[#FF6B35] text-white rounded-full w-10 h-10 sm:w-14 sm:h-14 flex flex-col items-center justify-center shadow-lg">
-        <span className="text-[10px] sm:text-sm font-bold leading-none">-{discountPercentage}%</span>
-        <span className="text-[7px] sm:text-[10px] uppercase leading-none mt-0.5">OFF</span>
-      </div>
-
       {/* Favorite Button */}
       <button
         onClick={handleFavoriteClick}
@@ -88,13 +85,25 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
         />
       </button>
 
-      {/* Product Image */}
-      <div className="aspect-square overflow-hidden bg-gray-50 relative group p-2 sm:p-4">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-        />
+      {/* Product Image (wrapper relative para anclar el badge a la imagen) */}
+      <div className="relative">
+        {hasDiscount && (
+          <div
+            data-discount-badge
+            className="absolute top-2 left-2 z-10 bg-[#FF6B35] text-white rounded-full w-10 h-10 sm:w-14 sm:h-14 flex flex-col items-center justify-center shadow-lg"
+          >
+            <span className="text-[10px] sm:text-sm font-bold leading-none">-{discountPercentage}%</span>
+            <span className="text-[7px] sm:text-[10px] uppercase leading-none mt-0.5">OFF</span>
+          </div>
+        )}
+
+        <div className="aspect-square overflow-hidden bg-gray-50 group p-2 sm:p-4">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+          />
+        </div>
       </div>
 
       {/* Product Info */}
@@ -116,21 +125,31 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
           <>
             {/* Pricing */}
             <div className="mb-2 sm:mb-3">
-              <p className="text-[10px] sm:text-xs text-[#717182] line-through mb-0.5 sm:mb-1">
-                De: ${originalPrice.toFixed(2)}
-              </p>
+              {hasDiscount && (
+                <p className="text-[10px] sm:text-xs text-[#717182] line-through mb-0.5 sm:mb-1">
+                  De: ${product.originalPrice!.toFixed(2)}
+                </p>
+              )}
               <div className="flex items-baseline gap-0.5 sm:gap-1 mb-1 sm:mb-2 flex-wrap">
-                <span className="text-[10px] sm:text-xs text-[#212121]">por:</span>
+                <span className="text-[10px] sm:text-xs text-[#212121]">
+                  {hasDiscount ? 'por:' : 'Precio:'}
+                </span>
                 <span className="text-base sm:text-2xl font-bold text-[#0055a2]">
                   ${product.price.toFixed(2)}
                 </span>
               </div>
             </div>
 
+            {/* Quantity label */}
+            <p className="text-[10px] sm:text-xs text-[#212121] mb-1">
+              Cantidad: <span className="font-semibold">{quantity} {quantity === 1 ? 'Botella' : 'Botellas'}</span>
+            </p>
+
             {/* Quantity Controls - Desktop */}
             <div className="hidden sm:flex items-center gap-2 mb-3">
               <button
                 onClick={decrementQuantity}
+                aria-label="Disminuir cantidad"
                 className="w-8 h-8 flex items-center justify-center border border-[#0055a2] text-[#0055a2] rounded hover:bg-[#0055a2] hover:text-white transition-colors"
               >
                 <Minus className="w-4 h-4" />
@@ -140,10 +159,12 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
                 value={quantity}
                 onChange={handleQuantityInputChange}
                 onClick={handleQuantityInputClick}
+                aria-label="Cantidad"
                 className="w-12 h-8 text-center border border-gray-300 rounded text-[#212121] font-medium"
               />
               <button
                 onClick={incrementQuantity}
+                aria-label="Aumentar cantidad"
                 className="w-8 h-8 flex items-center justify-center border border-[#0055a2] text-[#0055a2] rounded hover:bg-[#0055a2] hover:text-white transition-colors"
               >
                 <Plus className="w-4 h-4" />
@@ -158,14 +179,38 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
               </motion.button>
             </div>
 
-            {/* Buy Button - Mobile */}
-            <motion.button
-              onClick={handleAddToCart}
-              whileTap={{ scale: 0.95 }}
-              className="sm:hidden w-full bg-[#0055a2] text-white py-1.5 px-2 rounded hover:bg-[#004488] transition-colors text-[11px] font-semibold uppercase"
-            >
-              Comprar
-            </motion.button>
+            {/* Quantity Controls + Buy - Mobile */}
+            <div className="sm:hidden flex items-center gap-1.5 mb-1.5">
+              <button
+                onClick={decrementQuantity}
+                aria-label="Disminuir cantidad"
+                className="w-7 h-7 shrink-0 flex items-center justify-center border border-[#0055a2] text-[#0055a2] rounded"
+              >
+                <Minus className="w-3.5 h-3.5" />
+              </button>
+              <input
+                type="number"
+                value={quantity}
+                onChange={handleQuantityInputChange}
+                onClick={handleQuantityInputClick}
+                aria-label="Cantidad"
+                className="w-9 h-7 text-center border border-gray-300 rounded text-[#212121] font-medium text-xs"
+              />
+              <button
+                onClick={incrementQuantity}
+                aria-label="Aumentar cantidad"
+                className="w-7 h-7 shrink-0 flex items-center justify-center border border-[#0055a2] text-[#0055a2] rounded"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+              <motion.button
+                onClick={handleAddToCart}
+                whileTap={{ scale: 0.95 }}
+                className="flex-1 bg-[#0055a2] text-white py-1.5 px-2 rounded hover:bg-[#004488] transition-colors text-[11px] font-semibold uppercase"
+              >
+                Comprar
+              </motion.button>
+            </div>
           </>
         ) : (
           <motion.button

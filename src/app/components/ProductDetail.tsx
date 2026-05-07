@@ -204,13 +204,16 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
 
             {isAuthenticated ? (
               <>
+                <p className="text-xs text-[#212121] mb-1.5">
+                  Cantidad: <span className="font-semibold">{quantity} {quantity === 1 ? 'Botella' : 'Botellas'}</span>
+                </p>
                 <div ref={ctaRef} className="flex gap-2 mb-3">
                   <div className="flex items-center border border-gray-300 rounded-lg shrink-0">
-                    <button onClick={() => handleQuantityChange(-1)} className="p-2 hover:bg-gray-50" disabled={quantity <= 1}>
+                    <button onClick={() => handleQuantityChange(-1)} aria-label="Disminuir cantidad" className="p-2 hover:bg-gray-50" disabled={quantity <= 1}>
                       <Minus className="w-4 h-4" />
                     </button>
-                    <input type="text" value={quantity} readOnly className="w-10 text-center border-x border-gray-300 text-sm" />
-                    <button onClick={() => handleQuantityChange(1)} className="p-2 hover:bg-gray-50" disabled={quantity >= 99}>
+                    <input type="text" value={quantity} readOnly aria-label="Cantidad" className="w-10 text-center border-x border-gray-300 text-sm" />
+                    <button onClick={() => handleQuantityChange(1)} aria-label="Aumentar cantidad" className="p-2 hover:bg-gray-50" disabled={quantity >= 99}>
                       <Plus className="w-4 h-4" />
                     </button>
                   </div>
@@ -351,23 +354,28 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
                     )}
                   </div>
 
-                  <div ref={ctaRef} className="flex gap-3">
-                    <div className="flex items-center border border-gray-300 rounded-lg shrink-0">
-                      <button onClick={() => handleQuantityChange(-1)} className="p-3 hover:bg-gray-50 transition-colors" disabled={quantity <= 1}>
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <input type="text" value={quantity} readOnly className="w-14 text-center border-x border-gray-300 font-medium" />
-                      <button onClick={() => handleQuantityChange(1)} className="p-3 hover:bg-gray-50 transition-colors" disabled={quantity >= 99}>
-                        <Plus className="w-4 h-4" />
+                  <div>
+                    <p className="text-sm text-[#212121] mb-2">
+                      Cantidad: <span className="font-semibold">{quantity} {quantity === 1 ? 'Botella' : 'Botellas'}</span>
+                    </p>
+                    <div ref={ctaRef} className="flex gap-3">
+                      <div className="flex items-center border border-gray-300 rounded-lg shrink-0">
+                        <button onClick={() => handleQuantityChange(-1)} aria-label="Disminuir cantidad" className="p-3 hover:bg-gray-50 transition-colors" disabled={quantity <= 1}>
+                          <Minus className="w-4 h-4" />
+                        </button>
+                        <input type="text" value={quantity} readOnly aria-label="Cantidad" className="w-14 text-center border-x border-gray-300 font-medium" />
+                        <button onClick={() => handleQuantityChange(1)} aria-label="Aumentar cantidad" className="p-3 hover:bg-gray-50 transition-colors" disabled={quantity >= 99}>
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <button
+                        onClick={handleAddToCart}
+                        className="flex-1 bg-[#0055a2] text-white py-3 px-6 rounded-lg hover:bg-[#004488] transition-colors font-bold text-lg flex items-center justify-center gap-2"
+                      >
+                        <ShoppingCart className="w-5 h-5" />
+                        COMPRAR
                       </button>
                     </div>
-                    <button
-                      onClick={handleAddToCart}
-                      className="flex-1 bg-[#0055a2] text-white py-3 px-6 rounded-lg hover:bg-[#004488] transition-colors font-bold text-lg flex items-center justify-center gap-2"
-                    >
-                      <ShoppingCart className="w-5 h-5" />
-                      COMPRAR
-                    </button>
                   </div>
                 </>
               ) : (

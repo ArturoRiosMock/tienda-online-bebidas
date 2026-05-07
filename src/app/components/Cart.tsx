@@ -103,11 +103,15 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                         />
                         <div className="flex-1 min-w-0">
                           <h3 className="text-sm font-medium text-[#212121] line-clamp-2 mb-1">{item.name}</h3>
-                          <p className="text-[#0055a2] font-bold mb-2">${item.price.toFixed(2)} MXN</p>
+                          <p className="text-[#0055a2] font-bold mb-1">${item.price.toFixed(2)} MXN</p>
+                          <p className="text-xs text-[#717182] mb-1.5">
+                            Cantidad: <span className="font-semibold text-[#212121]">{item.quantity} {item.quantity === 1 ? 'Botella' : 'Botellas'}</span>
+                          </p>
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => updateQuantity(itemId(item), item.quantity - 1)}
                               disabled={cartLoading}
+                              aria-label="Disminuir cantidad"
                               className="bg-white border border-gray-200 p-1 rounded-md hover:bg-gray-100 disabled:opacity-50 transition-colors"
                             >
                               <Minus className="w-3.5 h-3.5" />
@@ -118,6 +122,7 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                             <button
                               onClick={() => updateQuantity(itemId(item), item.quantity + 1)}
                               disabled={cartLoading}
+                              aria-label="Aumentar cantidad"
                               className="bg-white border border-gray-200 p-1 rounded-md hover:bg-gray-100 disabled:opacity-50 transition-colors"
                             >
                               <Plus className="w-3.5 h-3.5" />
@@ -125,6 +130,7 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                             <button
                               onClick={() => removeFromCart(itemId(item))}
                               disabled={cartLoading}
+                              aria-label="Eliminar producto"
                               className="ml-auto text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded-md disabled:opacity-50 transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />

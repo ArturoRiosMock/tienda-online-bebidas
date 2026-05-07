@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
-import { Zap, Lock } from 'lucide-react';
+import { Zap, Lock, Minus, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useCart } from '@/app/context/CartContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -63,7 +63,7 @@ export const FlashDeals: React.FC = () => {
     ]
   };
 
-  const handleAddToCart = (deal: typeof deals[number]) => {
+  const handleAddToCart = (deal: typeof deals[number], quantity: number) => {
     addToCart({
       id: deal.id,
       name: deal.name,
@@ -75,7 +75,7 @@ export const FlashDeals: React.FC = () => {
       variantId: deal.variantId,
       shopifyId: deal.shopifyId,
       handle: deal.handle,
-    }, 1);
+    }, quantity);
   };
 
   if (!loading && deals.length === 0) {
@@ -87,6 +87,10 @@ export const FlashDeals: React.FC = () => {
     const discountPercentage = hasDiscount
       ? Math.round(((deal.originalPrice! - deal.price) / deal.originalPrice!) * 100)
       : 0;
+
+    const [quantity, setQuantity] = useState(1);
+    const decrement = () => setQuantity((q) => Math.max(1, q - 1));
+    const increment = () => setQuantity((q) => Math.min(99, q + 1));
 
     return (
       <motion.div
@@ -142,10 +146,33 @@ export const FlashDeals: React.FC = () => {
               </div>
             </div>
 
+            <p className="text-[10px] md:text-xs text-[#212121] mb-1 text-center">
+              Cantidad: <span className="font-semibold">{quantity} {quantity === 1 ? 'Botella' : 'Botellas'}</span>
+            </p>
+            <div className="flex items-center justify-center gap-1.5 mb-1.5 md:mb-2">
+              <button
+                onClick={decrement}
+                aria-label="Disminuir cantidad"
+                className="w-6 h-6 md:w-7 md:h-7 flex items-center justify-center border border-[#0055a2] text-[#0055a2] rounded"
+              >
+                <Minus className="w-3 h-3 md:w-3.5 md:h-3.5" />
+              </button>
+              <span className="min-w-[1.5rem] text-center text-[#212121] font-medium text-xs md:text-sm">
+                {quantity}
+              </span>
+              <button
+                onClick={increment}
+                aria-label="Aumentar cantidad"
+                className="w-6 h-6 md:w-7 md:h-7 flex items-center justify-center border border-[#0055a2] text-[#0055a2] rounded"
+              >
+                <Plus className="w-3 h-3 md:w-3.5 md:h-3.5" />
+              </button>
+            </div>
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => handleAddToCart(deal)}
+              onClick={() => handleAddToCart(deal, quantity)}
               className="w-full bg-[#0055a2] text-white py-1.5 md:py-2 px-2 md:px-4 rounded-lg hover:bg-[#0055a2]/90 transition-colors text-[10px] md:text-sm font-medium"
             >
               Agregar

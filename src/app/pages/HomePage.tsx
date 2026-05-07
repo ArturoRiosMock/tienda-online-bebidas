@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Hero } from '@/app/components/Hero';
 import { FlashDeals } from '@/app/components/FlashDeals';
 import { BrandsSection } from '@/app/components/BrandsSection';
-import { Newsletter } from '@/app/components/Newsletter';
+import { NewsletterPopup } from '@/app/components/NewsletterPopup';
 import { About } from '@/app/components/About';
 import { FAQ } from '@/app/components/FAQ';
 import { ProductsCarousel } from '@/app/components/ProductsCarousel';
@@ -11,11 +11,13 @@ import { AdBanner } from '@/app/components/AdBanner';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 
 const PRODUCTS_PER_CAROUSEL = 12;
+const NEW_ARRIVALS_COLLECTION = 'novedades';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const productsRef = useRef<HTMLDivElement>(null);
   const { products, loading, error } = useShopifyProducts();
+  const { products: newArrivalsCollection } = useShopifyProducts(NEW_ARRIVALS_COLLECTION);
 
   const scrollToProducts = () => {
     productsRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -30,6 +32,20 @@ export const HomePage: React.FC = () => {
     () => products.slice(PRODUCTS_PER_CAROUSEL, PRODUCTS_PER_CAROUSEL * 2),
     [products]
   );
+
+  // Si existe la colección "novedades" en Shopify, se usa esa; si no,
+  // hacemos fallback con los últimos productos del catálogo general.
+  const newArrivals = useMemo(() => {
+    if (newArrivalsCollection.length > 0) {
+      return newArrivalsCollection.slice(0, PRODUCTS_PER_CAROUSEL);
+    }
+    return products.slice(-PRODUCTS_PER_CAROUSEL).reverse();
+  }, [newArrivalsCollection, products]);
+
+  const newArrivalsHref =
+    newArrivalsCollection.length > 0
+      ? `/categorias/${NEW_ARRIVALS_COLLECTION}`
+      : '/categorias/all';
 
   const handleProductClick = (handleOrId: string) => {
     navigate(`/producto/${handleOrId}`);
@@ -71,6 +87,16 @@ export const HomePage: React.FC = () => {
               onProductClick={(p) => handleProductClick(p.handle || p.id)}
             />
 
+            {newArrivals.length > 0 && (
+              <ProductsCarousel
+                title="Últimas novedades"
+                products={newArrivals}
+                onProductClick={(p) => handleProductClick(p.handle || p.id)}
+                cornerBadge="Nuevo"
+                viewAllHref={newArrivalsHref}
+              />
+            )}
+
             {moreProducts.length > 0 && (
               <ProductsCarousel
                 title="Sigue Explorando"
@@ -88,7 +114,7 @@ export const HomePage: React.FC = () => {
         <AdBanner slotId="home-brands-below" />
       </div>
 
-      <Newsletter />
+      <NewsletterPopup />
       <About />
       <FAQ />
 
