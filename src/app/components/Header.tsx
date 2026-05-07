@@ -189,7 +189,7 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
               src={logo}
               alt="Bebify"
               className="h-8 sm:h-9 md:h-11 flex-shrink-0 cursor-pointer object-contain"
-              onClick={() => handleCategoryClick('Todos')}
+              onClick={() => navigate('/')}
             />
 
             {SHOW_HEADER_LOCATION_AND_TRACKING && (

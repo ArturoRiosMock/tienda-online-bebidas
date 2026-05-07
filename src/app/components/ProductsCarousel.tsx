@@ -28,8 +28,8 @@ const SLIDER_SETTINGS: Settings = {
   arrows: true,
   responsive: [
     { breakpoint: 1280, settings: { slidesToShow: 3, slidesToScroll: 1 } },
-    { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 1 } },
-    { breakpoint: 640, settings: { slidesToShow: 1.5, slidesToScroll: 1, arrows: false } },
+    { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 2 } },
+    { breakpoint: 640, settings: { slidesToShow: 3, slidesToScroll: 3, arrows: false } },
   ],
 };
 
@@ -64,7 +64,7 @@ export const ProductsCarousel: React.FC<ProductsCarouselProps> = ({
       <div className={`products-carousel ${cornerBadge ? 'products-carousel--with-badge' : ''}`}>
         <Slider {...SLIDER_SETTINGS}>
           {products.map((product) => (
-            <div key={product.id} className="px-2 sm:px-3 py-2 relative">
+            <div key={product.id} className="px-1 sm:px-3 py-2 relative">
               {cornerBadge && (
                 <div className="corner-badge" style={{ ['--badge-color' as string]: cornerBadgeColor }}>
                   <span>{cornerBadge}</span>
@@ -96,10 +96,10 @@ export const ProductsCarousel: React.FC<ProductsCarouselProps> = ({
         }
         .corner-badge {
           position: absolute;
-          top: 8px;
-          left: 8px;
-          width: 60px;
-          height: 60px;
+          top: 4px;
+          left: 4px;
+          width: 46px;
+          height: 46px;
           overflow: hidden;
           pointer-events: none;
           z-index: 5;
@@ -110,26 +110,26 @@ export const ProductsCarousel: React.FC<ProductsCarouselProps> = ({
           top: 0;
           left: 0;
           border-style: solid;
-          border-width: 60px 60px 0 0;
+          border-width: 46px 46px 0 0;
           border-color: var(--badge-color, #FF6B35) transparent transparent transparent;
         }
         .corner-badge span {
           position: absolute;
-          top: 11px;
-          left: -1px;
-          width: 56px;
+          top: 7px;
+          left: -3px;
+          width: 44px;
           text-align: center;
           transform: rotate(-45deg);
           color: #fff;
           font-weight: 700;
-          font-size: 9px;
-          letter-spacing: 0.4px;
+          font-size: 7px;
+          letter-spacing: 0.3px;
           text-transform: uppercase;
         }
         @media (min-width: 640px) {
-          .corner-badge { width: 70px; height: 70px; }
+          .corner-badge { width: 70px; height: 70px; top: 8px; left: 8px; }
           .corner-badge::before { border-width: 70px 70px 0 0; }
-          .corner-badge span { top: 13px; width: 66px; font-size: 10px; }
+          .corner-badge span { top: 13px; left: 0; width: 66px; font-size: 10px; }
         }
         /* Cuando hay banderita esquinera, el badge de descuento se mueve a la esquina
            inferior izquierda del área de imagen para evitar solaparse con la banderita. */

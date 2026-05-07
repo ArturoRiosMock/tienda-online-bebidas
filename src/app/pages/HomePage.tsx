@@ -45,7 +45,7 @@ export const HomePage: React.FC = () => {
   const newArrivalsHref =
     newArrivalsCollection.length > 0
       ? `/categorias/${NEW_ARRIVALS_COLLECTION}`
-      : '/categorias/all';
+      : '/productos';
 
   const handleProductClick = (handleOrId: string) => {
     navigate(`/producto/${handleOrId}`);

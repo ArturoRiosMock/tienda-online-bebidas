@@ -17,6 +17,69 @@ const linkClass = 'text-[#0055a2] underline underline-offset-2 hover:text-[#003d
 
 const faqs: FAQItem[] = [
   {
+    question: '¿Por qué elegir Bebify para mi negocio?',
+    answer: (
+      <div className="space-y-4">
+        <div>
+          <p className="font-semibold text-[#212121] mb-1">Centraliza tus pedidos en un solo lugar</p>
+          <p>
+            Olvídate de hablar con múltiples proveedores. Con Bebify gestionas todo desde una
+            sola plataforma, ahorrando tiempo operativo todos los días.
+          </p>
+        </div>
+
+        <div>
+          <p className="font-semibold text-[#212121] mb-1">Compara y elige mejor</p>
+          <p>
+            Accede a más de 200 proveedores y más de 2,000 bebidas para tomar decisiones
+            inteligentes, optimizando costo, disponibilidad y variedad.
+          </p>
+        </div>
+
+        <div>
+          <p className="font-semibold text-[#212121] mb-1">Ordena sin errores</p>
+          <p>
+            Nuestra tecnología estandariza tus pedidos, evitando equivocaciones, retrabajos y
+            pérdidas innecesarias.
+          </p>
+        </div>
+
+        <div>
+          <p className="font-semibold text-[#212121] mb-1">Recibe sin complicaciones</p>
+          <p>
+            Coordinamos entregas confiables para que tu operación nunca se detenga ni pierda
+            ventas.
+          </p>
+        </div>
+
+        <div>
+          <p className="font-semibold text-[#212121] mb-1">Cuenta con apoyo personalizado</p>
+          <p>
+            Tendrás un ejecutivo de cuenta que se encarga de auxiliarte ante temas
+            administrativos, vincularte con marcas y resolver oportunidades de operación.
+          </p>
+        </div>
+
+        <div>
+          <p className="font-semibold text-[#212121] mb-1">Facilita tu administración</p>
+          <p>
+            Una sola factura, reducción de distracciones en la operación, opción de crédito
+            (sujeto a autorización previa) y plataforma con histórico de pedidos.
+          </p>
+        </div>
+
+        <div className="pt-2">
+          <Link
+            to="/registro"
+            className="inline-flex items-center justify-center gap-2 bg-[#0055a2] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#003d7a] transition-colors"
+          >
+            Regístrate ahora
+          </Link>
+        </div>
+      </div>
+    )
+  },
+  {
     question: '¿Bebify es para cualquier negocio?',
     answer:
       'Trabajamos con centros de consumo en CDMX y Área Metropolitana que buscan eficiencia operativa y tienen un consumo semanal desde $3,500 MXN.'

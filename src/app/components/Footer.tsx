@@ -76,11 +76,6 @@ export const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="https://bebify.mx/pages/nosotros" className="text-gray-300 hover:text-[#4da6ff] transition-colors">
-                  Conócenos
-                </a>
-              </li>
-              <li>
                 <a href="#about" className="text-gray-300 hover:text-[#4da6ff] transition-colors">
                   Preguntas Frecuentes
                 </a>
@@ -126,51 +121,9 @@ export const Footer: React.FC = () => {
           </ul>
         </div>
 
-        {/* Payment and Security Section */}
-        <div className="mt-12 pt-8 border-t border-white/10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Left - Payment Methods */}
-            <div>
-              <h4 className="text-white font-semibold mb-4">Pagos</h4>
-              <div className="flex flex-wrap gap-3">
-                <div className="bg-white rounded px-3 py-2 shadow-sm">
-                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%231434CB' width='40' height='25' rx='3'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='10' font-weight='bold'%3EVISA%3C/text%3E%3C/svg%3E" alt="Visa" className="h-6" />
-                </div>
-                <div className="bg-white rounded px-3 py-2 shadow-sm">
-                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%23EB001B' width='20' height='25' rx='3'/%3E%3Crect fill='%23FF5F00' x='10' width='20' height='25'/%3E%3Crect fill='%23F79E1B' x='20' width='20' height='25' rx='3'/%3E%3C/svg%3E" alt="Mastercard" className="h-6" />
-                </div>
-                <div className="bg-white rounded px-3 py-2 shadow-sm">
-                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%23006FCF' width='40' height='25' rx='3'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='8' font-weight='bold'%3EAMEX%3C/text%3E%3C/svg%3E" alt="American Express" className="h-6" />
-                </div>
-                <div className="bg-white rounded px-3 py-2 shadow-sm">
-                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%23000000' width='40' height='25' rx='3'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23FFCB05' font-family='Arial, sans-serif' font-size='9' font-weight='bold'%3EELO%3C/text%3E%3C/svg%3E" alt="Elo" className="h-6" />
-                </div>
-                <div className="bg-white rounded px-3 py-2 shadow-sm">
-                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='25' viewBox='0 0 40 25'%3E%3Crect fill='%23FF6000' width='40' height='25' rx='3'/%3E%3Ctext x='50%25' y='35%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='6' font-weight='bold'%3EDISCOVER%3C/text%3E%3Cpath d='M15 15 Q20 18 25 15' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E" alt="Discover" className="h-6" />
-                </div>
-              </div>
-            </div>
-
-            {/* Right - Security */}
-            <div>
-              <h4 className="text-white font-semibold mb-4">Seguridad</h4>
-              <div className="flex flex-wrap gap-3">
-                <div className="bg-white/10 rounded px-3 py-2 border border-white/10 flex items-center gap-2">
-                  <span className="text-green-400 text-lg">✓</span>
-                  <span className="text-xs text-gray-200 font-medium">SSL Strong</span>
-                </div>
-                <div className="bg-white/10 rounded px-3 py-2 border border-white/10 flex items-center gap-2">
-                  <span className="text-xs text-gray-200 font-medium">Google Safe</span>
-                </div>
-                <div className="bg-white/10 rounded px-3 py-2 border border-white/10 flex items-center gap-2">
-                  <span className="text-xs text-gray-200 font-medium">ClearSale</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Disclaimer NOM-142-SSA1/SCFI-2014 */}
-          <div className="mt-8 p-4 bg-white/5 border border-white/10 rounded-lg">
+        {/* Disclaimer NOM-142-SSA1/SCFI-2014 */}
+        <div className="mt-10 pt-8 border-t border-white/10">
+          <div className="p-4 bg-white/5 border border-white/10 rounded-lg">
             <p className="text-white font-bold text-sm uppercase tracking-wide">
               PROHIBIDA SU VENTA A MENORES DE 18 AÑOS
             </p>

@@ -4,6 +4,7 @@ import { CookieConsentProvider } from '@/app/context/CookieConsentContext';
 import { MainLayout } from '@/app/layouts/MainLayout';
 import { HomePage } from '@/app/pages/HomePage';
 import { CollectionPage } from '@/app/pages/CollectionPage';
+import { ProductsPage } from '@/app/pages/ProductsPage';
 import { ProductPage } from '@/app/pages/ProductPage';
 import { BlogPage } from '@/app/pages/BlogPage';
 import { BlogPostPage } from '@/app/pages/BlogPostPage';
@@ -25,6 +26,7 @@ function App() {
             <Route path="/politica-de-cookies" element={<CookiePolicyPage />} />
             <Route element={<MainLayout />}>
               <Route path="/" element={<HomePage />} />
+              <Route path="/productos" element={<ProductsPage />} />
               <Route path="/categorias/:handle" element={<CollectionPage />} />
               <Route path="/producto/:handle" element={<ProductPage />} />
               <Route path="/blog" element={<BlogPage />} />

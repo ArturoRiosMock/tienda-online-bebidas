@@ -78,10 +78,11 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
       {/* Favorite Button */}
       <button
         onClick={handleFavoriteClick}
-        className="absolute top-2 right-2 z-10 w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow"
+        aria-label={isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+        className="absolute top-1 right-1 sm:top-2 sm:right-2 z-10 w-6 h-6 sm:w-8 sm:h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow"
       >
         <Heart
-          className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+          className={`w-3 h-3 sm:w-4 sm:h-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
         />
       </button>
 
@@ -97,7 +98,7 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
           </div>
         )}
 
-        <div className="aspect-square overflow-hidden bg-gray-50 group p-2 sm:p-4">
+        <div className="aspect-square overflow-hidden bg-gray-50 group p-1 sm:p-4">
           <img
             src={product.image}
             alt={product.name}
@@ -109,15 +110,15 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
       {/* Product Info */}
       <div className="p-2 sm:p-4">
         {/* Rating */}
-        <div className="flex items-center gap-1 mb-1 sm:mb-2">
-          <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-          <span className="text-xs sm:text-sm font-medium text-[#212121]">
+        <div className="flex items-center gap-0.5 sm:gap-1 mb-0.5 sm:mb-2">
+          <Star className="w-2.5 h-2.5 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+          <span className="text-[10px] sm:text-sm font-medium text-[#212121]">
             {(4.5 + Math.random() * 0.5).toFixed(1)}
           </span>
         </div>
 
         {/* Product Name */}
-        <h3 className="text-[#0055a2] text-xs sm:text-sm font-medium mb-1.5 sm:mb-3 line-clamp-2 min-h-[28px] sm:min-h-[40px]">
+        <h3 className="text-[#0055a2] text-[11px] leading-tight sm:text-sm font-medium mb-1 sm:mb-3 line-clamp-2 min-h-[26px] sm:min-h-[40px]">
           {product.name}
         </h3>
 
@@ -216,10 +217,11 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
           <motion.button
             onClick={(e) => { e.stopPropagation(); navigate('/login'); }}
             whileTap={{ scale: 0.95 }}
-            className="w-full bg-[#0055a2] text-white py-2 sm:py-2.5 px-3 rounded hover:bg-[#004488] transition-colors text-[11px] sm:text-sm font-semibold flex items-center justify-center gap-1.5"
+            className="w-full bg-[#0055a2] text-white py-1.5 sm:py-2.5 px-2 sm:px-3 rounded hover:bg-[#004488] transition-colors text-[10px] sm:text-sm font-semibold flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap"
           >
-            <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            Inicia sesión para ver precio
+            <Lock className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+            <span className="sm:hidden">Ver precio</span>
+            <span className="hidden sm:inline">Inicia sesión para ver precio</span>
           </motion.button>
         )}
       </div>
