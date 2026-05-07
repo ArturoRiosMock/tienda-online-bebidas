@@ -50,7 +50,7 @@ export const Footer: React.FC = () => {
             <p className="text-gray-300 text-sm leading-relaxed">
               Revolucionamos el suministro de bebidas para centros de consumo, 
               centralizando tus compras con acceso a más de 2,000 productos de más 
-              de 300 proveedores.
+              de 200 proveedores.
             </p>
             <p className="text-gray-300 text-sm leading-relaxed">
               ¡Optimiza tu operación, ahorra tiempo y dinero con Bebify!

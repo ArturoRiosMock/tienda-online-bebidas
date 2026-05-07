@@ -60,7 +60,7 @@ export const About = () => {
             </h2>
             
             <p className="text-[#717182] mb-6 leading-relaxed">
-              En Bebify, centralizamos tus pedidos con más de 300 proveedores, ahorrándote tiempo y reduciendo costos en la gestión de suministros para tu centro de consumo.
+              En Bebify, centralizamos tus pedidos con más de 200 proveedores, ahorrándote tiempo y reduciendo costos en la gestión de suministros para tu centro de consumo.
             </p>
             
             <p className="text-[#717182] mb-8 leading-relaxed">
@@ -78,7 +78,7 @@ export const About = () => {
                 </div>
                 <div>
                   <h4 className="text-[#212121] mb-1">Coordinación Simple</h4>
-                  <p className="text-[#717182] text-sm">+300 proveedores centralizados</p>
+                  <p className="text-[#717182] text-sm">+200 proveedores centralizados</p>
                 </div>
               </motion.div>
 

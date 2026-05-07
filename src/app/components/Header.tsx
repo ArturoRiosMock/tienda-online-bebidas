@@ -19,7 +19,7 @@ interface HeaderProps {
 }
 
 const announcements = [
-  'Bebify – La Plataforma de Bebidas B2B. +2,000 productos de +300 proveedores.',
+  'Bebify – La Plataforma de Bebidas B2B. +2,000 productos de +200 proveedores.',
   'Entregas en menos de 24 horas en toda la CDMX. ¡Pedidos sin errores!',
   '¿Aún no tienes cuenta? Regístrate y accede a precios exclusivos B2B.'
 ];
@@ -36,7 +36,9 @@ interface MenuLink {
 interface MenuAccordion {
   type: 'accordion';
   label: string;
-  icon: 'destilados' | 'vinos';
+  icon: 'destilados' | 'vinos' | 'cervezas' | 'refrescos' | 'aguas' | 'otras-bebidas';
+  /** Handle de la colección padre en Shopify (para botón "Ver todos") */
+  parentHandle: string;
   children: { label: string; handle: string; image: string }[];
 }
 
@@ -48,6 +50,7 @@ const MENU_ITEMS: MenuItem[] = [
     type: 'accordion',
     label: 'Destilados',
     icon: 'destilados',
+    parentHandle: 'destilados',
     children: [
       { label: 'Tequila', handle: 'tequila', image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop' },
       { label: 'Whisky', handle: 'whisky', image: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=300&fit=crop' },
@@ -66,6 +69,7 @@ const MENU_ITEMS: MenuItem[] = [
     type: 'accordion',
     label: 'Vinos',
     icon: 'vinos',
+    parentHandle: 'vinos',
     children: [
       { label: 'Vino Tinto', handle: 'vino-tinto', image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop' },
       { label: 'Vino Blanco', handle: 'vino-blanco', image: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop' },
@@ -74,10 +78,55 @@ const MENU_ITEMS: MenuItem[] = [
       { label: 'Champagne', handle: 'champagne', image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&h=300&fit=crop' },
     ],
   },
-  { type: 'link', label: 'Cervezas', handle: 'cervezas' },
-  { type: 'link', label: 'Aguas', handle: 'aguas' },
-  { type: 'link', label: 'Refrescos', handle: 'refrescos' },
-  { type: 'link', label: 'Otras bebidas', handle: 'otras-bebidas' },
+  {
+    type: 'accordion',
+    label: 'Cervezas',
+    icon: 'cervezas',
+    parentHandle: 'cervezas',
+    children: [
+      { label: 'Cervezas Artesanales', handle: 'cervezas-artesanales', image: 'https://images.unsplash.com/photo-1571645163064-77faa9676a46?w=400&h=300&fit=crop' },
+      { label: 'Cervezas Importadas', handle: 'cervezas-importadas', image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&h=300&fit=crop' },
+      { label: 'Cervezas Nacionales', handle: 'cervezas-nacionales', image: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=400&h=300&fit=crop' },
+    ],
+  },
+  {
+    type: 'accordion',
+    label: 'Refrescos',
+    icon: 'refrescos',
+    parentHandle: 'refrescos',
+    children: [
+      { label: 'Canada Dry', handle: 'canada-dry', image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=300&fit=crop' },
+      { label: 'Coca-Cola', handle: 'coca-cola', image: 'https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=400&h=300&fit=crop' },
+      { label: 'Fresca', handle: 'fresca', image: 'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400&h=300&fit=crop' },
+      { label: 'Sidral Mundet', handle: 'sidral-mundet', image: 'https://images.unsplash.com/photo-1546173159-315724a31696?w=400&h=300&fit=crop' },
+      { label: 'Sprite', handle: 'sprite', image: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=400&h=300&fit=crop' },
+      { label: 'Otros Refrescos', handle: 'otros-refrescos', image: 'https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=400&h=300&fit=crop' },
+    ],
+  },
+  {
+    type: 'accordion',
+    label: 'Aguas',
+    icon: 'aguas',
+    parentHandle: 'aguas',
+    children: [
+      { label: 'Agua Saborizada', handle: 'agua-saborizada', image: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?w=400&h=300&fit=crop' },
+      { label: 'Agua Mineral', handle: 'agua-mineral', image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=300&fit=crop' },
+      { label: 'Agua Natural', handle: 'agua-natural', image: 'https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400&h=300&fit=crop' },
+      { label: 'Agua Tónica', handle: 'agua-tonica', image: 'https://images.unsplash.com/photo-1502920514313-52581002a659?w=400&h=300&fit=crop' },
+    ],
+  },
+  {
+    type: 'accordion',
+    label: 'Otras Bebidas',
+    icon: 'otras-bebidas',
+    parentHandle: 'otras-bebidas',
+    children: [
+      { label: 'Bebidas Energizantes', handle: 'bebidas-energizantes', image: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=400&h=300&fit=crop' },
+      { label: 'Jarabes', handle: 'jarabes', image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=300&fit=crop' },
+      { label: 'Jugos', handle: 'jugos', image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&h=300&fit=crop' },
+      { label: 'Leches', handle: 'leches', image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=300&fit=crop' },
+    ],
+  },
 ];
 
 const STATIC_LINKS = [
@@ -309,7 +358,7 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                               <div className="p-3">
                                 <p className="text-sm font-semibold text-[#212121] mb-2">{activeChild.label}</p>
                                 <button
-                                  onClick={() => handleCategoryClick(item.handle === 'destilados' ? 'destilados' : item.children[0].handle)}
+                                  onClick={() => handleCategoryClick(item.parentHandle)}
                                   className="w-full bg-[#1a3a2a] text-white text-xs font-semibold py-2 px-3 rounded-lg hover:bg-[#0f2a1a] transition-colors"
                                 >
                                   Ver todos los {item.label.toLowerCase()}

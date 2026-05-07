@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
+import logoBebifyColor from '@/assets/logo-bebify-color.svg';
 
 const COOKIE_NAME = 'bebify-age-verified';
 const COOKIE_DAYS = 30;
@@ -73,9 +73,9 @@ export const AgeVerification: React.FC<{ children: React.ReactNode }> = ({ child
               className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center"
             >
               <img
-                src={PLACEHOLDER_IMAGES.logo}
+                src={logoBebifyColor}
                 alt="Bebify"
-                className="h-20 mx-auto mb-6 object-contain"
+                className="h-16 sm:h-20 mx-auto mb-6 object-contain"
               />
 
               <h2 className="text-2xl font-bold text-[#212121] mb-4">
@@ -121,9 +121,9 @@ export const AgeVerification: React.FC<{ children: React.ReactNode }> = ({ child
               className="max-w-md w-full text-center"
             >
               <img
-                src={PLACEHOLDER_IMAGES.logo}
+                src={logoBebifyColor}
                 alt="Bebify"
-                className="h-20 mx-auto mb-6 object-contain"
+                className="h-16 sm:h-20 mx-auto mb-6 object-contain"
               />
 
               <h2 className="text-2xl font-bold text-[#212121] mb-4">

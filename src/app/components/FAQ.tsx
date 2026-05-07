@@ -65,7 +65,7 @@ const faqs: FAQItem[] = [
   {
     question: '¿Qué variedad de productos manejan?',
     answer:
-      'Contamos con más de 2,000 productos disponibles de más de 300 proveedores: destilados (whisky, vodka, tequila, gin, ron, mezcal), vinos, champagne, cervezas artesanales, nacionales e importadas, refrescos, aguas y más.'
+      'Contamos con más de 2,000 productos disponibles de más de 200 proveedores: destilados (whisky, vodka, tequila, gin, ron, mezcal), vinos, champagne, cervezas artesanales, nacionales e importadas, refrescos, aguas y más.'
   },
   {
     question: '¿Puedo devolver un producto?',
