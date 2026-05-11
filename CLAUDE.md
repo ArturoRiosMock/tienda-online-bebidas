@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Mr. Brown — Spanish-language **headless Shopify storefront** for premium beverages (MX market, MXN, language `ES`). Vite 6 + React 18 + TypeScript SPA, Tailwind v4 (`@tailwindcss/vite`), Radix/shadcn-style primitives in `src/app/components/ui/`. Animations via `motion`, GraphQL via `graphql-request` against Shopify's Storefront API. There is **no server / API layer** in this repo (`vercel.json` rewrites all paths to `/index.html`).
+Mr. Brown — Spanish-language **headless Shopify storefront** for premium beverages (MX market, MXN, language `ES`). Vite 6 + React 18 + TypeScript SPA, Tailwind v4 (`@tailwindcss/vite`), Radix/shadcn-style primitives in `src/app/components/ui/`. Animations via `motion`, GraphQL via `graphql-request` against Shopify's Storefront API. Backend is **mostly client-only**: the only server code is `api/newsletter.ts`, a Vercel Function that calls the Shopify Admin API to subscribe customers (Admin token must stay server-side). `vercel.json` rewrites everything **except `/api/*`** to `/index.html`.
 
 ## Commands
 
@@ -23,6 +23,10 @@ Mr. Brown — Spanish-language **headless Shopify storefront** for premium bever
   - `VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN`
 - Without these, `isShopifyConfigured()` returns false and the app falls back to an empty catalogue + local in-memory cart (no mock products are bundled).
 - Path alias: `@` → `src` (`vite.config.ts:20`).
+- Newsletter Vercel Function (`api/newsletter.ts`) needs two **server-only** vars (no `VITE_` prefix, so they don't leak into the browser bundle):
+  - `SHOPIFY_ADMIN_STORE_DOMAIN` (e.g. `mrbrownmx.myshopify.com`)
+  - `SHOPIFY_ADMIN_API_TOKEN` (Admin API custom-app token with at least `write_customers` scope; obtain via `scripts/get-shopify-admin-token.js`)
+  - Set both in the Vercel dashboard for Production + Preview; without them the Function returns 500.
 
 ## Two-projects-one-repo rule (critical)
 
@@ -77,7 +81,7 @@ Use `git worktree` so each branch lives in its own folder with its own `.vercel/
 - UI copy and route segments are **Spanish** (`/producto`, `/categorias`, `/cotizar-evento`, …) — keep new routes consistent.
 - Components: feature components under `src/app/components/*.tsx`, primitives under `src/app/components/ui/*.tsx`.
 - Static long-form content (about, FAQ, policies) lives in `src/content/mrbrown/`.
-- This is an SPA — no server routes. If you need backend behavior, it has to live in Shopify (Storefront/Admin) or a separate service.
+- This is mostly an SPA. The only server route is `api/newsletter.ts` (Vercel Function, Node runtime). Any new backend behavior should follow that pattern (Vercel Function under `api/`, server-only env vars without `VITE_` prefix) rather than calling Admin API from the browser.
 
 ## Reference docs in this repo
 
