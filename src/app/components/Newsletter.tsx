@@ -55,7 +55,7 @@ export const Newsletter = () => {
               {/* Bottles Image */}
               <div className="relative">
                 <img
-                  src="https://images.unsplash.com/photo-1681937425985-e6766b090115?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBkcmlua3MlMjBib3R0bGVzJTIwY29sbGVjdGlvbiUyMGRhcmt8ZW58MXx8fHwxNzcwMTM0NDI4fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                  src="/brav.jpg"
                   alt="Premium Bebidas"
                   className="w-full max-w-md h-auto object-contain drop-shadow-2xl"
                 />
