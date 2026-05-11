@@ -1,8 +1,6 @@
 // Vercel Function: recebe o formulário do componente Newsletter e cria/atualiza
 // o cliente no Shopify Admin API com consentimento de email marketing.
-// Roda em Node (Fluid Compute) — não expõe o token de Admin ao browser.
-
-export const config = { runtime: 'nodejs' };
+// Roda em Node (Fluid Compute, runtime default) — não expõe o token de Admin ao browser.
 
 type NewsletterBody = {
   name?: unknown;
