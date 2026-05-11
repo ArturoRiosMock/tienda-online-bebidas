@@ -5,9 +5,7 @@
       "Bash(pip install *)",
       "Bash(python -c \"from pypdf import PdfReader; r=PdfReader\\('C:/TRABALHO/tienda-online-bebidas/MrBrown_Auditoria_Ecommerce_2025.pdf'\\); print\\('PAGES:', len\\(r.pages\\)\\); [print\\(f'--- PAGE {i+1} ---', p.extract_text\\(\\), sep='\\\\n'\\) for i,p in enumerate\\(r.pages\\)]\")",
       "Bash(python -X utf8 -c \"from pypdf import PdfReader; r=PdfReader\\('C:/TRABALHO/tienda-online-bebidas/MrBrown_Auditoria_Ecommerce_2025.pdf'\\); [print\\(f'--- PAGE {i+1} ---', p.extract_text\\(\\), sep='\\\\n'\\) for i,p in enumerate\\(r.pages[4:10],4\\)]\")",
-      "Bash(npm run *)",
-      "Bash(curl -i -sS -X POST --max-time 15 -H \"Content-Type: application/json\" -d '{\"name\":\"diag\",\"whatsapp\":\"5512345678\",\"email\":\"diag-test@example.invalid\"}' https://www.mrbrown.com.mx/api/newsletter)",
-      "Bash(curl *)"
+      "Bash(npm run *)"
     ]
   }
 }
