@@ -23,7 +23,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
   const slides: Slide[] = [
     {
       id: 1,
-      image: 'https://images.unsplash.com/photo-1746422029293-43065303dab5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aGlza3klMjBib3R0bGVzJTIwcHJlbWl1bSUyMGNvbGxlY3Rpb258ZW58MXx8fHwxNzcwMTM1OTYyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      image: 'https://images-ext-1.discordapp.net/external/D5lSwL5mjlIjTiYkGlwgZcQ4Y1tJxRvPsMnDQ5dwgjI/%3Fformat%3Dwebp%26v%3D1717249074%26width%3D1200/https/bebify.mx/cdn/shop/files/Slideshow_1.jpg?format=webp',
       title: 'La Plataforma de Bebidas B2B',
       subtitle: 'Centraliza tus compras con acceso a más de 2,000 productos de más de 200 proveedores',
       badge: 'B2B',

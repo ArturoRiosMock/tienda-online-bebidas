@@ -6,6 +6,11 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
+import casaBacardiImg from '@/assets/casa-bacardi.png';
+import casaDelAguaImg from '@/assets/casa-del-agua.png';
+import condesaGinImg from '@/assets/condesa-gin.png';
+import felixImg from '@/assets/felix.png';
+import laMadrilenaImg from '@/assets/la-madrilena.png';
 
 interface Brand {
   id: number;
@@ -29,9 +34,9 @@ interface BrandProduct {
 const brands: Brand[] = [
   {
     id: 1,
-    name: 'Macallan',
-    image: 'https://images.unsplash.com/photo-1717413662498-35bd8638a347?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxNYWNhbGxhbiUyMHdoaXNreSUyMGJvdHRsZXxlbnwxfHx8fDE3NzAxMzQxMTV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    bannerImage: 'https://images.unsplash.com/photo-1717413662498-35bd8638a347?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxNYWNhbGxhbiUyMHdoaXNreSUyMGJvdHRsZXxlbnwxfHx8fDE3NzAxMzQxMTV8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    name: 'La Madrileña',
+    image: laMadrilenaImg,
+    bannerImage: laMadrilenaImg,
     products: [
       {
         id: 1,
@@ -67,9 +72,9 @@ const brands: Brand[] = [
   },
   {
     id: 2,
-    name: 'Old Parr',
-    image: 'https://images.unsplash.com/photo-1643506657522-4fc374267aae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxPbGQlMjBQYXJyJTIwd2hpc2t5JTIwYm90dGxlfGVufDF8fHx8MTc3MDEzNDExNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    bannerImage: 'https://images.unsplash.com/photo-1643506657522-4fc374267aae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxPbGQlMjBQYXJyJTIwd2hpc2t5JTIwYm90dGxlfGVufDF8fHx8MTc3MDEzNDExNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    name: 'Félix',
+    image: felixImg,
+    bannerImage: felixImg,
     products: [
       {
         id: 4,
@@ -105,9 +110,9 @@ const brands: Brand[] = [
   },
   {
     id: 3,
-    name: 'Royal Salute',
-    image: 'https://images.unsplash.com/photo-1762528459308-bfc2a959e0da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcmVtaXVtJTIwd2hpc2t5JTIwYm90dGxlJTIwYmx1ZXxlbnwxfHx8fDE3NzAxMzQxMjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    bannerImage: 'https://images.unsplash.com/photo-1762528459308-bfc2a959e0da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcmVtaXVtJTIwd2hpc2t5JTIwYm90dGxlJTIwYmx1ZXxlbnwxfHx8fDE3NzAxMzQxMjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    name: 'Condesa Gin',
+    image: condesaGinImg,
+    bannerImage: condesaGinImg,
     products: [
       {
         id: 7,
@@ -143,9 +148,9 @@ const brands: Brand[] = [
   },
   {
     id: 4,
-    name: 'Jack Daniels',
-    image: 'https://images.unsplash.com/photo-1546728506-b1746d1e5ac9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxKYWNrJTIwRGFuaWVscyUyMGJvdHRsZXxlbnwxfHx8fDE3NzAxMzQxMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    bannerImage: 'https://images.unsplash.com/photo-1546728506-b1746d1e5ac9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxKYWNrJTIwRGFuaWVscyUyMGJvdHRsZXxlbnwxfHx8fDE3NzAxMzQxMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    name: 'Casa del Agua',
+    image: casaDelAguaImg,
+    bannerImage: casaDelAguaImg,
     products: [
       {
         id: 10,
@@ -181,9 +186,9 @@ const brands: Brand[] = [
   },
   {
     id: 5,
-    name: 'Sazerac',
-    image: 'https://images.unsplash.com/photo-1703775763396-ea5dd04673a4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2duYWMlMjBib3R0bGUlMjBsdXh1cnl8ZW58MXx8fHwxNzcwMTE2NjQ4fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-    bannerImage: 'https://images.unsplash.com/photo-1703775763396-ea5dd04673a4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2duYWMlMjBib3R0bGUlMjBsdXh1cnl8ZW58MXx8fHwxNzcwMTE2NjQ4fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    name: 'Casa Bacardi',
+    image: casaBacardiImg,
+    bannerImage: casaBacardiImg,
     products: [
       {
         id: 13,
@@ -408,21 +413,16 @@ export const BrandsSection = () => {
           >
             {/* Banner - en móvil compacto arriba */}
             <div className="mb-4 md:hidden">
-              <div className="bg-gradient-to-r from-[#FDB93A] to-[#FF8A00] rounded-lg overflow-hidden h-40 relative shadow-lg">
-                <div className="absolute inset-0 flex items-center justify-between p-4">
-                  <div>
-                    <h3 className="text-white text-xl font-bold mb-1">
-                      {selectedBrand.name.toUpperCase()}
-                    </h3>
-                    <p className="text-black text-xs font-semibold">
-                      Un Brindis para cada<br />CELEBRACIÓN
-                    </p>
-                  </div>
-                  <img
-                    src={selectedBrand.bannerImage}
-                    alt={selectedBrand.name}
-                    className="h-32 object-contain drop-shadow-2xl"
-                  />
+              <div className="relative rounded-lg overflow-hidden h-40 shadow-lg">
+                <img
+                  src={selectedBrand.bannerImage}
+                  alt={selectedBrand.name}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+                  <h3 className="text-xl font-bold mb-0.5 drop-shadow">{selectedBrand.name}</h3>
+                  <span className="text-xs opacity-90">Ver colección →</span>
                 </div>
               </div>
             </div>
@@ -445,21 +445,18 @@ export const BrandsSection = () => {
             {/* Desktop: banner lateral + carrusel */}
             <div className="hidden md:grid grid-cols-12 gap-6">
               <div className="col-span-3">
-                <div className="bg-gradient-to-br from-[#FDB93A] to-[#FF8A00] rounded-lg overflow-hidden h-full min-h-[400px] relative shadow-lg">
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                    <h3 className="text-white text-3xl font-bold mb-2">
-                      {selectedBrand.name.toUpperCase()}
-                    </h3>
-                    <p className="text-black text-lg font-semibold mb-4">
-                      Un Brindis para cada<br />CELEBRACIÓN
-                    </p>
-                    <div className="mt-auto">
-                      <img
-                        src={selectedBrand.bannerImage}
-                        alt={selectedBrand.name}
-                        className="w-full max-w-[200px] object-contain drop-shadow-2xl"
-                      />
-                    </div>
+                <div className="relative rounded-lg overflow-hidden h-full min-h-[400px] shadow-lg">
+                  <img
+                    src={selectedBrand.bannerImage}
+                    alt={selectedBrand.name}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                    <h3 className="text-2xl font-bold mb-1 drop-shadow">{selectedBrand.name}</h3>
+                    <span className="inline-flex items-center gap-1 text-sm opacity-90 hover:opacity-100 transition-opacity">
+                      Ver colección →
+                    </span>
                   </div>
                 </div>
               </div>
