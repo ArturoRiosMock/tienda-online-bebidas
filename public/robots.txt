@@ -1,0 +1,19 @@
+# robots.txt — Mr. Brown (https://www.mrbrown.com.mx)
+
+User-agent: *
+Allow: /
+
+# Rotas administrativas y API interna
+Disallow: /admin/
+Disallow: /api/
+
+# Redireccionamientos hacia el checkout Shopify (sin valor SEO)
+Disallow: /cart/
+Disallow: /checkouts/
+
+# Rutas legadas en el patrón Shopify (redirigen a las rutas en español)
+Disallow: /products/
+Disallow: /collections/
+Disallow: /policies/
+
+Sitemap: https://www.mrbrown.com.mx/sitemap.xml
