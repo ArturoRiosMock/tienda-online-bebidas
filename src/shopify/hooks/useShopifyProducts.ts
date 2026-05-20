@@ -52,7 +52,7 @@ export const useShopifyProducts = (collectionHandle?: string, titleFallback?: st
   return { products, loading, error };
 };
 
-export const useShopifySearch = (query: string) => {
+export const useShopifySearch = (query: string, limit: number = 20) => {
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,7 +71,7 @@ export const useShopifySearch = (query: string) => {
         if (!isShopifyConfigured()) {
           setResults([]);
         } else {
-          const searchResults = await searchProducts(query, 20);
+          const searchResults = await searchProducts(query, limit);
           setResults(searchResults);
         }
       } catch (err) {
@@ -84,7 +84,7 @@ export const useShopifySearch = (query: string) => {
 
     const timeoutId = setTimeout(searchProductsAsync, 300);
     return () => clearTimeout(timeoutId);
-  }, [query]);
+  }, [query, limit]);
 
   return { results, loading, error };
 };

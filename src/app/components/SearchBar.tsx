@@ -202,40 +202,61 @@ export const SearchBar = ({ collections, onClose, variant = 'desktop' }: SearchB
     setRecentSearches(getRecentSearches());
   };
 
+  const submitSearch = () => {
+    if (trimmedQuery.length < 2) return;
+    saveRecentSearch(trimmedQuery);
+    navigate(`/buscar?q=${encodeURIComponent(trimmedQuery)}`);
+    setIsOpen(false);
+    setQuery('');
+    onClose?.();
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitSearch();
+  };
+
   const isMobile = variant === 'mobile';
 
   const input = (
-    <div className="relative flex items-center">
-      <input
-        type="text"
-        placeholder="¿Qué estás buscando?"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => setIsOpen(true)}
-        onKeyDown={handleKeyDown}
-        className="w-full border border-gray-300 rounded-lg px-4 py-2 pr-20 focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]/30 text-sm text-[#212121]"
-        autoFocus={isMobile}
-        aria-label="Buscar productos y colecciones"
-        aria-expanded={showDropdown}
-        aria-autocomplete="list"
-        role="combobox"
-      />
-      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-        {query && (
+    <form onSubmit={handleFormSubmit} role="search" className="contents">
+      <div className="relative flex items-center">
+        <input
+          type="search"
+          placeholder="¿Qué estás buscando?"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => setIsOpen(true)}
+          onKeyDown={handleKeyDown}
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 pr-20 focus:outline-none focus:ring-2 focus:ring-[#0c3c1f]/30 text-sm text-[#212121]"
+          autoFocus={isMobile}
+          aria-label="Buscar productos y colecciones"
+          aria-expanded={showDropdown}
+          aria-autocomplete="list"
+          role="combobox"
+        />
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery('')}
+              className="p-1 text-gray-500 hover:text-[#212121] rounded"
+              aria-label="Limpiar búsqueda"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
           <button
-            type="button"
-            onClick={() => setQuery('')}
-            className="p-1 text-gray-500 hover:text-[#212121] rounded"
-            aria-label="Limpiar búsqueda"
+            type="submit"
+            className="p-1 text-[#0c3c1f] hover:text-[#0a3019] disabled:text-gray-300"
+            aria-label="Buscar"
+            disabled={trimmedQuery.length < 2}
           >
-            <X className="w-4 h-4" />
+            <Search className="w-5 h-5" />
           </button>
-        )}
-        <button type="button" className="p-1 text-[#0c3c1f]" aria-hidden>
-          <Search className="w-5 h-5" />
-        </button>
+        </div>
       </div>
-    </div>
+    </form>
   );
 
   const dropdownContent = (

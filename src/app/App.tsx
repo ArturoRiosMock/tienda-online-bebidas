@@ -10,6 +10,7 @@ import { EventQuotePage } from '@/app/pages/EventQuotePage';
 import { SobreNosotrosPage } from '@/app/pages/SobreNosotrosPage';
 import { PreguntasFrecuentesPage } from '@/app/pages/PreguntasFrecuentesPage';
 import { ContactoPage } from '@/app/pages/ContactoPage';
+import { SearchResultsPage } from '@/app/pages/SearchResultsPage';
 import { BlogPage } from '@/app/pages/BlogPage';
 import { ArticlePage } from '@/app/pages/ArticlePage';
 import { PolicyDocumentPage } from '@/app/pages/PolicyDocumentPage';
@@ -40,6 +41,12 @@ function CollectionRedirect() {
 function ShopifyArticleRedirect() {
   const { handle } = useParams<{ handle: string }>();
   return <Navigate to={`/blog/${handle}`} replace />;
+}
+
+/** Redirige /search?q=... (URL estándar de Shopify) → /buscar?q=... */
+function SearchRedirect() {
+  const location = useLocation();
+  return <Navigate to={`/buscar${location.search}`} replace />;
 }
 
 function ScrollToTop() {
@@ -83,6 +90,9 @@ function App() {
           <Route path="/sobre-nosotros" element={<Navigate to="/page/sobre-nosotros" replace />} />
           <Route path="/preguntas-frecuentes" element={<PreguntasFrecuentesPage />} />
           <Route path="/contacto" element={<ContactoPage />} />
+          <Route path="/buscar" element={<SearchResultsPage />} />
+          {/* Redirect desde URL estándar de Shopify (/search) hacia la ruta interna */}
+          <Route path="/search" element={<SearchRedirect />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:handle" element={<ArticlePage />} />
           {/* Redirects desde URLs estándar de Shopify (/blogs/*) hacia las rutas internas */}

@@ -82,6 +82,13 @@ export const SearchDrawer = ({ isOpen, onClose, onOpenCart }: SearchDrawerProps)
     setQuantities((prev) => ({ ...prev, [product.id]: 1 }));
   }, [addToCart, quantities]);
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (trimmedQuery.length < 2) return;
+    onClose();
+    navigate(`/buscar?q=${encodeURIComponent(trimmedQuery)}`);
+  };
+
   const handleClose = () => {
     onClose();
     if (getTotalItems() > 0) {
@@ -136,23 +143,34 @@ export const SearchDrawer = ({ isOpen, onClose, onOpenCart }: SearchDrawerProps)
             )}
 
             <div className="px-4 pt-3 pb-2 flex-shrink-0">
-              <div className="relative flex items-center">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  placeholder="Buscar..."
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  className="w-full border-b-2 border-gray-300 focus:border-[#0c3c1f] px-1 py-2.5 pr-10 outline-none text-[#212121] text-base transition-colors bg-transparent"
-                />
-                <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                  {query && (
-                    <button type="button" onClick={() => setQuery('')} className="p-1 text-gray-400 hover:text-[#212121] rounded" aria-label="Limpiar">
-                      <X className="w-4 h-4" />
+              <form onSubmit={handleSubmit} role="search">
+                <div className="relative flex items-center">
+                  <input
+                    ref={inputRef}
+                    type="search"
+                    placeholder="Buscar..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="w-full border-b-2 border-gray-300 focus:border-[#0c3c1f] px-1 py-2.5 pr-16 outline-none text-[#212121] text-base transition-colors bg-transparent"
+                    aria-label="Buscar productos"
+                  />
+                  <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                    {query && (
+                      <button type="button" onClick={() => setQuery('')} className="p-1 text-gray-400 hover:text-[#212121] rounded" aria-label="Limpiar">
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                    <button
+                      type="submit"
+                      className="p-1 text-[#0c3c1f] hover:text-[#0a3019] disabled:text-gray-300"
+                      aria-label="Buscar"
+                      disabled={trimmedQuery.length < 2}
+                    >
+                      <Search className="w-5 h-5" />
                     </button>
-                  )}
+                  </div>
                 </div>
-              </div>
+              </form>
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 pb-4">
@@ -181,6 +199,14 @@ export const SearchDrawer = ({ isOpen, onClose, onOpenCart }: SearchDrawerProps)
 
               {trimmedQuery.length >= 2 && !loading && results.length > 0 && (
                 <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => { onClose(); navigate(`/buscar?q=${encodeURIComponent(trimmedQuery)}`); }}
+                    className="w-full text-left px-3 py-2 mb-1 rounded-lg text-sm font-medium text-[#0c3c1f] bg-[#0c3c1f]/5 hover:bg-[#0c3c1f]/10 transition-colors flex items-center justify-between"
+                  >
+                    <span>Ver todos los resultados de «{trimmedQuery}»</span>
+                    <span aria-hidden>→</span>
+                  </button>
                   <p className="text-xs font-semibold text-[#717182] uppercase tracking-wide py-2">Productos</p>
                   <div className="space-y-1">
                     {results.map((product) => {
