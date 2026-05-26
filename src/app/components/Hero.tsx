@@ -11,12 +11,14 @@ interface HeroProps {
 interface Slide {
   id: number;
   image: string;
+  mobileImage?: string;
   bgColor: string;
   title?: string;
   subtitle?: string;
   badge?: string;
-  buttonText: string;
+  buttonText?: string;
   buttonAction?: () => void;
+  onSlideClick?: () => void;
 }
 
 export const Hero = ({ onShopNowClick }: HeroProps) => {
@@ -25,6 +27,13 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
   const navigate = useNavigate();
 
   const slides: Slide[] = [
+    {
+      id: 6,
+      image: '/hot_sale.jpg',
+      mobileImage: '/movil_hotsale.jpg',
+      bgColor: '#9B2C2C',
+      onSlideClick: () => navigate('/categorias/promo-mundialista')
+    },
     {
       id: 1,
       image: '/hero-barra-boda.webp',
@@ -105,7 +114,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
   return (
     <section className="relative overflow-hidden w-screen left-1/2 right-1/2 -translate-x-1/2">
       {/* Carousel Container */}
-      <div className="relative h-[220px] md:h-[320px] lg:h-[420px]">
+      <div className="relative aspect-square md:aspect-auto md:h-[320px] lg:h-[420px]">
         <AnimatePresence initial={false} custom={direction} mode="wait">
           <motion.div
             key={currentSlide}
@@ -122,12 +131,28 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
             style={{ backgroundColor: slides[currentSlide].bgColor }}
           >
             {/* Slide Background Image */}
-            <div className="relative w-full h-full">
-              <img
-                src={slides[currentSlide].image}
-                alt={slides[currentSlide].title ?? 'Mr. Brown Banner'}
-                className="w-full h-full object-cover object-center"
-              />
+            <div
+              className={`relative w-full h-full ${slides[currentSlide].onSlideClick ? 'cursor-pointer' : ''}`}
+              onClick={slides[currentSlide].onSlideClick}
+              role={slides[currentSlide].onSlideClick ? 'button' : undefined}
+              tabIndex={slides[currentSlide].onSlideClick ? 0 : undefined}
+              onKeyDown={
+                slides[currentSlide].onSlideClick
+                  ? (e) => { if (e.key === 'Enter' || e.key === ' ') slides[currentSlide].onSlideClick!(); }
+                  : undefined
+              }
+              aria-label={slides[currentSlide].onSlideClick ? 'Ver promoción' : undefined}
+            >
+              <picture>
+                {slides[currentSlide].mobileImage && (
+                  <source media="(max-width: 767px)" srcSet={slides[currentSlide].mobileImage} />
+                )}
+                <img
+                  src={slides[currentSlide].image}
+                  alt={slides[currentSlide].title ?? 'Mr. Brown Banner'}
+                  className={`w-full h-full object-center ${slides[currentSlide].mobileImage ? 'object-cover' : 'object-contain md:object-cover'}`}
+                />
+              </picture>
 
               {/* Overlay solo para slides con texto superpuesto */}
               {(slides[currentSlide].title || slides[currentSlide].badge) && (
@@ -182,16 +207,18 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
                     )}
 
                     {/* CTA Button */}
-                    <motion.button
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6 }}
-                      onClick={slides[currentSlide].buttonAction}
-                      className="bg-[#0c3c1f] text-white px-8 py-3 rounded-lg hover:bg-[#0a3019] transition-colors font-bold text-sm flex items-center gap-2 group"
-                    >
-                      <ShoppingCart className="w-5 h-5" />
-                      {slides[currentSlide].buttonText}
-                    </motion.button>
+                    {slides[currentSlide].buttonText && (
+                      <motion.button
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 }}
+                        onClick={slides[currentSlide].buttonAction}
+                        className="bg-[#0c3c1f] text-white px-8 py-3 rounded-lg hover:bg-[#0a3019] transition-colors font-bold text-sm flex items-center gap-2 group"
+                      >
+                        <ShoppingCart className="w-5 h-5" />
+                        {slides[currentSlide].buttonText}
+                      </motion.button>
+                    )}
                   </motion.div>
                 </div>
               </div>

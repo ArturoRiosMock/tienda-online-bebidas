@@ -9,7 +9,8 @@
       "Bash(xargs grep *)",
       "Bash(curl *)",
       "Bash(kill %1)",
-      "Bash(wait)"
+      "Bash(wait)",
+      "mcp__ide__getDiagnostics"
     ]
   }
 }
