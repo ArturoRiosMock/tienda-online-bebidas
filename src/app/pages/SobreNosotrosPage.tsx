@@ -38,7 +38,7 @@ export const SobreNosotrosPage: React.FC = () => {
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
             <div className="relative rounded-2xl overflow-hidden shadow-xl">
               <img
-                src="https://images.unsplash.com/photo-1609270460854-e8ea8c0b591f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFtJTIwd29ya2luZyUyMGNhZmUlMjBidXNpbmVzc3xlbnwxfHx8fDE3NzAxMzI5OTR8MA&ixlib=rb-4.1.0&q=80&w=1080"
+                src="/sobre_nosotros.jpg"
                 alt="Mr. Brown equipo"
                 className="w-full h-80 object-cover"
               />

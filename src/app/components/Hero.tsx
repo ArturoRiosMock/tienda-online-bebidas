@@ -65,8 +65,9 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
     // },
     {
       id: 5,
-      image: '/hero-best-sellers.webp',
-      bgColor: '#4a5240',
+      image: '/cta.jpg',
+      mobileImage: '/movil_mundial.jpg',
+      bgColor: '#0c3c1f',
       buttonText: 'VER BEST SELLERS',
       buttonAction: () => navigate('/categorias/promo-mundialista')
     }
@@ -112,7 +113,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
   };
 
   return (
-    <section className="relative overflow-hidden w-screen left-1/2 right-1/2 -translate-x-1/2">
+    <section className="relative overflow-hidden w-screen max-w-[1700px] left-1/2 right-1/2 -translate-x-1/2">
       {/* Carousel Container */}
       <div className="relative aspect-square md:aspect-auto md:h-[320px] lg:h-[420px]">
         <AnimatePresence initial={false} custom={direction} mode="wait">
@@ -150,7 +151,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
                 <img
                   src={slides[currentSlide].image}
                   alt={slides[currentSlide].title ?? 'Mr. Brown Banner'}
-                  className={`w-full h-full object-center ${slides[currentSlide].mobileImage ? 'object-cover' : 'object-contain md:object-cover'}`}
+                  className="w-full h-full object-center object-contain"
                 />
               </picture>
 
