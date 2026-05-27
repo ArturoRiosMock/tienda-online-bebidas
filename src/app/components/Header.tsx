@@ -214,20 +214,11 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
               </>
             )}
 
-            {/* Search Trigger - Desktop */}
-            <button
-              onClick={() => setSearchDrawerOpen(true)}
-              className="flex-1 max-w-xl hidden md:flex items-center gap-2 border border-gray-500 rounded-lg px-4 py-2 text-sm text-gray-400 hover:border-gray-300 transition-colors cursor-text bg-transparent"
-            >
-              <Search className="w-4 h-4" />
-              <span>¿Qué estás buscando?</span>
-            </button>
-
             {/* Right Icons */}
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                className="md:hidden p-2 hover:bg-white/10 rounded-lg transition-colors text-white"
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white"
                 onClick={() => setSearchDrawerOpen(true)}
                 aria-label="Abrir búsqueda"
               >

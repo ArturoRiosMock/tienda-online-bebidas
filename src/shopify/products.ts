@@ -35,39 +35,121 @@ export const convertShopifyProductToAppProduct = (shopifyProduct: ShopifyProduct
   };
 };
 
-// Obtener todos los productos
-export const getProducts = async (first: number = 20): Promise<Product[]> => {
+// Obtener una página de productos (cursor-based)
+export const getProductsPage = async (
+  first: number = 50,
+  after: string | null = null
+): Promise<{
+  products: Product[];
+  hasNextPage: boolean;
+  endCursor: string | null;
+}> => {
   try {
-    const data: any = await shopifyClient.request(GET_PRODUCTS, { first });
-    
-    return data.products.edges.map((edge: any) => 
-      convertShopifyProductToAppProduct(edge.node)
-    );
+    const data: any = await shopifyClient.request(GET_PRODUCTS, {
+      first,
+      after: after || undefined,
+    });
+
+    const edges = data.products.edges;
+
+    return {
+      products: edges.map((edge: any) => convertShopifyProductToAppProduct(edge.node)),
+      hasNextPage: data.products.pageInfo.hasNextPage,
+      endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : null,
+    };
   } catch (error) {
     console.error('Error fetching products from Shopify:', error);
-    return [];
+    return { products: [], hasNextPage: false, endCursor: null };
   }
 };
 
-// Obtener productos por colección/categoría
-export const getProductsByCollection = async (collectionHandle: string, first: number = 20): Promise<Product[]> => {
+// Obtener todos los productos paginando la Storefront API
+export const getAllProducts = async (pageSize: number = 50): Promise<Product[]> => {
+  const allProducts: Product[] = [];
+  let after: string | null = null;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    const page = await getProductsPage(pageSize, after);
+    allProducts.push(...page.products);
+    hasNextPage = page.hasNextPage;
+    after = page.endCursor;
+
+    if (hasNextPage && !after) {
+      break;
+    }
+  }
+
+  return allProducts;
+};
+
+// Obtener productos (primera página)
+export const getProducts = async (first: number = 20): Promise<Product[]> => {
+  const { products } = await getProductsPage(first);
+  return products;
+};
+
+// Obtener una página de productos de una colección
+export const getProductsByCollectionPage = async (
+  collectionHandle: string,
+  first: number = 50,
+  after: string | null = null
+): Promise<{
+  products: Product[];
+  hasNextPage: boolean;
+  endCursor: string | null;
+}> => {
   try {
     const data: any = await shopifyClient.request(GET_PRODUCTS_BY_COLLECTION, {
       handle: collectionHandle,
-      first
+      first,
+      after: after || undefined,
     });
-    
+
     if (!data.collection) {
-      return [];
+      return { products: [], hasNextPage: false, endCursor: null };
     }
 
-    return data.collection.products.edges.map((edge: any) => 
-      convertShopifyProductToAppProduct(edge.node)
-    );
+    const edges = data.collection.products.edges;
+
+    return {
+      products: edges.map((edge: any) => convertShopifyProductToAppProduct(edge.node)),
+      hasNextPage: data.collection.products.pageInfo.hasNextPage,
+      endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : null,
+    };
   } catch (error) {
-    console.error('Error fetching products by collection:', error);
-    return [];
+    console.error('Error fetching products by collection from Shopify:', error);
+    return { products: [], hasNextPage: false, endCursor: null };
   }
+};
+
+// Obtener todos los productos de una colección
+export const getAllProductsByCollection = async (
+  collectionHandle: string,
+  pageSize: number = 50
+): Promise<Product[]> => {
+  const allProducts: Product[] = [];
+  let after: string | null = null;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    const page = await getProductsByCollectionPage(collectionHandle, pageSize, after);
+    allProducts.push(...page.products);
+    hasNextPage = page.hasNextPage;
+    after = page.endCursor;
+
+    if (hasNextPage && !after) {
+      break;
+    }
+  }
+
+  return allProducts;
+};
+
+// Obtener productos por colección/categoría (primera página)
+export const getProductsByCollection = async (collectionHandle: string, first: number = 20): Promise<Product[]> => {
+  const { products } = await getProductsByCollectionPage(collectionHandle, first);
+  return products;
 };
 
 // Obtener un producto por handle

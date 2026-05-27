@@ -1,0 +1,205 @@
+.helium-registration-form {
+  --bebify-blue: #0055a2;
+  --bebify-blue-hover: #004488;
+  --bebify-text: #212121;
+  --bebify-muted: #717182;
+  --bebify-border: #d1d5db;
+  --bebify-input-min-height: 3rem;
+  --bebify-input-padding-x: 1rem;
+  --bebify-input-padding-y: 0.75rem;
+  --bebify-radius: 0.5rem;
+}
+
+.helium-registration-form form[data-cf-form] {
+  margin: 0;
+}
+
+.helium-registration-form .cf-form-inner {
+  max-width: none;
+}
+
+.helium-registration-form .cf-step-counter,
+.helium-registration-form .cf-field label,
+.helium-registration-form .cf-form-actions,
+.helium-registration-form .cf-step-title,
+.helium-registration-form .cf-entry-heading {
+  font-family: inherit;
+  color: var(--bebify-text);
+}
+
+.helium-registration-form .cf-step-counter {
+  font-size: 0.875rem;
+  color: var(--bebify-muted);
+  margin-bottom: 0.5rem;
+}
+
+.helium-registration-form .cf-step-title,
+.helium-registration-form .cf-entry-heading {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.helium-registration-form .cf-field {
+  margin-bottom: 1rem;
+}
+
+.helium-registration-form .cf-field label,
+.helium-registration-form .cf-label-container label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--bebify-text);
+  margin-bottom: 0.375rem;
+}
+
+.helium-registration-form .cf-field input:not([type='checkbox']):not([type='radio']):not([type='hidden']),
+.helium-registration-form .cf-field textarea,
+.helium-registration-form .cf-field select,
+.helium-registration-form .cf-field__select select,
+.helium-registration-form .cf-phone-field input,
+.helium-registration-form .cf-phone-field select,
+.helium-registration-form .cf-country-picker,
+.helium-registration-form .cf-select-wrap select {
+  width: 100%;
+  min-height: var(--bebify-input-min-height);
+  padding: var(--bebify-input-padding-y) var(--bebify-input-padding-x);
+  border: 1px solid var(--bebify-border);
+  border-radius: var(--bebify-radius);
+  background-color: #fff;
+  color: var(--bebify-text);
+  font-size: 1rem;
+  line-height: 1.5;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.helium-registration-form .cf-field textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.helium-registration-form .cf-field input:not([type='checkbox']):not([type='radio']):focus,
+.helium-registration-form .cf-field textarea:focus,
+.helium-registration-form .cf-field select:focus,
+.helium-registration-form .cf-field__select select:focus,
+.helium-registration-form .cf-phone-field input:focus,
+.helium-registration-form .cf-phone-field select:focus,
+.helium-registration-form .cf-country-picker:focus,
+.helium-registration-form .cf-select-wrap select:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px var(--bebify-blue);
+}
+
+.helium-registration-form .cf-phone-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media screen and (min-width: 480px) {
+  .helium-registration-form .cf-phone-field {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .helium-registration-form .cf-country-picker {
+    flex: 0 0 11rem;
+    width: 11rem;
+  }
+}
+
+.helium-registration-form .cf-form-actions {
+  margin-top: 1.5rem;
+  padding: 0;
+}
+
+.helium-registration-form .cf-form-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+@media screen and (min-width: 480px) {
+  .helium-registration-form .cf-form-button-group {
+    flex-direction: row;
+    align-items: stretch;
+  }
+}
+
+.helium-registration-form .cf-form-button-group .cf-button {
+  flex: 1;
+  width: 100%;
+  margin: 0;
+  min-height: var(--bebify-input-min-height);
+  padding: var(--bebify-input-padding-y) 1.5rem;
+  border-radius: var(--bebify-radius);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.helium-registration-form .cf-next-step,
+.helium-registration-form .cf-submit,
+.helium-registration-form .cf-form-actions button[type='submit'],
+.helium-registration-form .cf-form-actions .cf-button:not(.cf-cancel):not(.cf-previous-step) {
+  background-color: var(--bebify-blue);
+  border: 2px solid var(--bebify-blue);
+  color: #fff;
+}
+
+.helium-registration-form .cf-next-step:hover,
+.helium-registration-form .cf-submit:hover,
+.helium-registration-form .cf-form-actions button[type='submit']:hover,
+.helium-registration-form .cf-form-actions .cf-button:not(.cf-cancel):not(.cf-previous-step):hover {
+  background-color: var(--bebify-blue-hover);
+  border-color: var(--bebify-blue-hover);
+}
+
+.helium-registration-form .cf-cancel,
+.helium-registration-form .cf-previous-step {
+  background-color: #fff;
+  border: 2px solid var(--bebify-text);
+  color: var(--bebify-text);
+}
+
+.helium-registration-form .cf-cancel:hover,
+.helium-registration-form .cf-previous-step:hover {
+  background-color: #f3f4f6;
+}
+
+.helium-registration-form .cf-form-actions .cf-button:disabled,
+.helium-registration-form .cf-form-button-group .cf-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.helium-registration-form .cf-enum-field__choice input[type='checkbox'],
+.helium-registration-form .cf-field input[type='checkbox'] {
+  width: 1rem;
+  height: 1rem;
+  min-height: 1rem;
+  padding: 0;
+  accent-color: var(--bebify-blue);
+  cursor: pointer;
+}
+
+.helium-registration-form .cf-error-message,
+.helium-registration-form .cf-field-errors {
+  color: #b91c1c;
+  font-size: 0.875rem;
+}
+
+.helium-registration-form .cf-error-message-header {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+  border-radius: var(--bebify-radius);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}

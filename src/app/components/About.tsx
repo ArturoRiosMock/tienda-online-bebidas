@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Truck, Package, Users, Zap } from 'lucide-react';
+import aboutBarShelfImage from '@/assets/about-bar-shelf.png';
 
 export const About = () => {
   return (
@@ -17,8 +18,8 @@ export const About = () => {
           >
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src="https://images.unsplash.com/photo-1767522247768-fb18caca37f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiZXZlcmFnZSUyMGRpc3RyaWJ1dGlvbiUyMHdhcmVob3VzZXxlbnwxfHx8fDE3NzAxMzM1ODR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-                alt="Centro de distribución Bebify"
+                src={aboutBarShelfImage}
+                alt="Estantería de licores premium en bar profesional"
                 className="w-full h-[500px] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0055a2]/60 to-transparent" />

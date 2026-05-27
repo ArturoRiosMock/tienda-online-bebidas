@@ -7,7 +7,7 @@ import { NewsletterPopup } from '@/app/components/NewsletterPopup';
 import { About } from '@/app/components/About';
 import { FAQ } from '@/app/components/FAQ';
 import { ProductsCarousel } from '@/app/components/ProductsCarousel';
-import { AdBanner } from '@/app/components/AdBanner';
+import { RegisterBanner } from '@/app/components/RegisterBanner';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 
 const PRODUCTS_PER_CAROUSEL = 12;
@@ -54,10 +54,6 @@ export const HomePage: React.FC = () => {
   return (
     <>
       <Hero onShopNowClick={scrollToProducts} />
-
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
-        <AdBanner slotId="home-hero-below" />
-      </div>
 
       <FlashDeals />
 
@@ -111,16 +107,12 @@ export const HomePage: React.FC = () => {
       <BrandsSection />
 
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
-        <AdBanner slotId="home-brands-below" />
+        <RegisterBanner />
       </div>
 
       <NewsletterPopup />
       <About />
       <FAQ />
-
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-[100vw]">
-        <AdBanner slotId="home-faq-below" variant="leaderboard" />
-      </div>
 
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">

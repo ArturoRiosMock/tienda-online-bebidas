@@ -2,19 +2,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { ProductCard } from '@/app/components/ProductCard';
-import { AdBanner, getInlineAdSlots } from '@/app/components/AdBanner';
+import { AdBanner } from '@/app/components/AdBanner';
 import { CollectionProductFilters } from '@/app/components/CollectionProductFilters';
+import { ProductGridPagination } from '@/app/components/ProductGridPagination';
 import {
   defaultCollectionFilterState,
   filterAndSortProducts,
   hasActiveFilters,
 } from '@/app/utils/collectionFilters';
-import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
+import { PRODUCTS_PER_PAGE, useProductPagination } from '@/app/utils/productPagination';
+import { useShopifyProductsCatalog } from '@/shopify/hooks/useShopifyProductsCatalog';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
-
-type GridItem =
-  | { kind: 'product'; product: ReturnType<typeof useShopifyProducts>['products'][number] }
-  | { kind: 'ad'; slotId: string };
 
 /**
  * Página "Todos los productos": lista completa del catálogo con
@@ -22,7 +20,7 @@ type GridItem =
  */
 export const ProductsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { products, loading, error } = useShopifyProducts();
+  const { products, loading, error } = useShopifyProductsCatalog();
   const { collections } = useShopifyCollections();
 
   const [filters, setFilters] = useState(defaultCollectionFilterState);
@@ -36,33 +34,18 @@ export const ProductsPage: React.FC = () => {
     [products, filters]
   );
 
-  const inlineAds = useMemo(() => getInlineAdSlots('collection'), []);
+  const {
+    currentPage,
+    totalPages,
+    paginatedItems: paginatedProducts,
+    visiblePages,
+    handlePageChange,
+    setCurrentPage,
+  } = useProductPagination(filteredProducts);
 
-  const gridItems = useMemo<GridItem[]>(() => {
-    const items: GridItem[] = [];
-    let adIndex = 0;
-    let productIndex = 0;
-    let position = 0;
-
-    while (productIndex < filteredProducts.length || adIndex < inlineAds.length) {
-      if (adIndex < inlineAds.length && position === inlineAds[adIndex].position - 1) {
-        items.push({ kind: 'ad', slotId: inlineAds[adIndex].slotId });
-        adIndex++;
-        position++;
-        continue;
-      }
-
-      if (productIndex < filteredProducts.length) {
-        items.push({ kind: 'product', product: filteredProducts[productIndex] });
-        productIndex++;
-        position++;
-      } else {
-        break;
-      }
-    }
-
-    return items;
-  }, [filteredProducts, inlineAds]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, setCurrentPage]);
 
   return (
     <div className="min-h-[60vh]">
@@ -132,6 +115,12 @@ export const ProductsPage: React.FC = () => {
                   {hasActiveFilters(filters) && products.length > 0
                     ? `${filteredProducts.length} de ${products.length} productos`
                     : `${products.length} productos encontrados`}
+                  {filteredProducts.length > PRODUCTS_PER_PAGE && (
+                    <span className="text-[#717182]">
+                      {' '}
+                      · Página {currentPage} de {totalPages}
+                    </span>
+                  )}
                 </p>
               )}
             </div>
@@ -179,21 +168,26 @@ export const ProductsPage: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-6">
-                {gridItems.map((item, i) =>
-                  item.kind === 'product' ? (
+              <>
+                <div className="grid grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-6">
+                  {paginatedProducts.map((product) => (
                     <ProductCard
-                      key={`p-${item.product.id}`}
-                      product={item.product}
+                      key={`p-${product.id}`}
+                      product={product}
                       onClick={() =>
-                        navigate(`/producto/${item.product.handle || item.product.id}`)
+                        navigate(`/producto/${product.handle || product.id}`)
                       }
                     />
-                  ) : (
-                    <AdBanner key={`ad-${item.slotId}-${i}`} slotId={item.slotId} variant="inline-card" />
-                  )
-                )}
-              </div>
+                  ))}
+                </div>
+
+                <ProductGridPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  visiblePages={visiblePages}
+                  onPageChange={handlePageChange}
+                />
+              </>
             )}
           </div>
         </div>

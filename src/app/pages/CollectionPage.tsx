@@ -2,24 +2,22 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { ProductCard } from '@/app/components/ProductCard';
-import { AdBanner, getInlineAdSlots } from '@/app/components/AdBanner';
+import { AdBanner } from '@/app/components/AdBanner';
 import { CollectionProductFilters } from '@/app/components/CollectionProductFilters';
+import { ProductGridPagination } from '@/app/components/ProductGridPagination';
 import {
   defaultCollectionFilterState,
   filterAndSortProducts,
   hasActiveFilters,
 } from '@/app/utils/collectionFilters';
-import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
+import { PRODUCTS_PER_PAGE, useProductPagination } from '@/app/utils/productPagination';
+import { useShopifyCollectionCatalog } from '@/shopify/hooks/useShopifyCollectionCatalog';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
-
-type GridItem =
-  | { kind: 'product'; product: ReturnType<typeof useShopifyProducts>['products'][number] }
-  | { kind: 'ad'; slotId: string };
 
 export const CollectionPage: React.FC = () => {
   const { handle } = useParams<{ handle: string }>();
   const navigate = useNavigate();
-  const { products, loading, error } = useShopifyProducts(handle);
+  const { products, loading, error } = useShopifyCollectionCatalog(handle);
   const { collections } = useShopifyCollections();
 
   const [filters, setFilters] = useState(defaultCollectionFilterState);
@@ -33,36 +31,24 @@ export const CollectionPage: React.FC = () => {
     [products, filters]
   );
 
+  const {
+    currentPage,
+    totalPages,
+    paginatedItems: paginatedProducts,
+    visiblePages,
+    handlePageChange,
+    setCurrentPage,
+  } = useProductPagination(filteredProducts);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, handle, setCurrentPage]);
+
   const currentCollection = collections.find((c) => c.handle === handle);
-  const collectionTitle = currentCollection?.title || handle?.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) || 'Colección';
-
-  const inlineAds = useMemo(() => getInlineAdSlots('collection'), []);
-
-  const gridItems = useMemo<GridItem[]>(() => {
-    const items: GridItem[] = [];
-    let adIndex = 0;
-    let productIndex = 0;
-    let position = 0;
-
-    while (productIndex < filteredProducts.length || adIndex < inlineAds.length) {
-      if (adIndex < inlineAds.length && position === inlineAds[adIndex].position - 1) {
-        items.push({ kind: 'ad', slotId: inlineAds[adIndex].slotId });
-        adIndex++;
-        position++;
-        continue;
-      }
-
-      if (productIndex < filteredProducts.length) {
-        items.push({ kind: 'product', product: filteredProducts[productIndex] });
-        productIndex++;
-        position++;
-      } else {
-        break;
-      }
-    }
-
-    return items;
-  }, [filteredProducts, inlineAds]);
+  const collectionTitle =
+    currentCollection?.title ||
+    handle?.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) ||
+    'Colección';
 
   return (
     <div className="min-h-[60vh]">
@@ -96,10 +82,12 @@ export const CollectionPage: React.FC = () => {
           <aside className="hidden lg:block">
             <div className="sticky top-4 space-y-6">
               <div>
-                <h3 className="text-[#0055a2] font-bold mb-4 text-sm uppercase tracking-wide">Categorías</h3>
+                <h3 className="text-[#0055a2] font-bold mb-4 text-sm uppercase tracking-wide">
+                  Categorías
+                </h3>
                 <nav className="space-y-1">
                   <Link
-                    to="/"
+                    to="/productos"
                     className="block px-3 py-2 text-sm rounded-lg text-[#212121] hover:bg-gray-100 hover:text-[#0055a2] transition-colors"
                   >
                     Todos los Productos
@@ -133,6 +121,12 @@ export const CollectionPage: React.FC = () => {
                   {hasActiveFilters(filters) && products.length > 0
                     ? `${filteredProducts.length} de ${products.length} productos`
                     : `${products.length} productos encontrados`}
+                  {filteredProducts.length > PRODUCTS_PER_PAGE && (
+                    <span className="text-[#717182]">
+                      {' '}
+                      · Página {currentPage} de {totalPages}
+                    </span>
+                  )}
                 </p>
               )}
             </div>
@@ -147,9 +141,7 @@ export const CollectionPage: React.FC = () => {
             )}
 
             {error && (
-              <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
-                {error}
-              </div>
+              <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">{error}</div>
             )}
 
             {loading ? (
@@ -160,9 +152,11 @@ export const CollectionPage: React.FC = () => {
               </div>
             ) : products.length === 0 ? (
               <div className="text-center py-16">
-                <p className="text-[#717182] text-lg mb-4">No se encontraron productos en esta colección.</p>
+                <p className="text-[#717182] text-lg mb-4">
+                  No se encontraron productos en esta colección.
+                </p>
                 <Link
-                  to="/"
+                  to="/productos"
                   className="inline-block bg-[#0055a2] text-white px-6 py-3 rounded-lg hover:bg-[#0a3019] transition-colors font-medium"
                 >
                   Ver todos los productos
@@ -182,19 +176,24 @@ export const CollectionPage: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-6">
-                {gridItems.map((item, i) =>
-                  item.kind === 'product' ? (
+              <>
+                <div className="grid grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-6">
+                  {paginatedProducts.map((product) => (
                     <ProductCard
-                      key={`p-${item.product.id}`}
-                      product={item.product}
-                      onClick={() => navigate(`/producto/${item.product.handle || item.product.id}`)}
+                      key={`p-${product.id}`}
+                      product={product}
+                      onClick={() => navigate(`/producto/${product.handle || product.id}`)}
                     />
-                  ) : (
-                    <AdBanner key={`ad-${item.slotId}-${i}`} slotId={item.slotId} variant="inline-card" />
-                  )
-                )}
-              </div>
+                  ))}
+                </div>
+
+                <ProductGridPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  visiblePages={visiblePages}
+                  onPageChange={handlePageChange}
+                />
+              </>
             )}
           </div>
         </div>

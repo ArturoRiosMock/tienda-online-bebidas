@@ -20,7 +20,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
 
-  const slides: Slide[] = [
+  const allSlides: Slide[] = [
     {
       id: 1,
       image: 'https://images-ext-1.discordapp.net/external/D5lSwL5mjlIjTiYkGlwgZcQ4Y1tJxRvPsMnDQ5dwgjI/%3Fformat%3Dwebp%26v%3D1717249074%26width%3D1200/https/bebify.mx/cdn/shop/files/Slideshow_1.jpg?format=webp',
@@ -68,14 +68,18 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
     }
   ];
 
-  // Auto-play carousel
+  const slides = allSlides.slice(0, 1);
+  const hasMultipleSlides = slides.length > 1;
+
   useEffect(() => {
+    if (!hasMultipleSlides) return;
+
     const timer = setInterval(() => {
       handleNext();
     }, 8000);
 
     return () => clearInterval(timer);
-  }, [currentSlide]);
+  }, [currentSlide, hasMultipleSlides]);
 
   const handleNext = () => {
     setDirection(1);
@@ -197,38 +201,40 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation Arrows */}
-        <button
-          onClick={handlePrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#212121] p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
-          aria-label="Previous slide"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-
-        <button
-          onClick={handleNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#212121] p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
-          aria-label="Next slide"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
-
-        {/* Dots Indicators */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
-          {slides.map((_, index) => (
+        {hasMultipleSlides && (
+          <>
             <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`transition-all ${
-                index === currentSlide
-                  ? 'w-8 h-3 bg-white rounded-full'
-                  : 'w-3 h-3 bg-white/50 rounded-full hover:bg-white/75'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
+              onClick={handlePrev}
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#212121] p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            <button
+              onClick={handleNext}
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#212121] p-3 rounded-full shadow-lg transition-all hover:scale-110 z-10"
+              aria-label="Next slide"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
+              {slides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`transition-all ${
+                    index === currentSlide
+                      ? 'w-8 h-3 bg-white rounded-full'
+                      : 'w-3 h-3 bg-white/50 rounded-full hover:bg-white/75'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

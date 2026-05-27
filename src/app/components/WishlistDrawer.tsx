@@ -1,8 +1,9 @@
 import React from 'react';
-import { X, Heart, ShoppingCart, Trash2 } from 'lucide-react';
+import { X, Heart, ShoppingCart, Trash2, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useWishlist } from '@/app/context/WishlistContext';
 import { useCart } from '@/app/context/CartContext';
+import { useAuth } from '@/app/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 interface WishlistDrawerProps {
@@ -13,6 +14,7 @@ interface WishlistDrawerProps {
 export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({ isOpen, onClose }) => {
   const { items, removeItem, clearWishlist, totalItems } = useWishlist();
   const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const handleAddToCart = (item: typeof items[number]) => {
@@ -94,11 +96,31 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({ isOpen, onClose 
                         >
                           {item.name}
                         </p>
-                        <div className="flex items-baseline gap-1.5 mt-1">
-                          {item.originalPrice && item.originalPrice > item.price && (
-                            <span className="text-xs text-[#717182] line-through">${item.originalPrice.toFixed(2)}</span>
+                        <div className="mt-1">
+                          {isAuthenticated ? (
+                            <div className="flex items-baseline gap-1.5">
+                              {item.originalPrice && item.originalPrice > item.price && (
+                                <span className="text-xs text-[#717182] line-through">
+                                  ${item.originalPrice.toFixed(2)}
+                                </span>
+                              )}
+                              <span className="text-base font-bold text-[#0055a2]">
+                                ${item.price.toFixed(2)}
+                              </span>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                onClose();
+                                navigate('/login');
+                              }}
+                              className="text-xs sm:text-sm text-[#0055a2] font-medium flex items-center gap-1 hover:underline"
+                            >
+                              <Lock className="w-3 h-3 shrink-0" />
+                              Inicia sesión para ver precio
+                            </button>
                           )}
-                          <span className="text-base font-bold text-[#0055a2]">${item.price.toFixed(2)}</span>
                         </div>
                         <div className="flex items-center gap-2 mt-2">
                           <button

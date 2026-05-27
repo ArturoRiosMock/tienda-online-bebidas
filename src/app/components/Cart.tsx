@@ -1,7 +1,9 @@
 import React from 'react';
-import { X, Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
+import { X, Plus, Minus, Trash2, ShoppingBag, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/app/context/CartContext';
+import { useAuth } from '@/app/context/AuthContext';
 
 interface CartProps {
   isOpen: boolean;
@@ -9,6 +11,8 @@ interface CartProps {
 }
 
 export const Cart = ({ isOpen, onClose }: CartProps) => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const {
     cartItems,
     removeFromCart,
@@ -25,6 +29,12 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
   const itemId = (item: { lineId?: string; id: number | string }) => item.lineId ?? item.id;
 
   const handleCheckout = () => {
+    if (!isAuthenticated) {
+      onClose();
+      navigate('/login');
+      return;
+    }
+
     if (isShopifyCart && goToCheckout) {
       goToCheckout();
       onClose();
@@ -103,7 +113,21 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                         />
                         <div className="flex-1 min-w-0">
                           <h3 className="text-sm font-medium text-[#212121] line-clamp-2 mb-1">{item.name}</h3>
-                          <p className="text-[#0055a2] font-bold mb-1">${item.price.toFixed(2)} MXN</p>
+                          {isAuthenticated ? (
+                            <p className="text-[#0055a2] font-bold mb-1">${item.price.toFixed(2)} MXN</p>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                onClose();
+                                navigate('/login');
+                              }}
+                              className="text-xs sm:text-sm text-[#0055a2] font-medium flex items-center gap-1 mb-1 hover:underline"
+                            >
+                              <Lock className="w-3 h-3 shrink-0" />
+                              Inicia sesión para ver precio
+                            </button>
+                          )}
                           <p className="text-xs text-[#717182] mb-1.5">
                             Cantidad: <span className="font-semibold text-[#212121]">{item.quantity} {item.quantity === 1 ? 'Botella' : 'Botellas'}</span>
                           </p>
@@ -151,17 +175,33 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                 transition={{ delay: 0.15 }}
                 className="border-t border-gray-200 p-4 space-y-3"
               >
-                <div className="flex items-center justify-between text-[#212121]">
-                  <span className="font-medium">Total:</span>
-                  <span className="text-[#0055a2] text-xl font-bold">${getTotalPrice().toFixed(2)} MXN</span>
-                </div>
-                <button
-                  onClick={handleCheckout}
-                  disabled={cartLoading}
-                  className="w-full bg-[#0055a2] text-white py-3 rounded-lg hover:bg-[#004488] transition-colors disabled:opacity-50 font-bold text-base"
-                >
-                  {isShopifyCart ? 'Ir a pagar (Shopify)' : 'Finalizar Compra'}
-                </button>
+                {isAuthenticated ? (
+                  <>
+                    <div className="flex items-center justify-between text-[#212121]">
+                      <span className="font-medium">Total:</span>
+                      <span className="text-[#0055a2] text-xl font-bold">${getTotalPrice().toFixed(2)} MXN</span>
+                    </div>
+                    <button
+                      onClick={handleCheckout}
+                      disabled={cartLoading}
+                      className="w-full bg-[#0055a2] text-white py-3 rounded-lg hover:bg-[#004488] transition-colors disabled:opacity-50 font-bold text-base"
+                    >
+                      {isShopifyCart ? 'Ir a pagar (Shopify)' : 'Finalizar Compra'}
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      navigate('/login');
+                    }}
+                    className="w-full bg-[#0055a2] text-white py-3 rounded-lg hover:bg-[#004488] transition-colors font-bold text-base flex items-center justify-center gap-2"
+                  >
+                    <Lock className="w-4 h-4 shrink-0" />
+                    Inicia sesión para comprar
+                  </button>
+                )}
                 <button
                   onClick={clearCart}
                   disabled={cartLoading}

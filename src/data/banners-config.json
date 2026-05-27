@@ -18,7 +18,7 @@
   },
   "slots": {
     "home-hero-below": {
-      "enabled": true,
+      "enabled": false,
       "type": "image_text_cta",
       "format": "full-width",
       "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&h=300&fit=crop",
@@ -62,20 +62,20 @@
       "gridPosition": 12
     },
     "home-brands-below": {
-      "enabled": true,
+      "enabled": false,
       "type": "image_text_cta",
       "format": "full-width",
-      "image": "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=600&h=400&fit=crop",
-      "title": "Espacio publicitario disponible",
-      "description": "Coloca tu marca aqui y llega a miles de clientes. Contactanos para mas informacion.",
-      "ctaText": "Contactar",
-      "ctaLink": "https://wa.me/5215512345678",
-      "bgColor": "#1a1a2e",
+      "image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=520&fit=crop",
+      "title": "Regístrate y accede a precios exclusivos B2B",
+      "description": "Crea tu cuenta en Bebify para ver precios, armar pedidos y comprar desde un solo lugar.",
+      "ctaText": "Crear cuenta",
+      "ctaLink": "/registro",
+      "bgColor": "#0055a2",
       "textColor": "#ffffff",
-      "targetBlank": true
+      "targetBlank": false
     },
     "home-faq-below": {
-      "enabled": true,
+      "enabled": false,
       "type": "image_link",
       "format": "leaderboard",
       "image": "https://images.unsplash.com/photo-1574015974293-817f0ebebb74?w=1200&h=200&fit=crop",
@@ -128,7 +128,7 @@
       "targetBlank": false
     },
     "collection-grid-inline": {
-      "enabled": true,
+      "enabled": false,
       "type": "image_text_cta",
       "format": "inline-card",
       "image": "https://images.unsplash.com/photo-1574015974293-817f0ebebb74?w=300&h=300&fit=crop",

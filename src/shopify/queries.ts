@@ -79,7 +79,7 @@ export const GET_PRODUCTS = `
 
 // Query para obtener productos por colección
 export const GET_PRODUCTS_BY_COLLECTION = `
-  query GetProductsByCollection($handle: String!, $first: Int!) {
+  query GetProductsByCollection($handle: String!, $first: Int!, $after: String) {
     collection(handle: $handle) {
       id
       title
@@ -89,8 +89,9 @@ export const GET_PRODUCTS_BY_COLLECTION = `
         url
         altText
       }
-      products(first: $first) {
+      products(first: $first, after: $after) {
         edges {
+          cursor
           node {
             id
             title
@@ -131,6 +132,10 @@ export const GET_PRODUCTS_BY_COLLECTION = `
               }
             }
           }
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
         }
       }
     }

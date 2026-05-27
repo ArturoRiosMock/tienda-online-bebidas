@@ -1,0 +1,45 @@
+/** Opciones de país usadas por Helium en formularios con dirección en México. */
+export const HELIUM_MEXICO_COUNTRY_OPTION =
+  '<option value="Mexico" data-provinces="[[&quot;Aguascalientes&quot;,&quot;Aguascalientes&quot;],[&quot;Baja California&quot;,&quot;Baja California&quot;],[&quot;Baja California Sur&quot;,&quot;Baja California Sur&quot;],[&quot;Campeche&quot;,&quot;Campeche&quot;],[&quot;Chiapas&quot;,&quot;Chiapas&quot;],[&quot;Chihuahua&quot;,&quot;Chihuahua&quot;],[&quot;Ciudad de México&quot;,&quot;Ciudad de México&quot;],[&quot;Coahuila&quot;,&quot;Coahuila de Zaragoza&quot;],[&quot;Colima&quot;,&quot;Colima&quot;],[&quot;Durango&quot;,&quot;Durango&quot;],[&quot;Guanajuato&quot;,&quot;Guanajuato&quot;],[&quot;Guerrero&quot;,&quot;Estado de Guerrero&quot;],[&quot;Hidalgo&quot;,&quot;Estado de Hidalgo&quot;],[&quot;Jalisco&quot;,&quot;Jalisco&quot;],[&quot;Michoacán&quot;,&quot;Michoacán&quot;],[&quot;Morelos&quot;,&quot;Morelos&quot;],[&quot;México&quot;,&quot;Estado de México&quot;],[&quot;Nayarit&quot;,&quot;Nayarit&quot;],[&quot;Nuevo León&quot;,&quot;Nuevo León&quot;],[&quot;Oaxaca&quot;,&quot;Oaxaca&quot;],[&quot;Puebla&quot;,&quot;Puebla&quot;],[&quot;Querétaro&quot;,&quot;Querétaro&quot;],[&quot;Quintana Roo&quot;,&quot;Quintana Roo&quot;],[&quot;San Luis Potosí&quot;,&quot;San Luis Potosí&quot;],[&quot;Sinaloa&quot;,&quot;Sinaloa&quot;],[&quot;Sonora&quot;,&quot;Sonora&quot;],[&quot;Tabasco&quot;,&quot;Tabasco&quot;],[&quot;Tamaulipas&quot;,&quot;Tamaulipas&quot;],[&quot;Tlaxcala&quot;,&quot;Tlaxcala&quot;],[&quot;Veracruz&quot;,&quot;Veracruz&quot;],[&quot;Yucatán&quot;,&quot;Yucatán&quot;],[&quot;Zacatecas&quot;,&quot;Zacatecas&quot;]]">México</option>';
+
+export const HELIUM_MEXICO_COUNTRIES = [
+  {
+    code: 'MX',
+    name: 'Mexico',
+    hide_from_signup: false,
+    provinces: [
+      { name: 'Aguascalientes', code: 'AGS' },
+      { name: 'Baja California', code: 'BC' },
+      { name: 'Baja California Sur', code: 'BCS' },
+      { name: 'Campeche', code: 'CAMP' },
+      { name: 'Chiapas', code: 'CHIS' },
+      { name: 'Chihuahua', code: 'CHIH' },
+      { name: 'Ciudad de México', code: 'DF' },
+      { name: 'Coahuila', code: 'COAH' },
+      { name: 'Colima', code: 'COL' },
+      { name: 'Durango', code: 'DGO' },
+      { name: 'Guanajuato', code: 'GTO' },
+      { name: 'Guerrero', code: 'GRO' },
+      { name: 'Hidalgo', code: 'HGO' },
+      { name: 'Jalisco', code: 'JAL' },
+      { name: 'México', code: 'MEX' },
+      { name: 'Michoacán', code: 'MICH' },
+      { name: 'Morelos', code: 'MOR' },
+      { name: 'Nayarit', code: 'NAY' },
+      { name: 'Nuevo León', code: 'NL' },
+      { name: 'Oaxaca', code: 'OAX' },
+      { name: 'Puebla', code: 'PUE' },
+      { name: 'Querétaro', code: 'QRO' },
+      { name: 'Quintana Roo', code: 'Q ROO' },
+      { name: 'San Luis Potosí', code: 'SLP' },
+      { name: 'Sinaloa', code: 'SIN' },
+      { name: 'Sonora', code: 'SON' },
+      { name: 'Tabasco', code: 'TAB' },
+      { name: 'Tamaulipas', code: 'TAMPS' },
+      { name: 'Tlaxcala', code: 'TLAX' },
+      { name: 'Veracruz', code: 'VER' },
+      { name: 'Yucatán', code: 'YUC' },
+      { name: 'Zacatecas', code: 'ZAC' },
+    ],
+  },
+];
