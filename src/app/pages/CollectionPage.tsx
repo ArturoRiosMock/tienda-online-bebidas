@@ -12,13 +12,13 @@ import {
 } from '@/app/utils/collectionFilters';
 import { PRODUCTS_PER_PAGE, useProductPagination } from '@/app/utils/productPagination';
 import { useShopifyCollectionCatalog } from '@/shopify/hooks/useShopifyCollectionCatalog';
-import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
+import { COLLECTION_LABELS } from '@/shopify/collectionRoutes';
+import { CategorySidebar } from '@/app/components/CategorySidebar';
 
 export const CollectionPage: React.FC = () => {
   const { handle } = useParams<{ handle: string }>();
   const navigate = useNavigate();
   const { products, loading, error } = useShopifyCollectionCatalog(handle);
-  const { collections } = useShopifyCollections();
 
   const [filters, setFilters] = useState(defaultCollectionFilterState);
 
@@ -44,9 +44,8 @@ export const CollectionPage: React.FC = () => {
     setCurrentPage(1);
   }, [filters, handle, setCurrentPage]);
 
-  const currentCollection = collections.find((c) => c.handle === handle);
   const collectionTitle =
-    currentCollection?.title ||
+    (handle ? COLLECTION_LABELS[handle] : undefined) ||
     handle?.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) ||
     'Colección';
 
@@ -82,32 +81,10 @@ export const CollectionPage: React.FC = () => {
           <aside className="hidden lg:block">
             <div className="sticky top-4 space-y-6">
               <div>
-                <h3 className="text-[#0055a2] font-bold mb-4 text-sm uppercase tracking-wide">
+                <h3 className="text-[#0055a2] font-bold mb-3 text-sm uppercase tracking-wide">
                   Categorías
                 </h3>
-                <nav className="space-y-1">
-                  <Link
-                    to="/productos"
-                    className="block px-3 py-2 text-sm rounded-lg text-[#212121] hover:bg-gray-100 hover:text-[#0055a2] transition-colors"
-                  >
-                    Todos los Productos
-                  </Link>
-                  {collections
-                    .filter((c) => c.handle !== 'ofertas-relampago')
-                    .map((col) => (
-                      <Link
-                        key={col.id}
-                        to={`/categorias/${col.handle}`}
-                        className={`block px-3 py-2 text-sm rounded-lg transition-colors ${
-                          col.handle === handle
-                            ? 'bg-[#0055a2] text-white font-medium'
-                            : 'text-[#212121] hover:bg-gray-100 hover:text-[#0055a2]'
-                        }`}
-                      >
-                        {col.title}
-                      </Link>
-                    ))}
-                </nav>
+                <CategorySidebar activeHandle={handle} />
               </div>
 
               <AdBanner slotId="collection-sidebar-skyscraper" variant="sidebar" />

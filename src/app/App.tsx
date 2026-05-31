@@ -13,6 +13,7 @@ import { RegisterPage } from '@/app/pages/RegisterPage';
 import { PrivacyPolicyPage } from '@/app/pages/PrivacyPolicyPage';
 import { CookiePolicyPage } from '@/app/pages/CookiePolicyPage';
 import { AdminBannersPage } from '@/app/pages/AdminBannersPage';
+import { SearchResultsPage } from '@/app/pages/SearchResultsPage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route element={<MainLayout />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/productos" element={<ProductsPage />} />
+              <Route path="/buscar" element={<SearchResultsPage />} />
               <Route path="/categorias/:handle" element={<CollectionPage />} />
               <Route path="/producto/:handle" element={<ProductPage />} />
               <Route path="/blog" element={<BlogPage />} />

@@ -12,7 +12,7 @@ import {
 } from '@/app/utils/collectionFilters';
 import { PRODUCTS_PER_PAGE, useProductPagination } from '@/app/utils/productPagination';
 import { useShopifyProductsCatalog } from '@/shopify/hooks/useShopifyProductsCatalog';
-import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
+import { CategorySidebar } from '@/app/components/CategorySidebar';
 
 /**
  * Página "Todos los productos": lista completa del catálogo con
@@ -21,7 +21,6 @@ import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
 export const ProductsPage: React.FC = () => {
   const navigate = useNavigate();
   const { products, loading, error } = useShopifyProductsCatalog();
-  const { collections } = useShopifyCollections();
 
   const [filters, setFilters] = useState(defaultCollectionFilterState);
 
@@ -80,28 +79,10 @@ export const ProductsPage: React.FC = () => {
           <aside className="hidden lg:block">
             <div className="sticky top-4 space-y-6">
               <div>
-                <h3 className="text-[#0055a2] font-bold mb-4 text-sm uppercase tracking-wide">
+                <h3 className="text-[#0055a2] font-bold mb-3 text-sm uppercase tracking-wide">
                   Categorías
                 </h3>
-                <nav className="space-y-1">
-                  <Link
-                    to="/productos"
-                    className="block px-3 py-2 text-sm rounded-lg bg-[#0055a2] text-white font-medium"
-                  >
-                    Todos los Productos
-                  </Link>
-                  {collections
-                    .filter((c) => c.handle !== 'ofertas-relampago')
-                    .map((col) => (
-                      <Link
-                        key={col.id}
-                        to={`/categorias/${col.handle}`}
-                        className="block px-3 py-2 text-sm rounded-lg text-[#212121] hover:bg-gray-100 hover:text-[#0055a2] transition-colors"
-                      >
-                        {col.title}
-                      </Link>
-                    ))}
-                </nav>
+                <CategorySidebar />
               </div>
 
               <AdBanner slotId="collection-sidebar-skyscraper" variant="sidebar" />

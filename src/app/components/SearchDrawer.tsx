@@ -151,6 +151,12 @@ export const SearchDrawer = ({ isOpen, onClose, onOpenCart }: SearchDrawerProps)
                   placeholder="Buscar..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && query.trim().length >= 2) {
+                      onClose();
+                      navigate(`/buscar?q=${encodeURIComponent(query.trim())}`);
+                    }
+                  }}
                   className="w-full border-b-2 border-gray-300 focus:border-[#0055a2] px-1 py-2.5 pr-10 outline-none text-[#212121] text-base transition-colors bg-transparent"
                 />
                 <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -198,9 +204,21 @@ export const SearchDrawer = ({ isOpen, onClose, onOpenCart }: SearchDrawerProps)
               {/* Results */}
               {trimmedQuery.length >= 2 && !loading && results.length > 0 && (
                 <div className="pt-1">
-                  <p className="text-xs font-semibold text-[#717182] uppercase tracking-wide py-2">
-                    Productos
-                  </p>
+                  <div className="flex items-center justify-between py-2">
+                    <p className="text-xs font-semibold text-[#717182] uppercase tracking-wide">
+                      Productos
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        navigate(`/buscar?q=${encodeURIComponent(trimmedQuery)}`);
+                      }}
+                      className="text-xs text-[#0055a2] hover:underline font-medium"
+                    >
+                      Ver todos los resultados →
+                    </button>
+                  </div>
                   <div className="space-y-1">
                     {results.map((product) => {
                       const isAdded = addedIds.has(product.id);

@@ -249,12 +249,8 @@ const ProductCarouselCard = ({ product }: { product: BrandProduct }) => {
   return (
     <div className="px-1 sm:px-2">
       <div className="bg-white rounded-lg border border-gray-200 p-2 sm:p-4 h-full">
-        {/* Discount Badge & Favorite */}
-        <div className="flex items-start justify-between mb-2 sm:mb-3">
-          <div className="bg-[#FF6B35] text-white rounded-full w-9 h-9 sm:w-12 sm:h-12 flex flex-col items-center justify-center shadow-md">
-            <span className="text-[9px] sm:text-xs font-bold leading-none">-{discountPercentage}%</span>
-            <span className="text-[7px] sm:text-[9px] uppercase leading-none mt-0.5">OFF</span>
-          </div>
+        {/* Favorite */}
+        <div className="flex items-start justify-end mb-2 sm:mb-3">
           <button
             onClick={() => toggleItem({ id: product.id, name: product.name, price: product.price, originalPrice: product.originalPrice, image: product.image })}
             className="w-6 h-6 sm:w-7 sm:h-7 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow border border-gray-200"

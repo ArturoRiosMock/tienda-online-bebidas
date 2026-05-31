@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ShoppingCart, Menu, X, MapPin, Package, Search, MessageCircle, Heart, LogIn, LogOut, ChevronDown, ChevronUp, Wine } from 'lucide-react';
+import { ShoppingCart, Menu, X, MapPin, Package, Search, Heart, LogIn, LogOut, ChevronDown, ChevronUp, Wine } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
@@ -7,6 +7,8 @@ import { useAuth } from '@/app/context/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
 import { SearchDrawer } from '@/app/components/SearchDrawer';
+import { MENU_ITEMS, STATIC_LINKS } from '@/data/navigation-menu';
+import type { MenuItem, MenuLink, MenuAccordion } from '@/data/navigation-menu';
 
 const logo = PLACEHOLDER_IMAGES.logo;
 
@@ -26,113 +28,6 @@ const announcements = [
 
 /** Código postal + botón Rastreo en la barra oscura (reactivar cuando haya integración). */
 const SHOW_HEADER_LOCATION_AND_TRACKING = false;
-
-interface MenuLink {
-  type: 'link';
-  label: string;
-  handle: string;
-}
-
-interface MenuAccordion {
-  type: 'accordion';
-  label: string;
-  icon: 'destilados' | 'vinos' | 'cervezas' | 'refrescos' | 'aguas' | 'otras-bebidas';
-  /** Handle de la colección padre en Shopify (para botón "Ver todos") */
-  parentHandle: string;
-  children: { label: string; handle: string; image: string }[];
-}
-
-type MenuItem = MenuLink | MenuAccordion;
-
-const MENU_ITEMS: MenuItem[] = [
-  { type: 'link', label: 'Todos los productos', handle: 'Todos' },
-  {
-    type: 'accordion',
-    label: 'Destilados',
-    icon: 'destilados',
-    parentHandle: 'destilados',
-    children: [
-      { label: 'Tequila', handle: 'tequila', image: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop' },
-      { label: 'Whisky', handle: 'whisky', image: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=300&fit=crop' },
-      { label: 'Ron', handle: 'ron', image: 'https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&h=300&fit=crop' },
-      { label: 'Brandy', handle: 'brandy', image: 'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&h=300&fit=crop' },
-      { label: 'Vodka', handle: 'vodka', image: 'https://images.unsplash.com/photo-1550985616-10810253b84d?w=400&h=300&fit=crop' },
-      { label: 'Cognac', handle: 'cognac', image: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=300&fit=crop' },
-      { label: 'Mezcal', handle: 'mezcal', image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&h=300&fit=crop' },
-      { label: 'Ginebra', handle: 'ginebra', image: 'https://images.unsplash.com/photo-1559628233-100c798642d6?w=400&h=300&fit=crop' },
-      { label: 'Jerez', handle: 'jerez', image: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop' },
-      { label: 'Aperitivo', handle: 'aperitivo', image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop' },
-      { label: 'Destilados Sin Alcohol', handle: 'destilados-sin-alcohol', image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop' },
-    ],
-  },
-  {
-    type: 'accordion',
-    label: 'Vinos',
-    icon: 'vinos',
-    parentHandle: 'vinos',
-    children: [
-      { label: 'Vino Tinto', handle: 'vino-tinto', image: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop' },
-      { label: 'Vino Blanco', handle: 'vino-blanco', image: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop' },
-      { label: 'Vino Rosado', handle: 'vino-rosado', image: 'https://images.unsplash.com/photo-1560148218-1a83060f7b32?w=400&h=300&fit=crop' },
-      { label: 'Espumosos', handle: 'espumosos', image: 'https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=400&h=300&fit=crop' },
-      { label: 'Champagne', handle: 'champagne', image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&h=300&fit=crop' },
-    ],
-  },
-  {
-    type: 'accordion',
-    label: 'Cervezas',
-    icon: 'cervezas',
-    parentHandle: 'cervezas',
-    children: [
-      { label: 'Cervezas Artesanales', handle: 'cervezas-artesanales', image: 'https://images.unsplash.com/photo-1571645163064-77faa9676a46?w=400&h=300&fit=crop' },
-      { label: 'Cervezas Importadas', handle: 'cervezas-importadas', image: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&h=300&fit=crop' },
-      { label: 'Cervezas Nacionales', handle: 'cervezas-nacionales', image: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=400&h=300&fit=crop' },
-    ],
-  },
-  {
-    type: 'accordion',
-    label: 'Refrescos',
-    icon: 'refrescos',
-    parentHandle: 'refrescos',
-    children: [
-      { label: 'Canada Dry', handle: 'canada-dry', image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=300&fit=crop' },
-      { label: 'Coca-Cola', handle: 'coca-cola', image: 'https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=400&h=300&fit=crop' },
-      { label: 'Fresca', handle: 'fresca', image: 'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400&h=300&fit=crop' },
-      { label: 'Sidral Mundet', handle: 'sidral-mundet', image: 'https://images.unsplash.com/photo-1546173159-315724a31696?w=400&h=300&fit=crop' },
-      { label: 'Sprite', handle: 'sprite', image: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=400&h=300&fit=crop' },
-      { label: 'Otros Refrescos', handle: 'otros-refrescos', image: 'https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=400&h=300&fit=crop' },
-    ],
-  },
-  {
-    type: 'accordion',
-    label: 'Aguas',
-    icon: 'aguas',
-    parentHandle: 'aguas',
-    children: [
-      { label: 'Agua Saborizada', handle: 'agua-saborizada', image: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?w=400&h=300&fit=crop' },
-      { label: 'Agua Mineral', handle: 'agua-mineral', image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=300&fit=crop' },
-      { label: 'Agua Natural', handle: 'agua-natural', image: 'https://images.unsplash.com/photo-1559839914-17aae19cec71?w=400&h=300&fit=crop' },
-      { label: 'Agua Tónica', handle: 'agua-tonica', image: 'https://images.unsplash.com/photo-1502920514313-52581002a659?w=400&h=300&fit=crop' },
-    ],
-  },
-  {
-    type: 'accordion',
-    label: 'Otras Bebidas',
-    icon: 'otras-bebidas',
-    parentHandle: 'otras-bebidas',
-    children: [
-      { label: 'Bebidas Energizantes', handle: 'bebidas-energizantes', image: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=400&h=300&fit=crop' },
-      { label: 'Jarabes', handle: 'jarabes', image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=300&fit=crop' },
-      { label: 'Jugos', handle: 'jugos', image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&h=300&fit=crop' },
-      { label: 'Leches', handle: 'leches', image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=300&fit=crop' },
-    ],
-  },
-];
-
-const STATIC_LINKS = [
-  { label: 'Blog', href: '/blog' },
-  { label: 'Regístrate aquí', href: '/registro' },
-];
 
 export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDrawerOpen, onSearchDrawerChange }: HeaderProps) => {
   const { getTotalItems } = useCart();
@@ -224,9 +119,6 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
               >
                 <Search className="w-6 h-6" />
               </button>
-              <button className="hidden lg:block p-2 hover:bg-white/10 rounded-lg transition-colors">
-                <MessageCircle className="w-6 h-6 text-white" />
-              </button>
               {isAuthenticated ? (
                 <div className="hidden lg:flex items-center gap-2">
                   <span className="text-sm text-[#4da6ff] font-medium truncate max-w-[120px]">
@@ -314,47 +206,27 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                       const activeChild = item.children.find(c => c.handle === hoveredChild) ?? item.children[0];
                       return (
                         <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 rounded-xl shadow-2xl overflow-hidden"
-                          style={{ width: 640 }}
+                          style={{ minWidth: 280 }}
                         >
-                          <div className="flex">
-                            {/* Left: grid of sub-categories */}
-                            <div className="flex-1 p-4">
-                              <div className="grid grid-cols-3 gap-1">
-                                {item.children.map((child) => (
-                                  <button
-                                    key={child.handle}
-                                    onMouseEnter={() => setHoveredChild(child.handle)}
-                                    onClick={() => { handleCategoryClick(child.handle); setHoveredChild(null); }}
-                                    className={`text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                                      (hoveredChild ?? item.children[0].handle) === child.handle
-                                        ? 'bg-[#f0f7ff] text-[#0055a2] font-semibold'
-                                        : 'text-[#212121] hover:bg-gray-50 hover:text-[#0055a2]'
-                                    }`}
-                                  >
-                                    {child.label}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* Right: image preview */}
-                            <div className="w-52 bg-gray-50 border-l border-gray-100 flex flex-col">
-                              <div className="flex-1 overflow-hidden">
-                                <img
-                                  src={activeChild.image}
-                                  alt={activeChild.label}
-                                  className="w-full h-40 object-cover"
-                                />
-                              </div>
-                              <div className="p-3">
-                                <p className="text-sm font-semibold text-[#212121] mb-2">{activeChild.label}</p>
+                          <div className="p-3">
+                            <div className="grid grid-cols-2 gap-0.5">
+                              {item.children.map((child) => (
                                 <button
-                                  onClick={() => handleCategoryClick(item.parentHandle)}
-                                  className="w-full bg-[#1a3a2a] text-white text-xs font-semibold py-2 px-3 rounded-lg hover:bg-[#0f2a1a] transition-colors"
+                                  key={child.handle}
+                                  onClick={() => { handleCategoryClick(child.handle); setHoveredChild(null); }}
+                                  className="text-left px-3 py-2 rounded-lg text-sm text-[#212121] hover:bg-[#f0f7ff] hover:text-[#0055a2] transition-colors"
                                 >
-                                  Ver todos los {item.label.toLowerCase()}
+                                  {child.label}
                                 </button>
-                              </div>
+                              ))}
+                            </div>
+                            <div className="border-t border-gray-100 mt-2 pt-2">
+                              <button
+                                onClick={() => handleCategoryClick(item.parentHandle)}
+                                className="w-full text-center text-xs font-semibold text-[#0055a2] hover:text-[#004488] py-1.5 transition-colors"
+                              >
+                                Ver todos los {item.label.toLowerCase()} →
+                              </button>
                             </div>
                           </div>
                         </div>

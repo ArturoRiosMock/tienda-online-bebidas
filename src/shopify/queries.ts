@@ -596,6 +596,62 @@ export const GET_BLOGS = `
   }
 `;
 
+// Query para buscar productos por tag (usar con query: "tag:NombreTag")
+export const SEARCH_PRODUCTS_BY_TAG = `
+  query SearchProductsByTag($query: String!, $first: Int!, $after: String) {
+    search(query: $query, first: $first, after: $after, types: PRODUCT) {
+      edges {
+        cursor
+        node {
+          ... on Product {
+            id
+            title
+            description
+            descriptionHtml
+            handle
+            productType
+            vendor
+            tags
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            images(first: 1) {
+              edges {
+                node {
+                  url
+                  altText
+                }
+              }
+            }
+            variants(first: 1) {
+              edges {
+                node {
+                  id
+                  price {
+                    amount
+                    currencyCode
+                  }
+                  compareAtPrice {
+                    amount
+                    currencyCode
+                  }
+                  availableForSale
+                }
+              }
+            }
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+  }
+`;
+
 // Query para buscar productos
 export const SEARCH_PRODUCTS = `
   query SearchProducts($query: String!, $first: Int!) {

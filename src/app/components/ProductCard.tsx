@@ -86,18 +86,8 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
         />
       </button>
 
-      {/* Product Image (wrapper relative para anclar el badge a la imagen) */}
+      {/* Product Image */}
       <div className="relative">
-        {hasDiscount && (
-          <div
-            data-discount-badge
-            className="absolute top-2 left-2 z-10 bg-[#FF6B35] text-white rounded-full w-10 h-10 sm:w-14 sm:h-14 flex flex-col items-center justify-center shadow-lg"
-          >
-            <span className="text-[10px] sm:text-sm font-bold leading-none">-{discountPercentage}%</span>
-            <span className="text-[7px] sm:text-[10px] uppercase leading-none mt-0.5">OFF</span>
-          </div>
-        )}
-
         <div className="aspect-square overflow-hidden bg-gray-50 group p-1 sm:p-4">
           <img
             src={product.image}
@@ -214,15 +204,27 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
             </div>
           </>
         ) : (
-          <motion.button
-            onClick={(e) => { e.stopPropagation(); navigate('/login'); }}
-            whileTap={{ scale: 0.95 }}
-            className="w-full bg-[#0055a2] text-white py-1.5 sm:py-2.5 px-2 sm:px-3 rounded hover:bg-[#004488] transition-colors text-[10px] sm:text-sm font-semibold flex items-center justify-center gap-1 sm:gap-1.5 whitespace-nowrap"
-          >
-            <Lock className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
-            <span className="sm:hidden">Ver precio</span>
-            <span className="hidden sm:inline">Inicia sesión para ver precio</span>
-          </motion.button>
+          <div className="space-y-1.5 sm:space-y-2">
+            <div className="flex items-start gap-1.5 sm:gap-2 bg-gray-50 border border-gray-200 rounded p-1.5 sm:p-2.5">
+              <Lock className="w-3 h-3 sm:w-4 sm:h-4 text-[#0055a2] shrink-0 mt-0.5" />
+              <div className="min-w-0">
+                <p className="text-[9px] sm:text-xs font-semibold text-[#212121] leading-tight">
+                  Precio exclusivo para miembros
+                </p>
+                <p className="text-[8px] sm:text-[10px] text-[#717182] leading-tight mt-0.5 hidden sm:block">
+                  Inicia sesión para ver el precio y comprar
+                </p>
+              </div>
+            </div>
+            <motion.button
+              onClick={(e) => { e.stopPropagation(); navigate('/login'); }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full bg-[#0055a2] text-white py-1.5 sm:py-2 px-2 rounded hover:bg-[#004488] transition-colors text-[9px] sm:text-xs font-semibold flex items-center justify-center gap-1 sm:gap-1.5"
+            >
+              <Lock className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
+              Iniciar sesión para comprar
+            </motion.button>
+          </div>
         )}
       </div>
     </motion.div>

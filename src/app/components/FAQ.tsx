@@ -8,7 +8,7 @@ interface FAQItem {
   answer: React.ReactNode;
 }
 
-const SUPPORT_WHATSAPP_NUMBER = '5215512345678';
+const SUPPORT_WHATSAPP_NUMBER = '525653213061';
 const SUPPORT_WHATSAPP_MESSAGE = 'Hola, necesito asistencia con mi cuenta Bebify.';
 const SUPPORT_WHATSAPP_URL = `https://wa.me/${SUPPORT_WHATSAPP_NUMBER}?text=${encodeURIComponent(SUPPORT_WHATSAPP_MESSAGE)}`;
 const SUPPORT_EMAIL = 'hola@gpbebidas.mx';
@@ -82,7 +82,7 @@ const faqs: FAQItem[] = [
   {
     question: '¿Bebify es para cualquier negocio?',
     answer:
-      'Trabajamos con centros de consumo en CDMX y Área Metropolitana que buscan eficiencia operativa y tienen un consumo semanal desde $3,500 MXN.'
+      'Trabajamos con centros de consumo en CDMX y Área Metropolitana que buscan eficiencia operativa.'
   },
   {
     question: '¿Cómo me registro como cliente en Bebify?',
@@ -101,7 +101,7 @@ const faqs: FAQItem[] = [
   {
     question: '¿Cuál es el tiempo de entrega?',
     answer:
-      'Realizamos entregas a partir de 24 a 48 horas en toda la CDMX: nuestra plataforma tecnológica facilita la carga de pedidos sin errores y entregas rápidas y confiables para que tu negocio nunca se quede sin stock.'
+      'Realizamos entregas a partir de 24 horas en toda la CDMX: nuestra plataforma tecnológica facilita la carga de pedidos sin errores y entregas rápidas y confiables para que tu negocio nunca se quede sin stock.'
   },
   {
     question: '¿Cómo puedo ver los precios de los productos?',
@@ -110,20 +110,12 @@ const faqs: FAQItem[] = [
   },
   {
     question: '¿Cuáles son los métodos de pago?',
-    answer: (
-      <>
-        Aceptamos pagos por transferencia y algunos de nuestros clientes frecuentes pueden solicitar
-        a través de su ejecutivo de cuenta, días de crédito*, a partir de su 6to pedido, si cuentan
-        con historial de compras frecuentes.
-        <br />
-        <span className="text-xs italic">*Sujeto a autorización de crédito.</span>
-      </>
-    )
+    answer: 'Aceptamos pagos por transferencia.'
   },
   {
     question: '¿Hay pedido mínimo?',
     answer:
-      'Nuestro modelo está diseñado para optimizar costos y operación, por lo que trabajamos con un pedido mínimo semanal de $3,500 MXN, asegurando mejores precios, disponibilidad y servicio continuo.'
+      'Nuestro modelo está diseñado para optimizar costos y operación, por lo que trabajamos con un pedido mínimo semanal de $3,000+IVA, asegurando mejores precios, disponibilidad y servicio continuo.'
   },
   {
     question: '¿Qué variedad de productos manejan?',
@@ -133,7 +125,7 @@ const faqs: FAQItem[] = [
   {
     question: '¿Puedo devolver un producto?',
     answer:
-      'En Bebify cuidamos que cada pedido llegue correctamente desde el origen. Por eso, nuestra plataforma valida la orden en tres etapas antes de confirmarlo. Este nivel de control nos permite garantizar precisión en cada entrega, por lo que los cambios se realizan únicamente en caso de producto en mal estado. Así aseguramos una operación ágil, sin errores y sin complicaciones para tu equipo.'
+      'En Bebify cuidamos que cada pedido llegue correctamente desde el origen. Por eso, nuestra plataforma valida la orden en tres etapas antes de confirmarlo. Este nivel de control nos permite garantizar precisión en cada entrega, por lo que los cambios se realizan únicamente en caso de producto en mal estado.'
   },
   {
     question: '¿Cómo contacto a servicio al cliente?',
@@ -274,7 +266,7 @@ export const FAQ = () => {
                 Contáctanos
               </a>
               <a
-                href="tel:+123456789"
+                href="tel:+525653213061"
                 className="border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-[#0055a2] transition-colors"
               >
                 Llamar Ahora

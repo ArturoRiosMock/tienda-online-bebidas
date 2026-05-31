@@ -1,4 +1,4 @@
-import { shopifyClient, GET_PRODUCTS, GET_PRODUCTS_BY_COLLECTION, GET_PRODUCT_BY_HANDLE, GET_COLLECTIONS, SEARCH_PRODUCTS } from './queries';
+import { shopifyClient, GET_PRODUCTS, GET_PRODUCTS_BY_COLLECTION, GET_PRODUCT_BY_HANDLE, GET_COLLECTIONS, SEARCH_PRODUCTS, SEARCH_PRODUCTS_BY_TAG } from './queries';
 import type { ShopifyProduct, ShopifyCollection, Product } from './types';
 
 /**
@@ -178,6 +178,62 @@ export const getCollections = async (first: number = 20): Promise<ShopifyCollect
     console.error('Error fetching collections:', error);
     return [];
   }
+};
+
+// Obtener todos los productos de múltiples colecciones, deduplicados por ID (colección virtual)
+export const getAllProductsByVirtualCollection = async (
+  handles: string[],
+  pageSize: number = 50,
+): Promise<Product[]> => {
+  const pages = await Promise.all(handles.map((h) => getAllProductsByCollection(h, pageSize)));
+  const seen = new Set<string>();
+  const merged: Product[] = [];
+
+  for (const batch of pages) {
+    for (const product of batch) {
+      const key = product.shopifyId ?? String(product.id);
+      if (!seen.has(key)) {
+        seen.add(key);
+        merged.push(product);
+      }
+    }
+  }
+
+  return merged;
+};
+
+// Obtener productos por tag usando la Storefront Search API
+export const getProductsByTag = async (tag: string, pageSize: number = 50): Promise<Product[]> => {
+  const allProducts: Product[] = [];
+  let after: string | null = null;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    try {
+      const data: any = await shopifyClient.request(SEARCH_PRODUCTS_BY_TAG, {
+        query: `tag:"${tag}"`,
+        first: pageSize,
+        after: after || undefined,
+      });
+
+      const edges = data.search.edges;
+      const products = edges
+        .map((e: any) => e.node)
+        .filter((n: any) => n && n.id)
+        .map((n: any) => convertShopifyProductToAppProduct(n));
+
+      allProducts.push(...products);
+      hasNextPage = data.search.pageInfo.hasNextPage;
+      after = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+      if (hasNextPage && !after) break;
+    } catch (error) {
+      console.error('Error fetching products by tag:', error);
+      break;
+    }
+  }
+
+  return allProducts;
 };
 
 // Buscar productos

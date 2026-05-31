@@ -15,7 +15,8 @@ export const FlashDeals: React.FC = () => {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { products: deals, loading, error } = useShopifyProducts(FLASH_DEALS_COLLECTION);
+  const { products: allDeals, loading, error } = useShopifyProducts(FLASH_DEALS_COLLECTION);
+  const deals = allDeals.slice(0, 20);
 
   const [timeLeft, setTimeLeft] = useState({
     hours: 11,
@@ -97,13 +98,6 @@ export const FlashDeals: React.FC = () => {
         whileHover={{ y: -5 }}
         className="bg-white rounded-lg p-2 sm:p-4 relative"
       >
-        {discountPercentage > 0 && (
-          <div className="absolute top-1 left-1 z-10 bg-[rgb(255,107,53)] text-white rounded-full w-10 h-10 md:w-16 md:h-16 flex flex-col items-center justify-center shadow-lg">
-            <span className="text-xs md:text-lg font-bold leading-none">{discountPercentage}%</span>
-            <span className="text-[8px] md:text-xs uppercase leading-none">OFF</span>
-          </div>
-        )}
-
         <div className="relative mb-2 md:mb-4 mx-auto w-[85%]">
           <div className="relative w-full aspect-square flex items-center justify-center">
             <img
@@ -270,19 +264,23 @@ export const FlashDeals: React.FC = () => {
       <style>{`
         .flash-deals-mobile-scroll::-webkit-scrollbar { display: none; }
         .flash-deals-mobile-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+        .flash-deals-slider { position: relative; padding: 0 48px; }
         .flash-deals-slider .slick-dots { bottom: -35px; }
         .flash-deals-slider .slick-dots li button:before { color: #0055a2; font-size: 8px; }
         .flash-deals-slider .slick-dots li.slick-active button:before { color: #0055a2; }
         .flash-deals-slider .slick-prev,
-        .flash-deals-slider .slick-next { width: 40px; height: 40px; z-index: 10; }
-        .flash-deals-slider .slick-prev { left: -45px; }
-        .flash-deals-slider .slick-next { right: -45px; }
-        .flash-deals-slider .slick-prev:before,
-        .flash-deals-slider .slick-next:before { color: #0055a2; font-size: 40px; }
-        @media (max-width: 1024px) {
-          .flash-deals-slider .slick-prev { left: -25px; }
-          .flash-deals-slider .slick-next { right: -25px; }
+        .flash-deals-slider .slick-next {
+          width: 36px; height: 36px; z-index: 10;
+          background: #fff; border-radius: 50%;
+          box-shadow: 0 2px 8px rgba(0,0,0,.15);
+          display: flex !important; align-items: center; justify-content: center;
         }
+        .flash-deals-slider .slick-prev { left: 0; }
+        .flash-deals-slider .slick-next { right: 0; }
+        .flash-deals-slider .slick-prev:before,
+        .flash-deals-slider .slick-next:before { color: #0055a2; font-size: 20px; line-height: 1; }
+        .flash-deals-slider .slick-prev:hover,
+        .flash-deals-slider .slick-next:hover { background: #f0f7ff; }
       `}</style>
     </section>
   );

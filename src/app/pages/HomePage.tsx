@@ -10,7 +10,7 @@ import { ProductsCarousel } from '@/app/components/ProductsCarousel';
 import { RegisterBanner } from '@/app/components/RegisterBanner';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 
-const PRODUCTS_PER_CAROUSEL = 12;
+const PRODUCTS_PER_CAROUSEL = 20;
 const NEW_ARRIVALS_COLLECTION = 'novedades';
 
 export const HomePage: React.FC = () => {
@@ -25,11 +25,6 @@ export const HomePage: React.FC = () => {
 
   const featuredProducts = useMemo(
     () => products.slice(0, PRODUCTS_PER_CAROUSEL),
-    [products]
-  );
-
-  const moreProducts = useMemo(
-    () => products.slice(PRODUCTS_PER_CAROUSEL, PRODUCTS_PER_CAROUSEL * 2),
     [products]
   );
 
@@ -93,13 +88,6 @@ export const HomePage: React.FC = () => {
               />
             )}
 
-            {moreProducts.length > 0 && (
-              <ProductsCarousel
-                title="Sigue Explorando"
-                products={moreProducts}
-                onProductClick={(p) => handleProductClick(p.handle || p.id)}
-              />
-            )}
           </>
         )}
       </div>

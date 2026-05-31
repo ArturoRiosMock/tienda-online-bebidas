@@ -24,7 +24,7 @@ const SOCIAL_LINKS = [
     Icon: LinkedInIcon,
   },
   {
-    href: 'https://api.whatsapp.com/send?phone=525650929066',
+    href: 'https://api.whatsapp.com/send?phone=525653213061',
     label: 'WhatsApp',
     Icon: WhatsAppIcon,
   },
@@ -141,12 +141,6 @@ export const Footer: React.FC = () => {
             <p className="text-gray-400 text-sm">
               Copyright© 2026 Bebify - Todos los derechos reservados.
             </p>
-            <div className="flex items-center gap-2">
-              <p className="text-gray-500 text-xs">
-                Tecnología de
-              </p>
-              <span className="text-[#4da6ff] font-semibold text-sm">Shopify</span>
-            </div>
             
             {/* Scroll to Top Button */}
             <button
