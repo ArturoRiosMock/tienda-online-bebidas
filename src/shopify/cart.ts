@@ -140,7 +140,18 @@ export const clearCart = (): void => {
   localStorage.removeItem('shopifyCartId');
 };
 
-// Redirigir al checkout de Shopify
+// Redirigir al checkout de Shopify.
+// El checkoutUrl devuelto por la API puede usar el dominio personalizado
+// (ej. www.bebify.mx) que apunta a Vercel en lugar de a Shopify, lo que
+// provoca una página en blanco. Se reemplaza el host por el dominio
+// .myshopify.com para garantizar que siempre lleve al checkout real.
 export const redirectToCheckout = (checkoutUrl: string): void => {
-  window.location.href = checkoutUrl;
+  try {
+    const parsed = new URL(checkoutUrl);
+    const myshopifyDomain = import.meta.env.VITE_SHOPIFY_STORE_DOMAIN || 'mr-brown-mayoreo.myshopify.com';
+    parsed.hostname = myshopifyDomain;
+    window.location.href = parsed.toString();
+  } catch {
+    window.location.href = checkoutUrl;
+  }
 };
