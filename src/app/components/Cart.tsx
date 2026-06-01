@@ -33,7 +33,7 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
   const minimumOrderMessage = formatMinimumOrderMessage(minimumOrderStatus);
   const canCheckout = minimumOrderStatus.meetsMinimum;
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!isAuthenticated) {
       onClose();
       navigate('/login');
@@ -45,7 +45,7 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
     }
 
     if (isShopifyCart && goToCheckout) {
-      const redirected = goToCheckout();
+      const redirected = await goToCheckout();
       if (redirected) {
         onClose();
       }

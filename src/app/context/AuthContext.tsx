@@ -1,12 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { isShopifyConfigured, getStorefrontApiUrl, shopifyConfig } from '@/shopify/config';
+import { AUTH_STORAGE_KEY, loadStoredAuthUser, type StoredAuthUser } from '@/app/authStorage';
 
-export interface AuthUser {
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  accessToken: string;
-}
+export type AuthUser = StoredAuthUser;
 
 export interface RegisterInput {
   firstName: string;
@@ -26,18 +22,7 @@ interface AuthContextType {
   clearError: () => void;
 }
 
-const AUTH_STORAGE_KEY = 'bebify-auth';
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const loadStoredAuth = (): AuthUser | null => {
-  try {
-    const stored = localStorage.getItem(AUTH_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : null;
-  } catch {
-    return null;
-  }
-};
 
 const saveAuth = (user: AuthUser | null) => {
   try {
@@ -171,7 +156,7 @@ async function shopifyCustomerCreate(input: RegisterInput): Promise<{ success: b
 }
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<AuthUser | null>(loadStoredAuth);
+  const [user, setUser] = useState<AuthUser | null>(loadStoredAuthUser);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

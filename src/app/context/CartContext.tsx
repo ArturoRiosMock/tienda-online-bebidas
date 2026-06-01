@@ -40,7 +40,7 @@ interface CartContextType {
   clearCart: () => void;
   getTotalPrice: () => number;
   getTotalItems: () => number;
-  goToCheckout?: () => boolean;
+  goToCheckout?: () => Promise<boolean>;
   isShopifyCart: boolean;
   cartLoading: boolean;
   cartError: string | null;
@@ -159,7 +159,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     [cartSubtotal],
   );
 
-  const handleGoToCheckout = useCallback((): boolean => {
+  const handleGoToCheckout = useCallback(async (): Promise<boolean> => {
     if (!minimumOrderStatus.meetsMinimum) {
       return false;
     }

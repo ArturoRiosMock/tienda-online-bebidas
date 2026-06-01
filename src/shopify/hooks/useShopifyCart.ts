@@ -1,17 +1,38 @@
-import { useState, useEffect } from 'react';
-import { getOrCreateCart, addToShopifyCart, updateCartLine, removeFromShopifyCart, redirectToCheckout } from '@/shopify/cart';
+import { useState, useEffect, useCallback } from 'react';
+import {
+  getOrCreateCart,
+  addToShopifyCart,
+  updateCartLine,
+  removeFromShopifyCart,
+  updateCartBuyerIdentity,
+  redirectToCheckout,
+} from '@/shopify/cart';
 import { isShopifyConfigured } from '@/shopify/config';
 import { getMinimumOrderStatus, formatMinimumOrderMessage } from '@/config/commerce';
+import { useAuth } from '@/app/context/AuthContext';
 import type { ShopifyCart } from '@/shopify/types';
 
 /**
  * Hook para gestionar el carrito de Shopify
  */
 
+const resolveCustomerAccessToken = (accessToken?: string | null): string | undefined => {
+  if (!accessToken || accessToken === 'demo-token') return undefined;
+  return accessToken;
+};
+
 export const useShopifyCart = () => {
+  const { user } = useAuth();
   const [cart, setCart] = useState<ShopifyCart | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const customerAccessToken = resolveCustomerAccessToken(user?.accessToken);
+
+  const syncBuyerIdentity = useCallback(async (cartId: string, accessToken?: string) => {
+    if (!accessToken) return null;
+    return updateCartBuyerIdentity(cartId, accessToken);
+  }, []);
 
   // Inicializar o recuperar el carrito
   useEffect(() => {
@@ -22,13 +43,33 @@ export const useShopifyCart = () => {
       }
 
       setLoading(true);
-      const existingCart = await getOrCreateCart();
+      const existingCart = await getOrCreateCart(customerAccessToken);
       setCart(existingCart);
       setLoading(false);
     };
 
     initCart();
   }, []);
+
+  // Vincular carrito cuando el cliente inicia sesión o restaura sesión
+  useEffect(() => {
+    if (!isShopifyConfigured() || !cart?.id || !customerAccessToken) return;
+
+    let cancelled = false;
+
+    const linkCartToCustomer = async () => {
+      const linkedCart = await syncBuyerIdentity(cart.id, customerAccessToken);
+      if (!cancelled && linkedCart) {
+        setCart(linkedCart);
+      }
+    };
+
+    linkCartToCustomer();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [cart?.id, customerAccessToken, syncBuyerIdentity]);
 
   // Agregar producto al carrito
   const addItem = async (variantId: string, quantity: number = 1) => {
@@ -37,20 +78,22 @@ export const useShopifyCart = () => {
       return;
     }
 
-    if (!cart) {
-      const newCart = await getOrCreateCart();
-      if (!newCart) {
+    let currentCart = cart;
+
+    if (!currentCart) {
+      currentCart = await getOrCreateCart(customerAccessToken);
+      if (!currentCart) {
         setError('No se pudo crear el carrito');
         return;
       }
-      setCart(newCart);
+      setCart(currentCart);
     }
 
     setLoading(true);
     setError(null);
 
     try {
-      const updatedCart = await addToShopifyCart(cart!.id, variantId, quantity);
+      const updatedCart = await addToShopifyCart(currentCart.id, variantId, quantity);
       if (updatedCart) {
         setCart(updatedCart);
       } else {
@@ -130,8 +173,8 @@ export const useShopifyCart = () => {
     }
   };
 
-  // Ir al checkout
-  const goToCheckout = (): boolean => {
+  // Ir al checkout (vincula identidad del cliente antes de redirigir)
+  const goToCheckout = async (): Promise<boolean> => {
     if (!cart?.checkoutUrl) {
       setError('No hay URL de checkout disponible');
       return false;
@@ -144,8 +187,27 @@ export const useShopifyCart = () => {
     }
 
     setError(null);
-    redirectToCheckout(cart.checkoutUrl);
-    return true;
+    setLoading(true);
+
+    try {
+      let checkoutUrl = cart.checkoutUrl;
+
+      if (customerAccessToken) {
+        const linkedCart = await syncBuyerIdentity(cart.id, customerAccessToken);
+        if (linkedCart) {
+          setCart(linkedCart);
+          checkoutUrl = linkedCart.checkoutUrl;
+        } else {
+          setError('No se pudo vincular tu cuenta al checkout. Intenta de nuevo.');
+          return false;
+        }
+      }
+
+      redirectToCheckout(checkoutUrl);
+      return true;
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Obtener total de items

@@ -1,17 +1,33 @@
-import { shopifyClient, GET_CART, CREATE_CART, ADD_TO_CART, UPDATE_CART_LINES, REMOVE_FROM_CART } from './queries';
+import {
+  shopifyClient,
+  GET_CART,
+  CREATE_CART,
+  ADD_TO_CART,
+  UPDATE_CART_LINES,
+  REMOVE_FROM_CART,
+  CART_BUYER_IDENTITY_UPDATE,
+} from './queries';
 import type { ShopifyCart } from './types';
 
 /**
  * Servicio para gestionar el carrito de Shopify
  */
 
+const buildCartInput = (customerAccessToken?: string | null) => {
+  const input: { lines: []; buyerIdentity?: { customerAccessToken: string } } = { lines: [] };
+
+  if (customerAccessToken) {
+    input.buyerIdentity = { customerAccessToken };
+  }
+
+  return input;
+};
+
 // Crear un nuevo carrito
-export const createCart = async (): Promise<ShopifyCart | null> => {
+export const createCart = async (customerAccessToken?: string | null): Promise<ShopifyCart | null> => {
   try {
     const data: any = await shopifyClient.request(CREATE_CART, {
-      input: {
-        lines: []
-      }
+      input: buildCartInput(customerAccessToken),
     });
 
     if (data.cartCreate.userErrors.length > 0) {
@@ -22,6 +38,29 @@ export const createCart = async (): Promise<ShopifyCart | null> => {
     return data.cartCreate.cart;
   } catch (error) {
     console.error('Error creating cart:', error);
+    return null;
+  }
+};
+
+// Vincular carrito con el cliente autenticado (precarga email y direcciones en checkout)
+export const updateCartBuyerIdentity = async (
+  cartId: string,
+  customerAccessToken: string,
+): Promise<ShopifyCart | null> => {
+  try {
+    const data: any = await shopifyClient.request(CART_BUYER_IDENTITY_UPDATE, {
+      cartId,
+      buyerIdentity: { customerAccessToken },
+    });
+
+    if (data.cartBuyerIdentityUpdate.userErrors.length > 0) {
+      console.error('Error updating cart buyer identity:', data.cartBuyerIdentityUpdate.userErrors);
+      return null;
+    }
+
+    return data.cartBuyerIdentityUpdate.cart;
+  } catch (error) {
+    console.error('Error updating cart buyer identity:', error);
     return null;
   }
 };
@@ -118,17 +157,23 @@ export const getCart = async (cartId: string): Promise<ShopifyCart | null> => {
   }
 };
 
-// Obtener o crear un carrito
-export const getOrCreateCart = async (): Promise<ShopifyCart | null> => {
+// Obtener o crear un carrito, vinculando al cliente si hay sesión activa
+export const getOrCreateCart = async (customerAccessToken?: string | null): Promise<ShopifyCart | null> => {
   const existingCartId = localStorage.getItem('shopifyCartId');
 
   if (existingCartId) {
     const fullCart = await getCart(existingCartId);
-    if (fullCart) return fullCart;
+    if (fullCart) {
+      if (customerAccessToken) {
+        const linkedCart = await updateCartBuyerIdentity(existingCartId, customerAccessToken);
+        return linkedCart ?? fullCart;
+      }
+      return fullCart;
+    }
     localStorage.removeItem('shopifyCartId');
   }
 
-  const newCart = await createCart();
+  const newCart = await createCart(customerAccessToken);
   if (newCart) {
     localStorage.setItem('shopifyCartId', newCart.id);
   }
