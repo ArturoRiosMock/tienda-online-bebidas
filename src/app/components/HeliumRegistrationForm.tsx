@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { HELIUM_REGISTRATION_FORM_ID } from '@/integrations/helium/config';
 import { mountHeliumForm } from '@/integrations/helium/mountHeliumForm';
+import { enhanceHeliumFileFields } from '@/integrations/helium/enhanceHeliumFileFields';
 
 type HeliumRegistrationFormProps = {
   redirectUrl?: string;
@@ -10,18 +11,23 @@ export const HeliumRegistrationForm: React.FC<HeliumRegistrationFormProps> = ({
   redirectUrl = '/login?registered=1',
 }) => {
   const formRef = useRef<HTMLFormElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const formElement = formRef.current;
-    if (!formElement) return;
+    const wrapperElement = wrapperRef.current;
+    if (!formElement || !wrapperElement) return;
 
     let cancelled = false;
+    let stopFileEnhancer: (() => void) | undefined;
 
     const handleReady = () => {
       if (!cancelled) {
         setLoading(false);
+        stopFileEnhancer?.();
+        stopFileEnhancer = enhanceHeliumFileFields(wrapperElement);
       }
     };
 
@@ -32,6 +38,8 @@ export const HeliumRegistrationForm: React.FC<HeliumRegistrationFormProps> = ({
         await mountHeliumForm(formElement, HELIUM_REGISTRATION_FORM_ID, { redirectUrl });
         if (!cancelled && formElement.getAttribute('data-cf-state') === 'mounted') {
           setLoading(false);
+          stopFileEnhancer?.();
+          stopFileEnhancer = enhanceHeliumFileFields(wrapperElement);
         }
       } catch (mountError) {
         if (!cancelled) {
@@ -49,12 +57,13 @@ export const HeliumRegistrationForm: React.FC<HeliumRegistrationFormProps> = ({
 
     return () => {
       cancelled = true;
+      stopFileEnhancer?.();
       document.removeEventListener('cf:ready', handleReady);
     };
   }, [redirectUrl]);
 
   return (
-    <div className="helium-registration-form">
+    <div ref={wrapperRef} className="helium-registration-form">
       {loading && (
         <div className="flex flex-col items-center justify-center gap-3 py-10 text-[#717182]" aria-live="polite">
           <div className="w-8 h-8 border-2 border-[#0055a2] border-t-transparent rounded-full animate-spin" />
