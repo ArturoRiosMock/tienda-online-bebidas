@@ -6,6 +6,8 @@ import { motion } from 'motion/react';
 import { useCart } from '@/app/context/CartContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
+import { isProductInStock } from '@/app/utils/productStock';
+import { OutOfStockMessage } from '@/app/components/OutOfStockMessage';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -65,6 +67,7 @@ export const FlashDeals: React.FC = () => {
   };
 
   const handleAddToCart = (deal: typeof deals[number], quantity: number) => {
+    if (!isProductInStock(deal)) return;
     addToCart({
       id: deal.id,
       name: deal.name,
@@ -76,6 +79,8 @@ export const FlashDeals: React.FC = () => {
       variantId: deal.variantId,
       shopifyId: deal.shopifyId,
       handle: deal.handle,
+      packLabel: deal.packLabel,
+      inStock: deal.inStock,
     }, quantity);
   };
 
@@ -90,6 +95,7 @@ export const FlashDeals: React.FC = () => {
       : 0;
 
     const [quantity, setQuantity] = useState(1);
+    const inStock = isProductInStock(deal);
     const decrement = () => setQuantity((q) => Math.max(1, q - 1));
     const increment = () => setQuantity((q) => Math.min(99, q + 1));
 
@@ -143,6 +149,12 @@ export const FlashDeals: React.FC = () => {
             <p className="text-[10px] md:text-xs text-[#212121] mb-1 text-center">
               Cantidad: <span className="font-semibold">{deal.packLabel ?? '1 Botella'}</span>
             </p>
+            {!inStock ? (
+              <div className="rounded-lg border border-red-200 bg-red-50 px-2 py-2 text-center mb-1.5">
+                <OutOfStockMessage compact />
+              </div>
+            ) : (
+              <>
             <div className="flex items-center justify-center gap-1.5 mb-1.5 md:mb-2">
               <button
                 onClick={decrement}
@@ -171,6 +183,8 @@ export const FlashDeals: React.FC = () => {
             >
               Agregar
             </motion.button>
+              </>
+            )}
           </>
         ) : (
           <motion.button

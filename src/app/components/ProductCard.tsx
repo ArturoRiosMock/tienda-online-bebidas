@@ -5,6 +5,8 @@ import { Heart, Star, Minus, Plus, Lock } from 'lucide-react';
 import { Product, useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
 import { useAuth } from '@/app/context/AuthContext';
+import { isProductInStock } from '@/app/utils/productStock';
+import { OutOfStockMessage } from '@/app/components/OutOfStockMessage';
 
 interface ProductCardProps {
   product: Product;
@@ -18,6 +20,7 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const isFavorite = isInWishlist(product.id);
+  const inStock = isProductInStock(product);
 
   // Descuento real: solo cuando el producto trae un compareAtPrice mayor al precio actual.
   const hasDiscount =
@@ -28,6 +31,7 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!inStock) return;
     addToCart(product, quantity);
     setQuantity(1);
   };
@@ -92,9 +96,14 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+            className={`w-full h-full object-contain transition-transform duration-500 ${inStock ? 'group-hover:scale-105' : 'opacity-60'}`}
           />
         </div>
+        {!inStock && (
+          <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[10px] sm:text-xs font-semibold px-2 py-1 rounded">
+            Agotado
+          </span>
+        )}
       </div>
 
       {/* Product Info */}
@@ -112,25 +121,30 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
           {product.name}
         </h3>
 
-        {isAuthenticated ? (
-          <>
-            {/* Pricing */}
-            <div className="mb-2 sm:mb-3">
-              {hasDiscount && (
-                <p className="text-[10px] sm:text-xs text-[#717182] line-through mb-0.5 sm:mb-1">
-                  De: ${product.originalPrice!.toFixed(2)}
-                </p>
-              )}
-              <div className="flex items-baseline gap-0.5 sm:gap-1 mb-1 sm:mb-2 flex-wrap">
-                <span className="text-[10px] sm:text-xs text-[#212121]">
-                  {hasDiscount ? 'por:' : 'Precio:'}
-                </span>
-                <span className="text-base sm:text-2xl font-bold text-[#0055a2]">
-                  ${product.price.toFixed(2)}
-                </span>
-              </div>
+        {isAuthenticated && (
+          <div className="mb-2 sm:mb-3">
+            {hasDiscount && (
+              <p className="text-[10px] sm:text-xs text-[#717182] line-through mb-0.5 sm:mb-1">
+                De: ${product.originalPrice!.toFixed(2)}
+              </p>
+            )}
+            <div className="flex items-baseline gap-0.5 sm:gap-1 mb-1 sm:mb-2 flex-wrap">
+              <span className="text-[10px] sm:text-xs text-[#212121]">
+                {hasDiscount ? 'por:' : 'Precio:'}
+              </span>
+              <span className="text-base sm:text-2xl font-bold text-[#0055a2]">
+                ${product.price.toFixed(2)}
+              </span>
             </div>
+          </div>
+        )}
 
+        {!inStock ? (
+          <div className="rounded-lg border border-red-200 bg-red-50 px-2 py-2 sm:py-2.5 text-center">
+            <OutOfStockMessage />
+          </div>
+        ) : isAuthenticated ? (
+          <>
             {/* Quantity label */}
             <p className="text-[10px] sm:text-xs text-[#212121] mb-1">
               Cantidad: <span className="font-semibold">{product.packLabel ?? '1 Botella'}</span>

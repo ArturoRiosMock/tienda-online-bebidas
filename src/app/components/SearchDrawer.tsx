@@ -6,6 +6,8 @@ import { useCart, type Product } from '@/app/context/CartContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import type { Product as ShopifyProduct } from '@/shopify/types';
+import { isProductInStock } from '@/app/utils/productStock';
+import { OutOfStockMessage } from '@/app/components/OutOfStockMessage';
 
 interface SearchDrawerProps {
   isOpen: boolean;
@@ -37,6 +39,8 @@ function toCartProduct(p: ShopifyProduct): Product {
     description: p.description || '',
     variantId: p.variantId,
     handle: p.handle,
+    packLabel: p.packLabel,
+    inStock: p.inStock,
   };
 }
 
@@ -68,6 +72,8 @@ export const SearchDrawer = ({ isOpen, onClose, onOpenCart }: SearchDrawerProps)
   };
 
   const handleAdd = useCallback((product: ShopifyProduct) => {
+    if (!isProductInStock(product)) return;
+
     const qty = quantities[product.id] ?? 1;
     addToCart(toCartProduct(product), qty);
 
@@ -270,6 +276,9 @@ export const SearchDrawer = ({ isOpen, onClose, onOpenCart }: SearchDrawerProps)
                                 <p className="text-[#0055a2] font-bold text-sm mb-1.5">
                                   ${product.price.toFixed(2)} MXN
                                 </p>
+                                {!isProductInStock(product) ? (
+                                  <OutOfStockMessage compact />
+                                ) : (
                                 <div className="flex items-center gap-2">
                                   {/* Quantity Selector */}
                                   <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
@@ -315,6 +324,7 @@ export const SearchDrawer = ({ isOpen, onClose, onOpenCart }: SearchDrawerProps)
                                     )}
                                   </motion.button>
                                 </div>
+                                )}
                               </div>
                             ) : (
                               <p className="text-xs text-[#717182] mt-1.5 flex items-center gap-1">

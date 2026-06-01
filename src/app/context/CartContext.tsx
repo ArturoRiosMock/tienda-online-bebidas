@@ -7,6 +7,7 @@ import {
   MIN_ORDER_LABEL,
   type MinimumOrderStatus,
 } from '@/config/commerce';
+import { isProductInStock } from '@/app/utils/productStock';
 
 export interface Product {
   id: number;
@@ -20,6 +21,8 @@ export interface Product {
   handle?: string;
   /** Tamaño del empaque (ej. "12 Botellas") */
   packLabel?: string;
+  /** Disponible para venta según Shopify */
+  inStock?: boolean;
 }
 
 export interface CartItem extends Omit<Product, 'id'> {
@@ -76,6 +79,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [isShopify, shopify.cart, localCartItems]);
 
   const addToCart = (product: Product, quantity: number = 1) => {
+    if (!isProductInStock(product)) {
+      return;
+    }
+
     window.dispatchEvent(new CustomEvent('cart:item-added', {
       detail: { name: product.name, image: product.image, price: product.price }
     }));

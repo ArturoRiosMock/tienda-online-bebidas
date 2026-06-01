@@ -11,6 +11,8 @@ import { AdBanner } from '@/app/components/AdBanner';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import type { Product } from '@/shopify/types';
+import { isProductInStock } from '@/app/utils/productStock';
+import { OutOfStockMessage } from '@/app/components/OutOfStockMessage';
 
 interface ProductDetailProps {
   product: Product;
@@ -29,6 +31,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
   const [showStickyBar, setShowStickyBar] = useState(false);
 
   const isFavorite = isInWishlist(product.id);
+  const inStock = isProductInStock(product);
   const handleToggleFavorite = () => {
     toggleItem({
       id: product.id,
@@ -72,6 +75,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
   };
 
   const handleAddToCart = () => {
+    if (!inStock) return;
     addToCart(
       {
         id: product.id,
@@ -84,6 +88,8 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
         variantId: product.variantId,
         shopifyId: product.shopifyId,
         handle: product.handle,
+        packLabel: product.packLabel,
+        inStock: product.inStock,
       },
       quantity
     );
@@ -202,7 +208,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
               </div>
             </div>
 
-            {isAuthenticated ? (
+            {!inStock ? (
+              <div ref={ctaRef} className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-center">
+                <OutOfStockMessage />
+              </div>
+            ) : isAuthenticated ? (
               <>
                 <p className="text-xs text-[#212121] mb-1.5">
                   Cantidad: <span className="font-semibold">{product.packLabel ?? '1 Botella'}</span>
@@ -334,7 +344,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
                 </div>
               </div>
 
-              {isAuthenticated ? (
+              {!inStock ? (
+              <div ref={ctaRef} className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-center">
+                <OutOfStockMessage />
+              </div>
+            ) : isAuthenticated ? (
                 <>
                   <div className="bg-blue-50 rounded-xl p-5 space-y-2">
                     {hasDiscount && (
@@ -589,7 +603,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
           showStickyBar ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
-        {isAuthenticated ? (
+        {!inStock ? (
+          <div className="py-1 text-center">
+            <OutOfStockMessage />
+          </div>
+        ) : isAuthenticated ? (
           <div className="flex items-center gap-2">
             <div className="flex-1 min-w-0">
               <p className="text-[10px] text-[#717182] truncate">{product.name}</p>
