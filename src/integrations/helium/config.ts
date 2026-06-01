@@ -25,7 +25,10 @@ export const heliumShopDomain = shopifyConfig.storeDomain;
 
 export const heliumAssetBaseUrl = `https://static.customerfields.com/releases/${HELIUM_CF_VERSION}`;
 
-export const heliumProxyUrl = `https://${heliumShopDomain}/tools/customr`;
+/** Ruta relativa al app proxy de Helium (misma que en el tema Shopify). Debe ir antes del catch-all SPA en Vercel. */
+export const HELIUM_PROXY_PATH = '/tools/customr';
+
+export const heliumProxyUrl = HELIUM_PROXY_PATH;
 
 export const heliumFormApiUrl = (formId: string, updatedAt: number) =>
   `https://app.customerfields.com/embed_api/v4/forms/${formId}.json?v=${updatedAt}`;

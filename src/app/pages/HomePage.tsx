@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Hero } from '@/app/components/Hero';
 import { FlashDeals } from '@/app/components/FlashDeals';
 import { BrandsSection } from '@/app/components/BrandsSection';
-import { NewsletterPopup } from '@/app/components/NewsletterPopup';
 import { About } from '@/app/components/About';
 import { FAQ } from '@/app/components/FAQ';
 import { ProductsCarousel } from '@/app/components/ProductsCarousel';
@@ -98,7 +97,8 @@ export const HomePage: React.FC = () => {
         <RegisterBanner />
       </div>
 
-      <NewsletterPopup />
+      {/* NewsletterPopup desactivado temporalmente */}
+      {/* <NewsletterPopup /> */}
       <About />
       <FAQ />
 
