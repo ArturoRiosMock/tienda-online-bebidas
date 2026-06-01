@@ -12,6 +12,7 @@ import {
 } from '@/app/utils/collectionFilters';
 import { PRODUCTS_PER_PAGE, useProductPagination } from '@/app/utils/productPagination';
 import { useShopifyCollectionCatalog } from '@/shopify/hooks/useShopifyCollectionCatalog';
+import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
 import { COLLECTION_LABELS } from '@/shopify/collectionRoutes';
 import { CategorySidebar } from '@/app/components/CategorySidebar';
 
@@ -19,6 +20,7 @@ export const CollectionPage: React.FC = () => {
   const { handle } = useParams<{ handle: string }>();
   const navigate = useNavigate();
   const { products, loading, error } = useShopifyCollectionCatalog(handle);
+  const { collections } = useShopifyCollections();
 
   const [filters, setFilters] = useState(defaultCollectionFilterState);
 
@@ -44,7 +46,9 @@ export const CollectionPage: React.FC = () => {
     setCurrentPage(1);
   }, [filters, handle, setCurrentPage]);
 
+  const currentCollection = collections.find((c) => c.handle === handle);
   const collectionTitle =
+    currentCollection?.title ||
     (handle ? COLLECTION_LABELS[handle] : undefined) ||
     handle?.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) ||
     'Colección';

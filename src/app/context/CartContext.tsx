@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 import { useShopifyCart } from '@/shopify/hooks/useShopifyCart';
 import { isShopifyConfigured } from '@/shopify/config';
+import { resolvePackLabel } from '@/shopify/packLabel';
 
 export interface Product {
   id: number;
@@ -12,6 +13,8 @@ export interface Product {
   variantId?: string;
   originalPrice?: number;
   handle?: string;
+  /** Tamaño del empaque (ej. "12 Botellas") */
+  packLabel?: string;
 }
 
 export interface CartItem extends Omit<Product, 'id'> {
@@ -37,7 +40,7 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-function mapShopifyCartToItems(cart: { lines: { edges: Array<{ node: { id: string; quantity: number; merchandise: { product: { title: string }; image: { url: string } | null; price: { amount: string } } } }> }; } | null): CartItem[] {
+function mapShopifyCartToItems(cart: { lines: { edges: Array<{ node: { id: string; quantity: number; merchandise: { title: string; product: { title: string }; image: { url: string } | null; price: { amount: string } } } }> }; } | null): CartItem[] {
   if (!cart?.lines?.edges) return [];
   return cart.lines.edges.map(({ node }) => ({
     id: node.id,
@@ -48,6 +51,7 @@ function mapShopifyCartToItems(cart: { lines: { edges: Array<{ node: { id: strin
     description: '',
     quantity: node.quantity,
     lineId: node.id,
+    packLabel: resolvePackLabel({ title: node.merchandise.title }),
   }));
 }
 

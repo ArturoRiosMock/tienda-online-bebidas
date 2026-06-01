@@ -119,6 +119,7 @@ export const GET_PRODUCTS_BY_COLLECTION = `
               edges {
                 node {
                   id
+                  title
                   price {
                     amount
                     currencyCode
@@ -128,6 +129,10 @@ export const GET_PRODUCTS_BY_COLLECTION = `
                     currencyCode
                   }
                   availableForSale
+                  selectedOptions {
+                    name
+                    value
+                  }
                 }
               }
             }
@@ -630,6 +635,7 @@ export const SEARCH_PRODUCTS_BY_TAG = `
               edges {
                 node {
                   id
+                  title
                   price {
                     amount
                     currencyCode
@@ -639,6 +645,10 @@ export const SEARCH_PRODUCTS_BY_TAG = `
                     currencyCode
                   }
                   availableForSale
+                  selectedOptions {
+                    name
+                    value
+                  }
                 }
               }
             }
@@ -683,7 +693,12 @@ export const SEARCH_PRODUCTS = `
               edges {
                 node {
                   id
+                  title
                   availableForSale
+                  selectedOptions {
+                    name
+                    value
+                  }
                 }
               }
             }

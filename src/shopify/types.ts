@@ -213,4 +213,6 @@ export interface Product {
   shopifyId?: string;
   variantId?: string;
   handle?: string;
+  /** Tamaño del empaque según la variante (ej. "12 Botellas") */
+  packLabel?: string;
 }

@@ -3,7 +3,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Eye, EyeOff, LogIn, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/app/context/AuthContext';
-import { PLACEHOLDER_IMAGES } from '@/assets/placeholders';
 import logoColor from '@/assets/logo-bebify-color.svg';
 
 export const LoginPage: React.FC = () => {

@@ -205,7 +205,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
             {isAuthenticated ? (
               <>
                 <p className="text-xs text-[#212121] mb-1.5">
-                  Cantidad: <span className="font-semibold">{quantity} {quantity === 1 ? 'Botella' : 'Botellas'}</span>
+                  Cantidad: <span className="font-semibold">{product.packLabel ?? '1 Botella'}</span>
                 </p>
                 <div ref={ctaRef} className="flex gap-2 mb-3">
                   <div className="flex items-center border border-gray-300 rounded-lg shrink-0">
@@ -356,7 +356,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ product, allProduc
 
                   <div>
                     <p className="text-sm text-[#212121] mb-2">
-                      Cantidad: <span className="font-semibold">{quantity} {quantity === 1 ? 'Botella' : 'Botellas'}</span>
+                      Cantidad: <span className="font-semibold">{product.packLabel ?? '1 Botella'}</span>
                     </p>
                     <div ref={ctaRef} className="flex gap-3">
                       <div className="flex items-center border border-gray-300 rounded-lg shrink-0">

@@ -141,7 +141,7 @@ export const FlashDeals: React.FC = () => {
             </div>
 
             <p className="text-[10px] md:text-xs text-[#212121] mb-1 text-center">
-              Cantidad: <span className="font-semibold">{quantity} {quantity === 1 ? 'Botella' : 'Botellas'}</span>
+              Cantidad: <span className="font-semibold">{deal.packLabel ?? '1 Botella'}</span>
             </p>
             <div className="flex items-center justify-center gap-1.5 mb-1.5 md:mb-2">
               <button

@@ -261,11 +261,9 @@ export const SearchDrawer = ({ isOpen, onClose, onOpenCart }: SearchDrawerProps)
                               {highlightMatch(product.name, trimmedQuery)}
                             </p>
 
-                            {product.category && (
-                              <p className="text-xs text-[#717182] mt-0.5">
-                                Cantidad: 1 {product.category || 'Botella'}
-                              </p>
-                            )}
+                            <p className="text-xs text-[#717182] mt-0.5">
+                              Cantidad: {product.packLabel ?? '1 Botella'}
+                            </p>
 
                             {isAuthenticated ? (
                               <div className="mt-1.5">

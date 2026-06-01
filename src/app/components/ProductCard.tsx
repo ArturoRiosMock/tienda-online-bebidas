@@ -133,7 +133,7 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
 
             {/* Quantity label */}
             <p className="text-[10px] sm:text-xs text-[#212121] mb-1">
-              Cantidad: <span className="font-semibold">{quantity} {quantity === 1 ? 'Botella' : 'Botellas'}</span>
+              Cantidad: <span className="font-semibold">{product.packLabel ?? '1 Botella'}</span>
             </p>
 
             {/* Quantity Controls - Desktop */}

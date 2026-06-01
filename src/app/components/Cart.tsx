@@ -129,7 +129,7 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                             </button>
                           )}
                           <p className="text-xs text-[#717182] mb-1.5">
-                            Cantidad: <span className="font-semibold text-[#212121]">{item.quantity} {item.quantity === 1 ? 'Botella' : 'Botellas'}</span>
+                            Cantidad: <span className="font-semibold text-[#212121]">{item.packLabel ?? '1 Botella'}</span>
                           </p>
                           <div className="flex items-center gap-2">
                             <button
@@ -186,7 +186,7 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
                       disabled={cartLoading}
                       className="w-full bg-[#0055a2] text-white py-3 rounded-lg hover:bg-[#004488] transition-colors disabled:opacity-50 font-bold text-base"
                     >
-                      {isShopifyCart ? 'Ir a pagar (Shopify)' : 'Finalizar Compra'}
+                      {isShopifyCart ? 'Ir a pagar' : 'Finalizar Compra'}
                     </button>
                   </>
                 ) : (

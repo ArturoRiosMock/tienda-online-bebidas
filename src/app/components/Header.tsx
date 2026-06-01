@@ -37,7 +37,6 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentAnnouncementIndex, setCurrentAnnouncementIndex] = useState(0);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
-  const [hoveredChild, setHoveredChild] = useState<string | null>(null);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   const [zipCode, setZipCode] = useState('');
   const setSearchDrawerOpen = onSearchDrawerChange;
@@ -185,7 +184,7 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                 key={item.label}
                 className="relative"
                 onMouseEnter={() => item.type === 'accordion' ? setHoveredCategory(item.label) : undefined}
-                onMouseLeave={() => { setHoveredCategory(null); setHoveredChild(null); }}
+                onMouseLeave={() => setHoveredCategory(null)}
               >
                 {item.type === 'link' ? (
                   <button
@@ -202,9 +201,7 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                       {item.label}
                       <ChevronDown className="w-3.5 h-3.5 ml-0.5" />
                     </button>
-                    {hoveredCategory === item.label && (() => {
-                      const activeChild = item.children.find(c => c.handle === hoveredChild) ?? item.children[0];
-                      return (
+                    {hoveredCategory === item.label && (
                         <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 rounded-xl shadow-2xl overflow-hidden"
                           style={{ minWidth: 280 }}
                         >
@@ -213,7 +210,7 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                               {item.children.map((child) => (
                                 <button
                                   key={child.handle}
-                                  onClick={() => { handleCategoryClick(child.handle); setHoveredChild(null); }}
+                                  onClick={() => handleCategoryClick(child.handle)}
                                   className="text-left px-3 py-2 rounded-lg text-sm text-[#212121] hover:bg-[#f0f7ff] hover:text-[#0055a2] transition-colors"
                                 >
                                   {child.label}
@@ -230,8 +227,7 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
                             </div>
                           </div>
                         </div>
-                      );
-                    })()}
+                    )}
                   </>
                 )}
               </div>

@@ -1,4 +1,5 @@
 import { shopifyClient, GET_PRODUCTS, GET_PRODUCTS_BY_COLLECTION, GET_PRODUCT_BY_HANDLE, GET_COLLECTIONS, SEARCH_PRODUCTS, SEARCH_PRODUCTS_BY_TAG } from './queries';
+import { resolvePackLabel } from './packLabel';
 import type { ShopifyProduct, ShopifyCollection, Product } from './types';
 
 /**
@@ -31,7 +32,8 @@ export const convertShopifyProductToAppProduct = (shopifyProduct: ShopifyProduct
     images: allImages.length > 0 ? allImages : undefined,
     shopifyId: shopifyProduct.id,
     variantId: firstVariant?.id,
-    handle: shopifyProduct.handle
+    handle: shopifyProduct.handle,
+    packLabel: resolvePackLabel(firstVariant),
   };
 };
 
