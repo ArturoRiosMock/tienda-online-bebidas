@@ -14,6 +14,7 @@ import { PrivacyPolicyPage } from '@/app/pages/PrivacyPolicyPage';
 import { CookiePolicyPage } from '@/app/pages/CookiePolicyPage';
 import { AdminBannersPage } from '@/app/pages/AdminBannersPage';
 import { SearchResultsPage } from '@/app/pages/SearchResultsPage';
+import { AccountPage } from '@/app/pages/AccountPage';
 
 function App() {
   return (
@@ -29,6 +30,8 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/productos" element={<ProductsPage />} />
               <Route path="/buscar" element={<SearchResultsPage />} />
+              <Route path="/cuenta" element={<AccountPage />} />
+              <Route path="/pedidos" element={<AccountPage />} />
               <Route path="/categorias/:handle" element={<CollectionPage />} />
               <Route path="/producto/:handle" element={<ProductPage />} />
               <Route path="/blog" element={<BlogPage />} />

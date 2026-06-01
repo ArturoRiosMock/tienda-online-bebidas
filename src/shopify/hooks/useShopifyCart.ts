@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getOrCreateCart, addToShopifyCart, updateCartLine, removeFromShopifyCart, redirectToCheckout } from '@/shopify/cart';
 import { isShopifyConfigured } from '@/shopify/config';
+import { getMinimumOrderStatus, formatMinimumOrderMessage } from '@/config/commerce';
 import type { ShopifyCart } from '@/shopify/types';
 
 /**
@@ -130,12 +131,21 @@ export const useShopifyCart = () => {
   };
 
   // Ir al checkout
-  const goToCheckout = () => {
+  const goToCheckout = (): boolean => {
     if (!cart?.checkoutUrl) {
       setError('No hay URL de checkout disponible');
-      return;
+      return false;
     }
+
+    const status = getMinimumOrderStatus(getSubtotal());
+    if (!status.meetsMinimum) {
+      setError(formatMinimumOrderMessage(status));
+      return false;
+    }
+
+    setError(null);
     redirectToCheckout(cart.checkoutUrl);
+    return true;
   };
 
   // Obtener total de items

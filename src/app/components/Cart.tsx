@@ -1,9 +1,10 @@
 import React from 'react';
-import { X, Plus, Minus, Trash2, ShoppingBag, Lock } from 'lucide-react';
+import { X, Plus, Minus, Trash2, ShoppingBag, Lock, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/app/context/CartContext';
 import { useAuth } from '@/app/context/AuthContext';
+import { formatMinimumOrderMessage } from '@/config/commerce';
 
 interface CartProps {
   isOpen: boolean;
@@ -24,9 +25,13 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
     isShopifyCart,
     cartLoading,
     cartError,
+    minimumOrderStatus,
+    minimumOrderLabel,
   } = useCart();
 
   const itemId = (item: { lineId?: string; id: number | string }) => item.lineId ?? item.id;
+  const minimumOrderMessage = formatMinimumOrderMessage(minimumOrderStatus);
+  const canCheckout = minimumOrderStatus.meetsMinimum;
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
@@ -35,11 +40,18 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
       return;
     }
 
-    if (isShopifyCart && goToCheckout) {
-      goToCheckout();
-      onClose();
+    if (!canCheckout) {
       return;
     }
+
+    if (isShopifyCart && goToCheckout) {
+      const redirected = goToCheckout();
+      if (redirected) {
+        onClose();
+      }
+      return;
+    }
+
     clearCart();
     onClose();
   };
@@ -177,14 +189,26 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
               >
                 {isAuthenticated ? (
                   <>
+                    {!canCheckout && (
+                      <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+                        <div className="flex items-start gap-2">
+                          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                          <div>
+                            <p className="font-semibold">Pedido mínimo: {minimumOrderLabel}</p>
+                            <p className="mt-1">{minimumOrderMessage}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between text-[#212121]">
-                      <span className="font-medium">Total:</span>
+                      <span className="font-medium">Subtotal:</span>
                       <span className="text-[#0055a2] text-xl font-bold">${getTotalPrice().toFixed(2)} MXN</span>
                     </div>
+                    <p className="text-xs text-[#717182]">+ IVA al checkout</p>
                     <button
                       onClick={handleCheckout}
-                      disabled={cartLoading}
-                      className="w-full bg-[#0055a2] text-white py-3 rounded-lg hover:bg-[#004488] transition-colors disabled:opacity-50 font-bold text-base"
+                      disabled={cartLoading || !canCheckout}
+                      className="w-full bg-[#0055a2] text-white py-3 rounded-lg hover:bg-[#004488] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-bold text-base"
                     >
                       {isShopifyCart ? 'Ir a pagar' : 'Finalizar Compra'}
                     </button>

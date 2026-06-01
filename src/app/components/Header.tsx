@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ShoppingCart, Menu, X, MapPin, Package, Search, Heart, LogIn, LogOut, ChevronDown, ChevronUp, Wine } from 'lucide-react';
+import { ShoppingCart, Menu, X, MapPin, Package, Search, Heart, LogIn, LogOut, ChevronDown, ChevronUp, Wine, User } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '@/app/context/CartContext';
 import { useWishlist } from '@/app/context/WishlistContext';
@@ -120,9 +120,15 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
               </button>
               {isAuthenticated ? (
                 <div className="hidden lg:flex items-center gap-2">
-                  <span className="text-sm text-[#4da6ff] font-medium truncate max-w-[120px]">
-                    {user?.firstName || user?.email}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/cuenta')}
+                    className="flex items-center gap-1.5 text-sm text-[#4da6ff] font-medium hover:text-white transition-colors max-w-[140px] truncate"
+                    title="Mi cuenta"
+                  >
+                    <User className="w-4 h-4 shrink-0" />
+                    {user?.firstName || 'Mi cuenta'}
+                  </button>
                   <button
                     onClick={logout}
                     className="p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -266,17 +272,27 @@ export const Header = ({ onCartClick, onWishlistClick, onCategoryClick, searchDr
             <nav className="container mx-auto px-4 py-4 space-y-1">
               {/* Mobile Auth */}
               {isAuthenticated ? (
-                <div className="flex items-center justify-between py-2 px-4 mb-2 bg-blue-50 rounded-lg">
-                  <span className="text-sm text-[#0055a2] font-medium truncate">
-                    {user?.firstName || user?.email}
-                  </span>
+                <div className="mb-2 space-y-2">
                   <button
-                    onClick={() => { logout(); setMobileMenuOpen(false); }}
-                    className="text-sm text-red-500 font-medium flex items-center gap-1"
+                    type="button"
+                    onClick={() => { setMobileMenuOpen(false); navigate('/cuenta'); }}
+                    className="flex items-center gap-2 w-full text-left text-[#0055a2] bg-blue-50 py-2.5 px-4 rounded-lg font-medium"
                   >
-                    <LogOut className="w-4 h-4" />
-                    Salir
+                    <User className="w-5 h-5" />
+                    Mi cuenta / Pedidos
                   </button>
+                  <div className="flex items-center justify-between py-2 px-4 bg-gray-50 rounded-lg">
+                    <span className="text-sm text-[#212121] font-medium truncate">
+                      {user?.firstName || user?.email}
+                    </span>
+                    <button
+                      onClick={() => { logout(); setMobileMenuOpen(false); }}
+                      className="text-sm text-red-500 font-medium flex items-center gap-1"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Salir
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <button

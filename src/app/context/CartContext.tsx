@@ -1,7 +1,12 @@
-import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 import { useShopifyCart } from '@/shopify/hooks/useShopifyCart';
 import { isShopifyConfigured } from '@/shopify/config';
 import { resolvePackLabel } from '@/shopify/packLabel';
+import {
+  getMinimumOrderStatus,
+  MIN_ORDER_LABEL,
+  type MinimumOrderStatus,
+} from '@/config/commerce';
 
 export interface Product {
   id: number;
@@ -32,10 +37,12 @@ interface CartContextType {
   clearCart: () => void;
   getTotalPrice: () => number;
   getTotalItems: () => number;
-  goToCheckout?: () => void;
+  goToCheckout?: () => boolean;
   isShopifyCart: boolean;
   cartLoading: boolean;
   cartError: string | null;
+  minimumOrderStatus: MinimumOrderStatus;
+  minimumOrderLabel: string;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -133,6 +140,30 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     return localCartItems.reduce((total, item) => total + item.quantity, 0);
   };
 
+  const cartSubtotal = useMemo(() => {
+    if (isShopify && shopify.cart) {
+      return shopify.getSubtotal();
+    }
+    return localCartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  }, [isShopify, shopify.cart, localCartItems]);
+
+  const minimumOrderStatus = useMemo(
+    () => getMinimumOrderStatus(cartSubtotal),
+    [cartSubtotal],
+  );
+
+  const handleGoToCheckout = useCallback((): boolean => {
+    if (!minimumOrderStatus.meetsMinimum) {
+      return false;
+    }
+
+    if (isShopify) {
+      return shopify.goToCheckout();
+    }
+
+    return true;
+  }, [isShopify, minimumOrderStatus.meetsMinimum, shopify]);
+
   const value: CartContextType = {
     cartItems,
     addToCart,
@@ -141,10 +172,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     clearCart,
     getTotalPrice,
     getTotalItems,
-    goToCheckout: isShopify ? shopify.goToCheckout : undefined,
+    goToCheckout: isShopify ? handleGoToCheckout : undefined,
     isShopifyCart: isShopify,
     cartLoading: shopify.loading,
     cartError: shopify.error,
+    minimumOrderStatus,
+    minimumOrderLabel: MIN_ORDER_LABEL,
   };
 
   return (
