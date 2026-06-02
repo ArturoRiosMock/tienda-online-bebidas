@@ -37,6 +37,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
     {
       id: 1,
       image: '/hero-barra-boda.webp',
+      mobileImage: '/barra_libre.jpg',
       bgColor: '#f5f0e8',
       buttonText: 'COTIZA AHORA',
       buttonAction: () => navigate('/cotizar-evento')
@@ -44,6 +45,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
     {
       id: 2,
       image: '/hero-barra-mixologia.webp',
+      mobileImage: '/mixologia.jpg',
       bgColor: '#3a4a35',
       buttonText: 'COTIZA AHORA',
       buttonAction: () => navigate('/cotizar-evento')
