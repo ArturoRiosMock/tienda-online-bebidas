@@ -18,6 +18,11 @@ interface AuthContextType {
   error: string | null;
   login: (email: string, password: string) => Promise<boolean>;
   register: (input: RegisterInput) => Promise<{ success: boolean; error: string | null }>;
+  recoverPassword: (email: string) => Promise<{ success: boolean; error: string | null }>;
+  resetPassword: (
+    password: string,
+    options: { customerId: string; resetToken: string } | { resetUrl: string },
+  ) => Promise<{ success: boolean; error: string | null }>;
   logout: () => void;
   clearError: () => void;
 }
@@ -115,6 +120,122 @@ async function fetchCustomerInfo(accessToken: string) {
     return data?.data?.customer ?? null;
   } catch {
     return null;
+  }
+}
+
+async function shopifyCustomerRecover(
+  email: string,
+): Promise<{ success: boolean; error: string | null }> {
+  const query = `
+    mutation customerRecover($email: String!) {
+      customerRecover(email: $email) {
+        customerUserErrors { code field message }
+      }
+    }
+  `;
+
+  try {
+    const response = await fetch(getStorefrontApiUrl(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token': shopifyConfig.storefrontAccessToken,
+      },
+      body: JSON.stringify({ query, variables: { email } }),
+    });
+
+    const data = await response.json();
+    const result = data?.data?.customerRecover;
+
+    if (result?.customerUserErrors?.length > 0) {
+      const recoverError = result.customerUserErrors[0];
+      // No revelamos si el email existe o no, por seguridad.
+      if (recoverError.code === 'UNIDENTIFIED_CUSTOMER') {
+        return { success: true, error: null };
+      }
+      return { success: false, error: recoverError.message };
+    }
+
+    return { success: true, error: null };
+  } catch {
+    return { success: false, error: 'Error de conexión con el servidor.' };
+  }
+}
+
+function toCustomerGid(customerId: string): string {
+  if (customerId.startsWith('gid://')) return customerId;
+  return `gid://shopify/Customer/${customerId}`;
+}
+
+async function shopifyCustomerReset(
+  password: string,
+  options: { customerId: string; resetToken: string } | { resetUrl: string },
+): Promise<{ success: boolean; error: string | null; user?: AuthUser }> {
+  const useResetUrl = 'resetUrl' in options;
+
+  const query = useResetUrl
+    ? `
+      mutation customerResetByUrl($resetUrl: URL!, $password: String!) {
+        customerResetByUrl(resetUrl: $resetUrl, password: $password) {
+          customerAccessToken { accessToken expiresAt }
+          customerUserErrors { code field message }
+        }
+      }
+    `
+    : `
+      mutation customerReset($id: ID!, $input: CustomerResetInput!) {
+        customerReset(id: $id, input: $input) {
+          customerAccessToken { accessToken expiresAt }
+          customerUserErrors { code field message }
+        }
+      }
+    `;
+
+  const variables = useResetUrl
+    ? { resetUrl: options.resetUrl, password }
+    : {
+        id: toCustomerGid(options.customerId),
+        input: { resetToken: options.resetToken, password },
+      };
+
+  try {
+    const response = await fetch(getStorefrontApiUrl(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token': shopifyConfig.storefrontAccessToken,
+      },
+      body: JSON.stringify({ query, variables }),
+    });
+
+    const data = await response.json();
+    const result = useResetUrl ? data?.data?.customerResetByUrl : data?.data?.customerReset;
+
+    if (result?.customerUserErrors?.length > 0) {
+      return { success: false, error: result.customerUserErrors[0].message };
+    }
+
+    const accessToken = result?.customerAccessToken?.accessToken;
+    if (!accessToken) {
+      return {
+        success: false,
+        error: 'No se pudo restablecer la contraseña. El enlace puede haber expirado.',
+      };
+    }
+
+    const customerData = await fetchCustomerInfo(accessToken);
+    return {
+      success: true,
+      error: null,
+      user: {
+        email: customerData?.email ?? '',
+        firstName: customerData?.firstName ?? '',
+        lastName: customerData?.lastName ?? '',
+        accessToken,
+      },
+    };
+  } catch {
+    return { success: false, error: 'Error de conexión con el servidor.' };
   }
 }
 
@@ -217,6 +338,65 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { success: true, error: null };
   }, []);
 
+  const recoverPassword = useCallback(
+    async (email: string): Promise<{ success: boolean; error: string | null }> => {
+      setLoading(true);
+      setError(null);
+
+      if (!email.trim()) {
+        setLoading(false);
+        const message = 'Ingresa tu correo electrónico.';
+        setError(message);
+        return { success: false, error: message };
+      }
+
+      if (isShopifyConfigured()) {
+        const result = await shopifyCustomerRecover(email.trim());
+        setLoading(false);
+        if (!result.success) setError(result.error);
+        return result;
+      }
+
+      await new Promise((r) => setTimeout(r, 800));
+      setLoading(false);
+      return { success: true, error: null };
+    },
+    [],
+  );
+
+  const resetPassword = useCallback(
+    async (
+      password: string,
+      options: { customerId: string; resetToken: string } | { resetUrl: string },
+    ): Promise<{ success: boolean; error: string | null }> => {
+      setLoading(true);
+      setError(null);
+
+      if (password.length < 5) {
+        setLoading(false);
+        const message = 'La contraseña debe tener al menos 5 caracteres.';
+        setError(message);
+        return { success: false, error: message };
+      }
+
+      if (isShopifyConfigured()) {
+        const result = await shopifyCustomerReset(password, options);
+        setLoading(false);
+        if (result.success && result.user) {
+          setUser(result.user);
+          return { success: true, error: null };
+        }
+        setError(result.error);
+        return { success: false, error: result.error };
+      }
+
+      await new Promise((r) => setTimeout(r, 800));
+      setLoading(false);
+      return { success: true, error: null };
+    },
+    [],
+  );
+
   const logout = useCallback(() => {
     setUser(null);
     setError(null);
@@ -232,6 +412,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       error,
       login,
       register,
+      recoverPassword,
+      resetPassword,
       logout,
       clearError,
     }}>

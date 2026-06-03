@@ -9,6 +9,8 @@ import { ProductPage } from '@/app/pages/ProductPage';
 import { BlogPage } from '@/app/pages/BlogPage';
 import { BlogPostPage } from '@/app/pages/BlogPostPage';
 import { LoginPage } from '@/app/pages/LoginPage';
+import { ForgotPasswordPage } from '@/app/pages/ForgotPasswordPage';
+import { ResetPasswordPage } from '@/app/pages/ResetPasswordPage';
 import { RegisterPage } from '@/app/pages/RegisterPage';
 import { PrivacyPolicyPage } from '@/app/pages/PrivacyPolicyPage';
 import { CookiePolicyPage } from '@/app/pages/CookiePolicyPage';
@@ -23,6 +25,9 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/recuperar-contrasena" element={<ForgotPasswordPage />} />
+            <Route path="/restablecer-contrasena" element={<ResetPasswordPage />} />
+            <Route path="/account/reset/:customerId/:resetToken" element={<ResetPasswordPage />} />
             <Route path="/registro" element={<RegisterPage />} />
             <Route path="/aviso-de-privacidad" element={<PrivacyPolicyPage />} />
             <Route path="/politica-de-cookies" element={<CookiePolicyPage />} />
