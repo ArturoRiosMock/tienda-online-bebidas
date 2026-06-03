@@ -10,17 +10,13 @@ import { RegisterBanner } from '@/app/components/RegisterBanner';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 
 const PRODUCTS_PER_CAROUSEL = 20;
-const NEW_ARRIVALS_OPTIONS = { newest: true, limit: PRODUCTS_PER_CAROUSEL } as const;
+const NEW_ARRIVALS_COLLECTION = 'novedades';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const productsRef = useRef<HTMLDivElement>(null);
   const { products, loading, error } = useShopifyProducts();
-  const {
-    products: newestProducts,
-    loading: newestLoading,
-    error: newestError,
-  } = useShopifyProducts(undefined, NEW_ARRIVALS_OPTIONS);
+  const { products: newArrivalsCollection } = useShopifyProducts(NEW_ARRIVALS_COLLECTION);
 
   const scrollToProducts = () => {
     productsRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -31,13 +27,19 @@ export const HomePage: React.FC = () => {
     [products]
   );
 
-  const newArrivals = useMemo(
-    () => newestProducts.slice(0, PRODUCTS_PER_CAROUSEL),
-    [newestProducts]
-  );
+  // Si existe la colección "novedades" en Shopify, se usa esa; si no,
+  // hacemos fallback con los últimos productos del catálogo general.
+  const newArrivals = useMemo(() => {
+    if (newArrivalsCollection.length > 0) {
+      return newArrivalsCollection.slice(0, PRODUCTS_PER_CAROUSEL);
+    }
+    return products.slice(-PRODUCTS_PER_CAROUSEL).reverse();
+  }, [newArrivalsCollection, products]);
 
-  const isLoading = loading || newestLoading;
-  const displayError = error || newestError;
+  const newArrivalsHref =
+    newArrivalsCollection.length > 0
+      ? `/categorias/${NEW_ARRIVALS_COLLECTION}`
+      : '/productos';
 
   const handleProductClick = (handleOrId: string) => {
     navigate(`/producto/${handleOrId}`);
@@ -50,13 +52,13 @@ export const HomePage: React.FC = () => {
       <FlashDeals />
 
       <div ref={productsRef}>
-        {displayError && (
+        {error && (
           <div className="container mx-auto px-3 sm:px-4 mt-4">
-            <div className="p-4 bg-red-50 text-red-700 rounded-lg">{displayError}</div>
+            <div className="p-4 bg-red-50 text-red-700 rounded-lg">{error}</div>
           </div>
         )}
 
-        {isLoading && (
+        {loading && (
           <section className="container mx-auto px-3 sm:px-4 py-8 sm:py-10 max-w-[100vw]">
             <div className="h-7 w-40 bg-gray-100 rounded mb-6 animate-pulse" />
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -67,7 +69,7 @@ export const HomePage: React.FC = () => {
           </section>
         )}
 
-        {!isLoading && (
+        {!loading && (
           <>
             <ProductsCarousel
               title="Productos Destacados"
@@ -81,7 +83,7 @@ export const HomePage: React.FC = () => {
                 products={newArrivals}
                 onProductClick={(p) => handleProductClick(p.handle || p.id)}
                 cornerBadge="Nuevo"
-                viewAllHref="/productos"
+                viewAllHref={newArrivalsHref}
               />
             )}
 

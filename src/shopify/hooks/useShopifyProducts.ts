@@ -1,30 +1,17 @@
 import { useState, useEffect } from 'react';
-import { getProducts, getProductsByCollection, getNewestProducts, searchProducts } from '@/shopify/products';
+import { getProducts, getProductsByCollection, searchProducts } from '@/shopify/products';
 import { isShopifyConfigured } from '@/shopify/config';
 import type { Product } from '@/shopify/types';
-
-export type UseShopifyProductsOptions = {
-  /** Ordenar por fecha de creación (más recientes primero) */
-  newest?: boolean;
-  /** Límite de productos a solicitar a la API */
-  limit?: number;
-};
 
 /**
  * Hook para obtener productos de Shopify.
  * Recibe un collectionHandle opcional. Si se pasa, filtra por colección;
  * si no, trae todos los productos.
- * Con `options.newest`, trae los últimos productos agregados al catálogo.
  */
-export const useShopifyProducts = (
-  collectionHandle?: string,
-  options?: UseShopifyProductsOptions
-) => {
+export const useShopifyProducts = (collectionHandle?: string) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const newest = options?.newest ?? false;
-  const limit = options?.limit ?? 50;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,12 +28,10 @@ export const useShopifyProducts = (
 
         let fetchedProducts: Product[];
 
-        if (newest) {
-          fetchedProducts = await getNewestProducts(limit);
-        } else if (collectionHandle) {
-          fetchedProducts = await getProductsByCollection(collectionHandle, limit);
+        if (collectionHandle) {
+          fetchedProducts = await getProductsByCollection(collectionHandle, 50);
         } else {
-          fetchedProducts = await getProducts(limit);
+          fetchedProducts = await getProducts(50);
         }
 
         setProducts(fetchedProducts);
@@ -60,7 +45,7 @@ export const useShopifyProducts = (
     };
 
     fetchProducts();
-  }, [collectionHandle, newest, limit]);
+  }, [collectionHandle]);
 
   return { products, loading, error };
 };
