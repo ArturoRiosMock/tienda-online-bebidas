@@ -12,6 +12,7 @@ import { LoginPage } from '@/app/pages/LoginPage';
 import { ForgotPasswordPage } from '@/app/pages/ForgotPasswordPage';
 import { ResetPasswordPage } from '@/app/pages/ResetPasswordPage';
 import { RegisterPage } from '@/app/pages/RegisterPage';
+import { FAQPage } from '@/app/pages/FAQPage';
 import { PrivacyPolicyPage } from '@/app/pages/PrivacyPolicyPage';
 import { CookiePolicyPage } from '@/app/pages/CookiePolicyPage';
 import { AdminBannersPage } from '@/app/pages/AdminBannersPage';
@@ -41,6 +42,7 @@ function App() {
               <Route path="/producto/:handle" element={<ProductPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:blogHandle/:articleHandle" element={<BlogPostPage />} />
+              <Route path="/preguntas-frecuentes" element={<FAQPage />} />
             </Route>
             <Route path="/admin/banners" element={<AdminBannersPage />} />
           </Routes>

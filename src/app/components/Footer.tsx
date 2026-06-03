@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowUp } from 'lucide-react';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -76,9 +77,9 @@ export const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="#about" className="text-gray-300 hover:text-[#4da6ff] transition-colors">
+                <Link to="/preguntas-frecuentes" className="text-gray-300 hover:text-[#4da6ff] transition-colors">
                   Preguntas Frecuentes
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="https://bebify.mx/pages/contact" className="text-gray-300 hover:text-[#4da6ff] transition-colors">

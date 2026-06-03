@@ -4,7 +4,6 @@ import { Hero } from '@/app/components/Hero';
 import { FlashDeals } from '@/app/components/FlashDeals';
 import { BrandsSection } from '@/app/components/BrandsSection';
 import { About } from '@/app/components/About';
-import { FAQ } from '@/app/components/FAQ';
 import { ProductsCarousel } from '@/app/components/ProductsCarousel';
 import { RegisterBanner } from '@/app/components/RegisterBanner';
 import { useShopifyProducts, useShopifyLatestProducts } from '@/shopify/hooks/useShopifyProducts';
@@ -97,7 +96,6 @@ export const HomePage: React.FC = () => {
       {/* NewsletterPopup desactivado temporalmente */}
       {/* <NewsletterPopup /> */}
       <About />
-      <FAQ />
 
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
