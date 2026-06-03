@@ -29,7 +29,7 @@ function normalizeShopifyEnv(value: unknown): string {
 }
 
 const storefrontApiVersion =
-  normalizeShopifyEnv(import.meta.env.VITE_SHOPIFY_STOREFRONT_API_VERSION) || '2025-10';
+  normalizeShopifyEnv(import.meta.env.VITE_SHOPIFY_STOREFRONT_API_VERSION) || '2024-10';
 
 export const shopifyConfig = {
   // Tu dominio de Shopify (ej: "tu-tienda.myshopify.com")

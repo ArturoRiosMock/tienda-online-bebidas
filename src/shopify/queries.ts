@@ -1,13 +1,51 @@
-import { GraphQLClient } from 'graphql-request';
+import { GraphQLClient, ClientError } from 'graphql-request';
 import { shopifyConfig, getStorefrontApiUrl } from './config';
 
-// Cliente de GraphQL para Shopify Storefront API
-export const shopifyClient = new GraphQLClient(getStorefrontApiUrl(), {
+const baseClient = new GraphQLClient(getStorefrontApiUrl(), {
   headers: {
     'X-Shopify-Storefront-Access-Token': shopifyConfig.storefrontAccessToken,
     'Content-Type': 'application/json',
   },
 });
+
+// Algunas réplicas del backend de Shopify devuelven NOT_FOUND de forma intermitente
+// (por ejemplo, durante una rotación de token o cambio de primary domain).
+// Reintentamos automáticamente para que la app no quede con secciones vacías.
+const MAX_RETRIES = 12;
+const RETRY_DELAY_MS = 200;
+const MAX_RETRY_DELAY_MS = 1500;
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const isShopifyNotFound = (error: unknown): boolean => {
+  if (!(error instanceof ClientError)) return false;
+  const errors = error.response?.errors as Array<{ extensions?: { code?: string }; message?: string }> | undefined;
+  if (!errors || errors.length === 0) return false;
+  return errors.some(
+    (e) => e?.extensions?.code === 'NOT_FOUND' || e?.message === 'Not Found',
+  );
+};
+
+export const shopifyClient = {
+  async request<T = unknown>(query: string, variables?: Record<string, unknown>): Promise<T> {
+    let lastError: unknown;
+
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        return await baseClient.request<T>(query, variables);
+      } catch (error) {
+        lastError = error;
+        if (!isShopifyNotFound(error)) throw error;
+        if (attempt < MAX_RETRIES - 1) {
+          const delay = Math.min(RETRY_DELAY_MS * Math.pow(1.4, attempt), MAX_RETRY_DELAY_MS);
+          await wait(delay);
+        }
+      }
+    }
+
+    throw lastError;
+  },
+};
 
 // Query para obtener productos
 export const GET_PRODUCTS = `
