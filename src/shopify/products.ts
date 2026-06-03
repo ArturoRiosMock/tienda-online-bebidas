@@ -1,4 +1,4 @@
-import { shopifyClient, GET_PRODUCTS, GET_PRODUCTS_BY_COLLECTION, GET_PRODUCT_BY_HANDLE, GET_COLLECTIONS, SEARCH_PRODUCTS, SEARCH_PRODUCTS_BY_TAG } from './queries';
+import { shopifyClient, GET_PRODUCTS, GET_LATEST_PRODUCTS, GET_PRODUCTS_BY_COLLECTION, GET_PRODUCT_BY_HANDLE, GET_COLLECTIONS, SEARCH_PRODUCTS, SEARCH_PRODUCTS_BY_TAG } from './queries';
 import { resolvePackLabel } from './packLabel';
 import type { ShopifyProduct, ShopifyCollection, Product } from './types';
 
@@ -89,6 +89,17 @@ export const getAllProducts = async (pageSize: number = 50): Promise<Product[]> 
 export const getProducts = async (first: number = 20): Promise<Product[]> => {
   const { products } = await getProductsPage(first);
   return products;
+};
+
+// Obtener los productos más recientes ordenados por fecha de creación (más nuevos primero)
+export const getLatestProducts = async (first: number = 20): Promise<Product[]> => {
+  try {
+    const data: any = await shopifyClient.request(GET_LATEST_PRODUCTS, { first });
+    return data.products.edges.map((edge: any) => convertShopifyProductToAppProduct(edge.node));
+  } catch (error) {
+    console.error('Error fetching latest products:', error);
+    return [];
+  }
 };
 
 // Obtener una página de productos de una colección

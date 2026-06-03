@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getProducts, getProductsByCollection, searchProducts } from '@/shopify/products';
+import { getProducts, getLatestProducts, getProductsByCollection, searchProducts } from '@/shopify/products';
 import { isShopifyConfigured } from '@/shopify/config';
 import type { Product } from '@/shopify/types';
 
@@ -46,6 +46,51 @@ export const useShopifyProducts = (collectionHandle?: string) => {
 
     fetchProducts();
   }, [collectionHandle]);
+
+  return { products, loading, error };
+};
+
+/**
+ * Hook para obtener los productos más recientes ordenados por fecha de creación
+ * (más nuevos primero), usando la Storefront API con sortKey CREATED_AT.
+ */
+export const useShopifyLatestProducts = (limit: number = 20) => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchLatest = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        if (!isShopifyConfigured()) {
+          if (!cancelled) {
+            setProducts([]);
+            setLoading(false);
+          }
+          return;
+        }
+
+        const fetched = await getLatestProducts(limit);
+        if (!cancelled) setProducts(fetched);
+      } catch (err) {
+        console.error('Error fetching latest products:', err);
+        if (!cancelled) setError('Error al cargar productos recientes');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    fetchLatest();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [limit]);
 
   return { products, loading, error };
 };

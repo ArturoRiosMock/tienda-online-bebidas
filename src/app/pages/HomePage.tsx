@@ -7,16 +7,15 @@ import { About } from '@/app/components/About';
 import { FAQ } from '@/app/components/FAQ';
 import { ProductsCarousel } from '@/app/components/ProductsCarousel';
 import { RegisterBanner } from '@/app/components/RegisterBanner';
-import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
+import { useShopifyProducts, useShopifyLatestProducts } from '@/shopify/hooks/useShopifyProducts';
 
 const PRODUCTS_PER_CAROUSEL = 20;
-const NEW_ARRIVALS_COLLECTION = 'novedades';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const productsRef = useRef<HTMLDivElement>(null);
   const { products, loading, error } = useShopifyProducts();
-  const { products: newArrivalsCollection } = useShopifyProducts(NEW_ARRIVALS_COLLECTION);
+  const { products: latestProducts } = useShopifyLatestProducts(PRODUCTS_PER_CAROUSEL);
 
   const scrollToProducts = () => {
     productsRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -27,19 +26,17 @@ export const HomePage: React.FC = () => {
     [products]
   );
 
-  // Si existe la colección "novedades" en Shopify, se usa esa; si no,
-  // hacemos fallback con los últimos productos del catálogo general.
+  // "Últimas novedades" usa los productos ordenados por fecha de creación
+  // (sortKey: CREATED_AT, reverse: true) directo desde Shopify Storefront API.
+  // Como fallback usa los últimos del catálogo general si la query falla.
   const newArrivals = useMemo(() => {
-    if (newArrivalsCollection.length > 0) {
-      return newArrivalsCollection.slice(0, PRODUCTS_PER_CAROUSEL);
+    if (latestProducts.length > 0) {
+      return latestProducts.slice(0, PRODUCTS_PER_CAROUSEL);
     }
     return products.slice(-PRODUCTS_PER_CAROUSEL).reverse();
-  }, [newArrivalsCollection, products]);
+  }, [latestProducts, products]);
 
-  const newArrivalsHref =
-    newArrivalsCollection.length > 0
-      ? `/categorias/${NEW_ARRIVALS_COLLECTION}`
-      : '/productos';
+  const newArrivalsHref = '/productos';
 
   const handleProductClick = (handleOrId: string) => {
     navigate(`/producto/${handleOrId}`);
