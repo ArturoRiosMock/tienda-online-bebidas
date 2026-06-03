@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import { Zap, Lock, Minus, Plus } from 'lucide-react';
@@ -19,37 +19,6 @@ export const FlashDeals: React.FC = () => {
   const navigate = useNavigate();
   const { products: allDeals, loading, error } = useShopifyProducts(FLASH_DEALS_COLLECTION);
   const deals = allDeals.slice(0, 20);
-
-  const [timeLeft, setTimeLeft] = useState({
-    hours: 11,
-    minutes: 18,
-    seconds: 15
-  });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        let { hours, minutes, seconds } = prev;
-
-        if (seconds > 0) {
-          seconds--;
-        } else if (minutes > 0) {
-          minutes--;
-          seconds = 59;
-        } else if (hours > 0) {
-          hours--;
-          minutes = 59;
-          seconds = 59;
-        } else {
-          return { hours: 11, minutes: 18, seconds: 15 };
-        }
-
-        return { hours, minutes, seconds };
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
 
   const sliderSettings = {
     dots: true,
@@ -204,35 +173,15 @@ export const FlashDeals: React.FC = () => {
     <section className="bg-white py-8 md:py-12 overflow-hidden">
       <div className="container mx-auto px-3 sm:px-4 max-w-[100vw]">
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-6 sm:mb-8 gap-3 sm:gap-4">
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-              className="w-10 h-10 sm:w-12 sm:h-12 bg-[#0055a2] rounded-full flex items-center justify-center shrink-0"
-            >
-              <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-white" />
-            </motion.div>
-            <h2 className="text-[#0055a2] text-lg sm:text-xl">Los Mejores Descuentos Del Mes</h2>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto min-w-0">
-            <span className="text-[#212121] font-medium text-sm sm:text-base shrink-0">Los descuentos terminan en:</span>
-            <div className="flex gap-1.5 sm:gap-2 shrink-0">
-              <div className="bg-[#0055a2] text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg min-w-[52px] sm:min-w-[60px] text-center">
-                <div className="text-xl sm:text-2xl font-bold">{String(timeLeft.hours).padStart(2, '0')}</div>
-                <div className="text-[10px] sm:text-xs uppercase">Horas</div>
-              </div>
-              <div className="bg-[#0055a2] text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg min-w-[52px] sm:min-w-[60px] text-center">
-                <div className="text-xl sm:text-2xl font-bold">{String(timeLeft.minutes).padStart(2, '0')}</div>
-                <div className="text-[10px] sm:text-xs uppercase">Min</div>
-              </div>
-              <div className="bg-[#0055a2] text-white px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg min-w-[52px] sm:min-w-[60px] text-center">
-                <div className="text-xl sm:text-2xl font-bold">{String(timeLeft.seconds).padStart(2, '0')}</div>
-                <div className="text-[10px] sm:text-xs uppercase">Seg</div>
-              </div>
-            </div>
-          </div>
+        <div className="flex items-center justify-center sm:justify-start mb-6 sm:mb-8 gap-2 sm:gap-3">
+          <motion.div
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+            className="w-10 h-10 sm:w-12 sm:h-12 bg-[#0055a2] rounded-full flex items-center justify-center shrink-0"
+          >
+            <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white fill-white" />
+          </motion.div>
+          <h2 className="text-[#0055a2] text-lg sm:text-xl">Los Mejores Descuentos Del Mes</h2>
         </div>
 
         {/* Loading */}
