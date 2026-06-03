@@ -47,10 +47,10 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
   const isLast = currentPage >= totalPages;
 
   const baseBtn =
-    'flex h-9 min-w-9 items-center justify-center rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium transition-colors';
+    'flex h-9 min-w-9 items-center justify-center rounded-lg border px-3 text-sm font-medium transition-colors';
   const activeBtn = 'bg-[#0c3c1f] text-white border-[#0c3c1f]';
-  const idleBtn = 'text-[#212121] hover:bg-gray-50 hover:text-[#0c3c1f]';
-  const disabledBtn = 'text-gray-300 cursor-not-allowed';
+  const idleBtn = 'bg-white border-gray-200 text-[#212121] hover:bg-gray-50 hover:text-[#0c3c1f]';
+  const disabledBtn = 'bg-white border-gray-200 text-gray-300 cursor-not-allowed';
 
   return (
     <nav

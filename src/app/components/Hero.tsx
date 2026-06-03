@@ -32,7 +32,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
       image: '/hot_sale.jpg',
       mobileImage: '/movil_hotsale.jpg',
       bgColor: '#9B2C2C',
-      onSlideClick: () => navigate('/categorias/hot-sale')
+      onSlideClick: () => navigate('/categorias/hot-days')
     },
     {
       id: 1,
@@ -63,7 +63,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
       image: '/cta.jpg',
       mobileImage: '/movil_mundial.jpg',
       bgColor: '#0c3c1f',
-      buttonText: 'VER BEST SELLERS',
+      buttonText: 'VER PROMO-MUNDIALISTA',
       buttonAction: () => navigate('/categorias/promo-mundialista'),
       onSlideClick: () => navigate('/categorias/promo-mundialista')
     }
