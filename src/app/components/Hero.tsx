@@ -32,7 +32,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
       image: '/hot_sale.jpg',
       mobileImage: '/movil_hotsale.jpg',
       bgColor: '#9B2C2C',
-      onSlideClick: () => navigate('/categorias/promo-mundialista')
+      onSlideClick: () => navigate('/categorias/hot-sale')
     },
     {
       id: 1,
@@ -50,13 +50,6 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
       buttonText: 'COTIZA AHORA',
       buttonAction: () => navigate('/cotizar-evento')
     },
-    {
-      id: 3,
-      image: '/hero-eventos-sociales.jpg',
-      bgColor: '#f5f0e8',
-      buttonText: 'COTIZA AHORA',
-      buttonAction: () => navigate('/cotizar-evento')
-    },
     // Slide 4 (Super Promo) oculto temporalmente
     // {
     //   id: 4,
@@ -71,7 +64,8 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
       mobileImage: '/movil_mundial.jpg',
       bgColor: '#0c3c1f',
       buttonText: 'VER BEST SELLERS',
-      buttonAction: () => navigate('/categorias/promo-mundialista')
+      buttonAction: () => navigate('/categorias/promo-mundialista'),
+      onSlideClick: () => navigate('/categorias/promo-mundialista')
     }
   ];
 

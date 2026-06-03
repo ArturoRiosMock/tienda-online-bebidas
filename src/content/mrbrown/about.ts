@@ -4,9 +4,9 @@ export const about = {
   headline: 'Curadores de experiencias únicas en bebidas premium',
 
   paragraphs: [
-    'En Mr. Brown, nos enorgullece ser la expresión de la pasión por la calidad y la innovación en el mundo de las bebidas. Somos mucho más que un proveedor; somos curadores de experiencias, enfocados en ofrecer a nuestros clientes una selección única de bebidas.',
-    'Nuestra historia comenzó en 2018, cuando un grupo de amigos con una visión compartida decidió crear un destino donde los amantes de las bebidas pudieran descubrir, explorar y disfrutar de una amplia variedad de productos de alta calidad. Inspirados por el deseo de ofrecer momentos especiales y experiencias únicas, nos propusimos ser líderes en el mercado, ofreciendo un servicio integral que se adapta a las necesidades de cada ocasión.',
-    'Desde eventos corporativos hasta celebraciones sociales, e-commerce y barras libres, nos destacamos por brindar un servicio completo que abarca desde la selección de bebidas hasta la ejecución impecable de cada evento. Con una oferta diversa que abarca desde vinos selectos hasta las últimas tendencias en mixología, estamos aquí para elevar cada momento especial y hacer que cada experiencia sea inolvidable.',
+    'Mr. Brown nació en 2018 de algo simple: un grupo de amigos que compartía la misma pasión por las bebidas y quería crear algo diferente. No solo vender, sino curar experiencias.',
+    'Desde el primer día, nuestra obsesión ha sido la calidad — desde la selección de cada producto hasta la ejecución de cada evento. Vinos, mixología, barras libres, eventos corporativos o sociales: lo que sea que necesites para que el momento valga la pena, ahí estamos.',
+    'Más de 6 años después, seguimos siendo ese mismo equipo apasionado, solo que con mucho más recorrido.',
   ],
 
   features: [

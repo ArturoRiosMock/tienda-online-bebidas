@@ -29,11 +29,11 @@ export const useShopifyProducts = (collectionHandle?: string, titleFallback?: st
         let fetchedProducts: Product[];
 
         if (collectionHandle) {
-          fetchedProducts = await getProductsByCollection(collectionHandle, 50, {
+          fetchedProducts = await getProductsByCollection(collectionHandle, 250, {
             titleFallback,
           });
         } else {
-          fetchedProducts = await getProducts(50);
+          fetchedProducts = await getProducts(250);
         }
 
         setProducts(fetchedProducts);

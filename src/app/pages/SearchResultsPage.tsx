@@ -168,7 +168,7 @@ export const SearchResultsPage: React.FC = () => {
             {loading && trimmedQuery
               ? `Buscando «${trimmedQuery}»…`
               : trimmedQuery
-                ? `${filteredResults.length} ${filteredResults.length === 1 ? 'resultado' : 'resultados'} para «${trimmedQuery}»`
+                ? `Resultados para «${trimmedQuery}»`
                 : 'Buscar productos'}
           </h1>
         </div>

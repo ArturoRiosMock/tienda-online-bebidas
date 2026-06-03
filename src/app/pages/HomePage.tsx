@@ -129,9 +129,8 @@ export const HomePage: React.FC = () => {
       </section>
 
       <section ref={productsRef} className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 max-w-[100vw]">
-        <div className="flex items-center justify-between mb-6 sm:mb-8 gap-2 min-w-0">
+        <div className="mb-6 sm:mb-8">
           <h2 className="text-[#212121]">Los Favoritos del Club</h2>
-          {!loading && <p className="text-[#717182]">{products.length} productos</p>}
         </div>
 
         {error && (

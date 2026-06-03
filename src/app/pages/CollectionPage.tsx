@@ -1,9 +1,10 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { SlidersHorizontal } from 'lucide-react';
 import { ProductCard } from '@/app/components/ProductCard';
 import { AdBanner, getInlineAdSlots, shouldRenderAdSlot } from '@/app/components/AdBanner';
 import { Breadcrumbs } from '@/app/components/Breadcrumbs';
+import { PaginationControls } from '@/app/components/PaginationControls';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
 import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
@@ -14,6 +15,8 @@ type GridItem =
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc';
 
+const PRODUCTS_PER_PAGE = 16;
+
 export const CollectionPage: React.FC = () => {
   const { handle } = useParams<{ handle: string }>();
   const navigate = useNavigate();
@@ -23,6 +26,9 @@ export const CollectionPage: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortOption>('default');
   const [vendorFilter, setVendorFilter] = useState('');
   const [discountOnly, setDiscountOnly] = useState(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const productsTopRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setSortBy('default');
@@ -86,13 +92,60 @@ export const CollectionPage: React.FC = () => {
     setDiscountOnly(false);
   };
 
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE));
+  const pageParam = parseInt(searchParams.get('page') || '1', 10);
+  const safePageParam = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
+  const currentPage = Math.min(Math.max(1, safePageParam), totalPages);
+
+  // Limpa ?page da URL sempre que filtro/handle muda (volta para a primeira página)
+  useEffect(() => {
+    if (searchParams.get('page')) {
+      const next = new URLSearchParams(searchParams);
+      next.delete('page');
+      setSearchParams(next, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handle, sortBy, vendorFilter, discountOnly]);
+
+  // Se a URL tem ?page inválido (>totalPages, negativo, NaN) ou redundante (=1), normaliza
+  useEffect(() => {
+    if (loading) return;
+    const raw = searchParams.get('page');
+    if (!raw) return;
+    if (currentPage !== safePageParam || currentPage === 1) {
+      const next = new URLSearchParams(searchParams);
+      if (currentPage <= 1) {
+        next.delete('page');
+      } else {
+        next.set('page', String(currentPage));
+      }
+      setSearchParams(next, { replace: true });
+    }
+  }, [loading, currentPage, safePageParam, searchParams, setSearchParams]);
+
+  // Scroll suave ao topo da lista quando muda de página
+  useEffect(() => {
+    if (loading) return;
+    if (!searchParams.get('page')) return;
+    const el = productsTopRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top, behavior: 'smooth' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    return filteredProducts.slice(start, start + PRODUCTS_PER_PAGE);
+  }, [filteredProducts, currentPage]);
+
   const gridItems = useMemo<GridItem[]>(() => {
     const items: GridItem[] = [];
     let adIndex = 0;
     let productIndex = 0;
     let position = 0;
 
-    while (productIndex < filteredProducts.length || adIndex < inlineAds.length) {
+    while (productIndex < paginatedProducts.length || adIndex < inlineAds.length) {
       if (adIndex < inlineAds.length && position === inlineAds[adIndex].position - 1) {
         items.push({ kind: 'ad', slotId: inlineAds[adIndex].slotId });
         adIndex++;
@@ -100,8 +153,8 @@ export const CollectionPage: React.FC = () => {
         continue;
       }
 
-      if (productIndex < filteredProducts.length) {
-        items.push({ kind: 'product', product: filteredProducts[productIndex] });
+      if (productIndex < paginatedProducts.length) {
+        items.push({ kind: 'product', product: paginatedProducts[productIndex] });
         productIndex++;
         position++;
       } else {
@@ -110,7 +163,18 @@ export const CollectionPage: React.FC = () => {
     }
 
     return items;
-  }, [filteredProducts, inlineAds]);
+  }, [paginatedProducts, inlineAds]);
+
+  const buildPageHref = (page: number) => {
+    const next = new URLSearchParams(searchParams);
+    if (page <= 1) {
+      next.delete('page');
+    } else {
+      next.set('page', String(page));
+    }
+    const qs = next.toString();
+    return qs ? `${canonicalPath}?${qs}` : canonicalPath;
+  };
 
   return (
     <div className="min-h-[60vh]">
@@ -173,16 +237,7 @@ export const CollectionPage: React.FC = () => {
             </div>
           </aside>
 
-          <div>
-            <div className="mb-4">
-              {!loading && (
-                <p className="text-[#717182] text-sm">
-                  {filteredProducts.length === products.length
-                    ? `${products.length} productos encontrados`
-                    : `${filteredProducts.length} de ${products.length} productos`}
-                </p>
-              )}
-            </div>
+          <div ref={productsTopRef}>
 
             {!loading && products.length > 0 && (
               <div
@@ -298,19 +353,29 @@ export const CollectionPage: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-                {gridItems.map((item, i) =>
-                  item.kind === 'product' ? (
-                    <ProductCard
-                      key={`p-${item.product.id}`}
-                      product={item.product}
-                      onClick={() => navigate(`/producto/${item.product.handle || item.product.id}`)}
-                    />
-                  ) : (
-                    <AdBanner key={`ad-${item.slotId}-${i}`} slotId={item.slotId} variant="inline-card" />
-                  )
+              <>
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
+                  {gridItems.map((item, i) =>
+                    item.kind === 'product' ? (
+                      <ProductCard
+                        key={`p-${item.product.id}`}
+                        product={item.product}
+                        onClick={() => navigate(`/producto/${item.product.handle || item.product.id}`)}
+                      />
+                    ) : (
+                      <AdBanner key={`ad-${item.slotId}-${i}`} slotId={item.slotId} variant="inline-card" />
+                    )
+                  )}
+                </div>
+
+                {totalPages > 1 && (
+                  <PaginationControls
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    buildHref={buildPageHref}
+                  />
                 )}
-              </div>
+              </>
             )}
           </div>
         </div>
