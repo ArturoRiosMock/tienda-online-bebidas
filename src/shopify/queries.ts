@@ -9,6 +9,74 @@ export const shopifyClient = new GraphQLClient(getStorefrontApiUrl(), {
   },
 });
 
+// Productos más recientes (por fecha de creación, descendente)
+export const GET_NEWEST_PRODUCTS = `
+  query GetNewestProducts($first: Int!, $after: String) {
+    products(first: $first, after: $after, sortKey: CREATED_AT, reverse: true) {
+      edges {
+        node {
+          id
+          title
+          description
+          descriptionHtml
+          handle
+          productType
+          vendor
+          tags
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+            maxVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          images(first: 5) {
+            edges {
+              node {
+                url
+                altText
+              }
+            }
+          }
+          variants(first: 10) {
+            edges {
+              node {
+                id
+                title
+                price {
+                  amount
+                  currencyCode
+                }
+                compareAtPrice {
+                  amount
+                  currencyCode
+                }
+                availableForSale
+                image {
+                  url
+                  altText
+                }
+                selectedOptions {
+                  name
+                  value
+                }
+              }
+            }
+          }
+        }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+    }
+  }
+`;
+
 // Query para obtener productos
 export const GET_PRODUCTS = `
   query GetProducts($first: Int!, $after: String) {
