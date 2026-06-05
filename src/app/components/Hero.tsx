@@ -27,13 +27,14 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
   const navigate = useNavigate();
 
   const slides: Slide[] = [
-    {
-      id: 6,
-      image: '/hot_sale.jpg',
-      mobileImage: '/movil_hotsale.jpg',
-      bgColor: '#9B2C2C',
-      onSlideClick: () => navigate('/categorias/hot-days')
-    },
+    // Slide Hot Sale oculto temporalmente
+    // {
+    //   id: 6,
+    //   image: '/hot_sale.jpg',
+    //   mobileImage: '/movil_hotsale.jpg',
+    //   bgColor: '#9B2C2C',
+    //   onSlideClick: () => navigate('/categorias/hot-days')
+    // },
     {
       id: 1,
       image: '/hero-barra-boda.webp',
