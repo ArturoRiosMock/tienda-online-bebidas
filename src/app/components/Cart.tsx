@@ -218,6 +218,7 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
         onClose={() => setShowPurchaseType(false)}
         onConfirm={handleConfirmPurchaseType}
         loading={checkoutLoading}
+        error={cartError}
       />
     </>
   );

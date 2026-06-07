@@ -34,6 +34,7 @@ interface PurchaseTypeDialogProps {
   onClose: () => void;
   onConfirm: (eventData: EventFormData | null) => Promise<void>;
   loading: boolean;
+  error?: string | null;
 }
 
 type PurchaseType = 'personal' | 'evento';
@@ -43,6 +44,7 @@ export const PurchaseTypeDialog = ({
   onClose,
   onConfirm,
   loading,
+  error,
 }: PurchaseTypeDialogProps) => {
   const [purchaseType, setPurchaseType] = useState<PurchaseType>('personal');
   const [ageConfirmed, setAgeConfirmed] = useState(true);
@@ -283,6 +285,12 @@ export const PurchaseTypeDialog = ({
             </motion.div>
           )}
         </AnimatePresence>
+
+        {error && (
+          <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
+            {error}
+          </p>
+        )}
 
         <DialogFooter className="mt-2 gap-2 sm:gap-0">
           <button
