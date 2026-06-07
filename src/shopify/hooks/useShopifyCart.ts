@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { getOrCreateCart, addToShopifyCart, updateCartLine, removeFromShopifyCart, redirectToCheckout } from '@/shopify/cart';
+import { useState, useEffect, useCallback } from 'react';
+import { getOrCreateCart, getCart, addToShopifyCart, updateCartLine, removeFromShopifyCart, redirectToCheckout } from '@/shopify/cart';
 import { updateCartAttributes } from '@/shopify/mutations/cartAttributes';
 import { isShopifyConfigured } from '@/shopify/config';
 import type { ShopifyCart } from '@/shopify/types';
@@ -29,6 +29,39 @@ export const useShopifyCart = () => {
 
     initCart();
   }, []);
+
+  /** Sincroniza el carrito con Shopify (p. ej. al volver atrás desde checkout / bfcache). */
+  const refreshCart = useCallback(async (): Promise<ShopifyCart | null> => {
+    if (!isShopifyConfigured()) return null;
+
+    const storedId = localStorage.getItem('shopifyCartId');
+    if (storedId) {
+      const fresh = await getCart(storedId);
+      if (fresh) {
+        setCart(fresh);
+        setError(null);
+        return fresh;
+      }
+      localStorage.removeItem('shopifyCartId');
+    }
+
+    const created = await getOrCreateCart();
+    setCart(created);
+    return created;
+  }, []);
+
+  // Al volver desde checkout el navegador puede restaurar la SPA desde bfcache
+  // con un checkoutUrl caducado en memoria — hay que volver a pedir el carrito.
+  useEffect(() => {
+    if (!isShopifyConfigured()) return;
+
+    const onPageShow = () => {
+      void refreshCart();
+    };
+
+    window.addEventListener('pageshow', onPageShow);
+    return () => window.removeEventListener('pageshow', onPageShow);
+  }, [refreshCart]);
 
   // Agregar producto al carrito
   const addItem = async (variantId: string, quantity: number = 1) => {
@@ -145,6 +178,7 @@ export const useShopifyCart = () => {
         setError('No se pudieron guardar los datos del evento');
         return false;
       }
+      await refreshCart();
       return true;
     } catch (err) {
       console.error('Error updating cart attributes:', err);
@@ -155,13 +189,33 @@ export const useShopifyCart = () => {
     }
   };
 
-  // Ir al checkout
-  const goToCheckout = () => {
-    if (!cart?.checkoutUrl) {
-      setError('No hay URL de checkout disponible');
-      return;
+  // Ir al checkout — siempre pide checkoutUrl fresco antes de redirigir
+  const goToCheckout = async (): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const freshCart = await refreshCart();
+
+      if (!freshCart?.totalQuantity) {
+        setError('Tu carrito está vacío');
+        return false;
+      }
+
+      if (!freshCart.checkoutUrl) {
+        setError('No hay URL de checkout disponible');
+        return false;
+      }
+
+      redirectToCheckout(freshCart.checkoutUrl);
+      return true;
+    } catch (err) {
+      console.error('Error going to checkout:', err);
+      setError('Error al ir al checkout. Intenta de nuevo.');
+      return false;
+    } finally {
+      setLoading(false);
     }
-    redirectToCheckout(cart.checkoutUrl);
   };
 
   // Obtener total de items
@@ -191,6 +245,7 @@ export const useShopifyCart = () => {
     removeAllItems,
     updateAttributes,
     goToCheckout,
+    refreshCart,
     getTotalItems,
     getSubtotal,
     getTotal,

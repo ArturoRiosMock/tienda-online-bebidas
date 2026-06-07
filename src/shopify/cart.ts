@@ -143,15 +143,28 @@ export const clearCart = (): void => {
 
 // Dominio nativo de Shopify para el checkout (siempre .myshopify.com)
 const SHOPIFY_CHECKOUT_DOMAIN = 'mrbrownmx.myshopify.com';
+const CHECKOUT_LOCALE = 'es';
 
-// Redirigir al checkout de Shopify
-export const redirectToCheckout = (checkoutUrl: string): void => {
-  // Shopify genera el checkoutUrl con el dominio personalizado (mrbrown.com.mx),
-  // pero ese dominio ahora apunta a la SPA headless en Vercel.
-  // Forzamos el dominio nativo .myshopify.com para que el checkout funcione.
-  const nativeCheckoutUrl = checkoutUrl.replace(
+/**
+ * Normaliza checkoutUrl de la Storefront API al checkout nativo de Shopify.
+ * La API suele devolver /cart/c/{token}?key=…; en .myshopify.com eso falla
+ * tras volver atrás desde checkout — hay que usar /checkouts/cn/{token}/{locale}.
+ */
+export function normalizeCheckoutUrl(checkoutUrl: string): string {
+  let url = checkoutUrl.replace(
     /https?:\/\/[^/]+/,
     `https://${SHOPIFY_CHECKOUT_DOMAIN}`
   );
-  window.location.href = nativeCheckoutUrl;
+
+  const cartPermalink = url.match(/\/cart\/c\/([^/?]+)/);
+  if (cartPermalink) {
+    return `https://${SHOPIFY_CHECKOUT_DOMAIN}/checkouts/cn/${cartPermalink[1]}/${CHECKOUT_LOCALE}`;
+  }
+
+  return url;
+}
+
+// Redirigir al checkout de Shopify
+export const redirectToCheckout = (checkoutUrl: string): void => {
+  window.location.href = normalizeCheckoutUrl(checkoutUrl);
 };

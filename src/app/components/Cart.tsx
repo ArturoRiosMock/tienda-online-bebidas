@@ -55,12 +55,11 @@ export const Cart = ({ isOpen, onClose }: CartProps) => {
           await updateAttributes([{ key: 'Tipo de compra', value: 'Personal' }]).catch(() => {});
         }
       }
-      goToCheckout!();
-      onClose();
+      const ok = await goToCheckout!();
+      if (ok) onClose();
     } catch {
-      // Si algo falla, igual intentamos ir al checkout
-      goToCheckout?.();
-      onClose();
+      const ok = await goToCheckout?.();
+      if (ok) onClose();
     } finally {
       setCheckoutLoading(false);
     }

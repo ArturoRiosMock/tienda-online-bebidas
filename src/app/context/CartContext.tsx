@@ -42,7 +42,7 @@ interface CartContextType {
   clearCart: () => void;
   getTotalPrice: () => number;
   getTotalItems: () => number;
-  goToCheckout?: () => void;
+  goToCheckout?: () => Promise<boolean>;
   updateAttributes?: (attributes: Array<{ key: string; value: string }>) => Promise<boolean>;
   isShopifyCart: boolean;
   cartLoading: boolean;
