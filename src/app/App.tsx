@@ -15,6 +15,7 @@ import { BlogPage } from '@/app/pages/BlogPage';
 import { ArticlePage } from '@/app/pages/ArticlePage';
 import { PolicyDocumentPage } from '@/app/pages/PolicyDocumentPage';
 import { ErrorBoundary } from '@/app/components/ErrorBoundary';
+import { toCanonicalCollectionHandle } from '@/shopify/collection-handles';
 import { privacyPolicy, refundPolicy, termsOfService } from '@/content/mrbrown/policies';
 
 const SHOPIFY_CHECKOUT_DOMAIN = 'mrbrownmx.myshopify.com';
@@ -31,10 +32,11 @@ function ProductRedirect() {
   return <Navigate to={`/producto/${handle}`} replace />;
 }
 
-/** Redirige /collections/:handle (URL estándar de Shopify) → /categorias/:handle */
+/** Redirige /collections/:handle (URL estándar de Shopify) → /categorias/:handle canónico */
 function CollectionRedirect() {
   const { handle } = useParams<{ handle: string }>();
-  return <Navigate to={`/categorias/${handle}`} replace />;
+  const canonicalHandle = handle ? toCanonicalCollectionHandle(handle) : '';
+  return <Navigate to={`/categorias/${canonicalHandle}`} replace />;
 }
 
 /** Redirige /blogs/:blogHandle/:handle (URL estándar de Shopify) → /blog/:handle */

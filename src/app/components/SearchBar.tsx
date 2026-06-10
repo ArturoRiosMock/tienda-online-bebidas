@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toCanonicalCollectionHandle } from '@/shopify/collection-handles';
 import { Search, X, FolderOpen, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useShopifySearch } from '@/shopify/hooks/useShopifyProducts';
@@ -170,7 +171,7 @@ export const SearchBar = ({ collections, onClose, variant = 'desktop' }: SearchB
       const item = flatItems[selectedIndex];
       if (item.type === 'collection') {
         saveRecentSearch(trimmedQuery);
-        navigate(`/categorias/${item.collection.handle}`);
+        navigate(`/categorias/${toCanonicalCollectionHandle(item.collection.handle)}`);
       } else {
         saveRecentSearch(trimmedQuery);
         navigate(`/producto/${item.product.handle || item.product.id}`);
@@ -191,7 +192,7 @@ export const SearchBar = ({ collections, onClose, variant = 'desktop' }: SearchB
 
   const handleSelectCollection = (collection: CollectionItem) => {
     saveRecentSearch(trimmedQuery);
-    navigate(`/categorias/${collection.handle}`);
+    navigate(`/categorias/${toCanonicalCollectionHandle(collection.handle)}`);
     setIsOpen(false);
     setQuery('');
     onClose?.();

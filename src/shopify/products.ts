@@ -1,4 +1,5 @@
 import { shopifyClient, GET_PRODUCTS, GET_PRODUCTS_BY_COLLECTION, GET_PRODUCT_BY_HANDLE, GET_COLLECTIONS, SEARCH_PRODUCTS } from './queries';
+import { resolveShopifyCollectionHandle } from './collection-handles';
 import type { ShopifyProduct, ShopifyCollection, Product, ShopifyVariant } from './types';
 import { extractAlcoholAttributes } from './productAttributes';
 
@@ -96,21 +97,23 @@ export const getProductsByCollection = async (
   first: number = 20,
   options?: GetProductsByCollectionOptions
 ): Promise<Product[]> => {
+  const shopifyHandle = resolveShopifyCollectionHandle(collectionHandle);
+
   try {
     const data: any = await shopifyClient.request(GET_PRODUCTS_BY_COLLECTION, {
-      handle: collectionHandle,
+      handle: shopifyHandle,
       first
     });
 
     if (!data.collection) {
       if (options?.titleFallback) {
         const resolved = await findCollectionHandleByTitle(options.titleFallback);
-        if (resolved && resolved !== collectionHandle) {
+        if (resolved && resolved !== shopifyHandle) {
           return getProductsByCollection(resolved, first);
         }
       }
       console.warn(
-        `[Shopify] No existe colección con handle "${collectionHandle}" en Storefront API. Revisa el handle en Admin o la publicación al canal de tienda.`
+        `[Shopify] No existe colección con handle "${shopifyHandle}" en Storefront API. Revisa el handle en Admin o la publicación al canal de tienda.`
       );
       return [];
     }
@@ -118,7 +121,7 @@ export const getProductsByCollection = async (
     const edges: unknown[] = data.collection.products?.edges ?? [];
     if (edges.length === 0 && options?.titleFallback) {
       const resolved = await findCollectionHandleByTitle(options.titleFallback);
-      if (resolved && resolved !== collectionHandle) {
+      if (resolved && resolved !== shopifyHandle) {
         return getProductsByCollection(resolved, first);
       }
     }

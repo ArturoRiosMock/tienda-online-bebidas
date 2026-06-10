@@ -7,6 +7,10 @@ import { Breadcrumbs } from '@/app/components/Breadcrumbs';
 import { useShopifySearch } from '@/shopify/hooks/useShopifyProducts';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
 import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
+import {
+  getCollectionDisplayTitle,
+  toCanonicalCollectionHandle,
+} from '@/shopify/collection-handles';
 import type { Product } from '@/shopify/types';
 
 type GridItem =
@@ -222,15 +226,18 @@ export const SearchResultsPage: React.FC = () => {
                   </Link>
                   {collections
                     .filter((c) => c.handle !== 'ofertas-relampago')
-                    .map((col) => (
+                    .map((col) => {
+                      const urlHandle = toCanonicalCollectionHandle(col.handle);
+                      return (
                       <Link
                         key={col.id}
-                        to={`/categorias/${col.handle}`}
+                        to={`/categorias/${urlHandle}`}
                         className="block px-3 py-2 text-sm rounded-lg transition-colors text-[#212121] hover:bg-gray-100 hover:text-[#0c3c1f]"
                       >
-                        {col.title}
+                        {getCollectionDisplayTitle(urlHandle) || col.title}
                       </Link>
-                    ))}
+                      );
+                    })}
                 </nav>
               </div>
 

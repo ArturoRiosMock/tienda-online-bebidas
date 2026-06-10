@@ -1,4 +1,8 @@
 import type { CollectionItem } from '@/shopify/hooks/useShopifyCollections';
+import {
+  getCollectionDisplayTitle,
+  resolveShopifyCollectionHandle,
+} from '@/shopify/collection-handles';
 
 export type NavDropdownEntry =
   | { type: 'collection'; label: string; handle: string }
@@ -90,13 +94,13 @@ const RAW_GROUPS: RawGroup[] = [
     id: 'aguas',
     title: 'Aguas',
     mode: 'link',
-    entry: { type: 'collection', label: 'Aguas', handle: 'refrescos' },
+    entry: { type: 'collection', label: 'Aguas', handle: 'aguas' },
   },
   {
     id: 'refrescos',
     title: 'Refrescos',
     mode: 'link',
-    entry: { type: 'collection', label: 'Refrescos', handle: 'aguas' },
+    entry: { type: 'collection', label: 'Refrescos', handle: 'refrescos' },
   },
   {
     id: 'otras-bebidas',
@@ -107,12 +111,12 @@ const RAW_GROUPS: RawGroup[] = [
 ];
 
 function collectionExists(collections: CollectionItem[], handle: string): boolean {
-  return collections.some((c) => c.handle === handle);
+  const shopifyHandle = resolveShopifyCollectionHandle(handle);
+  return collections.some((c) => c.handle === shopifyHandle);
 }
 
 function labelForHandle(collections: CollectionItem[], handle: string, fallback: string): string {
-  const col = collections.find((c) => c.handle === handle);
-  return col?.title ?? fallback;
+  return getCollectionDisplayTitle(handle) ?? fallback;
 }
 
 function firstCollectionHandle(entries: NavDropdownEntry[]): string | null {
@@ -139,7 +143,7 @@ export function resolveDesktopNav(collections: CollectionItem[]): ResolvedDeskto
     if (g.mode === 'link') {
       const resolved = filterEntry(g.entry, collections);
       if (resolved) {
-        out.push({ kind: 'link', id: g.id, title: g.title, entry: resolved });
+        out.push({ kind: 'link', id: g.id, title: resolved.label, entry: resolved });
       }
       continue;
     }
@@ -151,11 +155,13 @@ export function resolveDesktopNav(collections: CollectionItem[]): ResolvedDeskto
     } else {
       let featuredCol: CollectionItem | null = null;
       if (g.featuredHandle && collectionExists(collections, g.featuredHandle)) {
-        featuredCol = collections.find((c) => c.handle === g.featuredHandle) ?? null;
+        const featuredShopifyHandle = resolveShopifyCollectionHandle(g.featuredHandle);
+        featuredCol = collections.find((c) => c.handle === featuredShopifyHandle) ?? null;
       } else {
         const first = entries.find((e): e is Extract<NavDropdownEntry, { type: 'collection' }> => e.type === 'collection');
         if (first && collectionExists(collections, first.handle)) {
-          featuredCol = collections.find((c) => c.handle === first.handle) ?? null;
+          const firstShopifyHandle = resolveShopifyCollectionHandle(first.handle);
+          featuredCol = collections.find((c) => c.handle === firstShopifyHandle) ?? null;
         }
       }
 

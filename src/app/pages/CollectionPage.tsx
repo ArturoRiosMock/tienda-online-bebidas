@@ -8,6 +8,11 @@ import { PaginationControls } from '@/app/components/PaginationControls';
 import { useShopifyProducts } from '@/shopify/hooks/useShopifyProducts';
 import { useShopifyCollections } from '@/shopify/hooks/useShopifyCollections';
 import { useDocumentMeta } from '@/app/hooks/useDocumentMeta';
+import {
+  getCollectionDisplayTitle,
+  resolveShopifyCollectionHandle,
+  toCanonicalCollectionHandle,
+} from '@/shopify/collection-handles';
 
 type GridItem =
   | { kind: 'product'; product: ReturnType<typeof useShopifyProducts>['products'][number] }
@@ -36,10 +41,14 @@ export const CollectionPage: React.FC = () => {
     setDiscountOnly(false);
   }, [handle]);
 
-  const currentCollection = collections.find((c) => c.handle === handle);
+  const shopifyHandle = handle ? resolveShopifyCollectionHandle(handle) : undefined;
+  const currentCollection = collections.find((c) => c.handle === shopifyHandle);
   const collectionTitle = !handle
     ? 'Todos los productos'
-    : currentCollection?.title || handle.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) || 'Colección';
+    : getCollectionDisplayTitle(handle)
+      || currentCollection?.title
+      || handle.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+      || 'Colección';
 
   const canonicalPath = handle ? `/categorias/${handle}` : '/productos';
   const collectionDescription = !handle
@@ -215,19 +224,22 @@ export const CollectionPage: React.FC = () => {
                   </Link>
                   {collections
                     .filter((c) => c.handle !== 'ofertas-relampago')
-                    .map((col) => (
+                    .map((col) => {
+                      const urlHandle = toCanonicalCollectionHandle(col.handle);
+                      return (
                       <Link
                         key={col.id}
-                        to={`/categorias/${col.handle}`}
+                        to={`/categorias/${urlHandle}`}
                         className={`block px-3 py-2 text-sm rounded-lg transition-colors ${
-                          col.handle === handle
+                          urlHandle === handle
                             ? 'bg-[#0c3c1f] text-white font-medium'
                             : 'text-[#212121] hover:bg-gray-100 hover:text-[#0c3c1f]'
                         }`}
                       >
-                        {col.title}
+                        {getCollectionDisplayTitle(urlHandle) || col.title}
                       </Link>
-                    ))}
+                      );
+                    })}
                 </nav>
               </div>
 
