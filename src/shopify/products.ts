@@ -1,5 +1,6 @@
 import { shopifyClient, GET_PRODUCTS, GET_LATEST_PRODUCTS, GET_PRODUCTS_BY_COLLECTION, GET_PRODUCT_BY_HANDLE, GET_COLLECTIONS, SEARCH_PRODUCTS, SEARCH_PRODUCTS_BY_TAG } from './queries';
 import { resolvePackLabel } from './packLabel';
+import { VIRTUAL_COLLECTIONS, TAG_COLLECTIONS, isVirtualCollection, isTagCollection } from './collectionRoutes';
 import type { ShopifyProduct, ShopifyCollection, Product } from './types';
 
 /**
@@ -193,12 +194,28 @@ export const getCollections = async (first: number = 20): Promise<ShopifyCollect
   }
 };
 
+// Resolver productos para cualquier handle del menú (normal, virtual o por tag)
+export const fetchProductsByHandle = async (
+  handle: string,
+  pageSize: number = 50,
+): Promise<Product[]> => {
+  if (isVirtualCollection(handle)) {
+    return getAllProductsByVirtualCollection(VIRTUAL_COLLECTIONS[handle], pageSize);
+  }
+
+  if (isTagCollection(handle)) {
+    return getProductsByTag(TAG_COLLECTIONS[handle], pageSize);
+  }
+
+  return getAllProductsByCollection(handle, pageSize);
+};
+
 // Obtener todos los productos de múltiples colecciones, deduplicados por ID (colección virtual)
 export const getAllProductsByVirtualCollection = async (
   handles: string[],
   pageSize: number = 50,
 ): Promise<Product[]> => {
-  const pages = await Promise.all(handles.map((h) => getAllProductsByCollection(h, pageSize)));
+  const pages = await Promise.all(handles.map((h) => fetchProductsByHandle(h, pageSize)));
   const seen = new Set<string>();
   const merged: Product[] = [];
 

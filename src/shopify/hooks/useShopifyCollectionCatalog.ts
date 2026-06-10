@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getAllProductsByCollection, getAllProductsByVirtualCollection, getProductsByTag } from '@/shopify/products';
+import { fetchProductsByHandle } from '@/shopify/products';
 import { isShopifyConfigured } from '@/shopify/config';
-import { VIRTUAL_COLLECTIONS, TAG_COLLECTIONS, isVirtualCollection, isTagCollection } from '@/shopify/collectionRoutes';
 import type { Product } from '@/shopify/types';
 
 const SHOPIFY_PAGE_SIZE = 50;
@@ -38,18 +37,7 @@ export const useShopifyCollectionCatalog = (collectionHandle?: string) => {
           return;
         }
 
-        let fetchedProducts: Product[];
-
-        if (isVirtualCollection(collectionHandle)) {
-          const subHandles = VIRTUAL_COLLECTIONS[collectionHandle];
-          fetchedProducts = await getAllProductsByVirtualCollection(subHandles, SHOPIFY_PAGE_SIZE);
-        } else if (isTagCollection(collectionHandle)) {
-          const tag = TAG_COLLECTIONS[collectionHandle];
-          fetchedProducts = await getProductsByTag(tag, SHOPIFY_PAGE_SIZE);
-        } else {
-          fetchedProducts = await getAllProductsByCollection(collectionHandle, SHOPIFY_PAGE_SIZE);
-        }
-
+        const fetchedProducts = await fetchProductsByHandle(collectionHandle, SHOPIFY_PAGE_SIZE);
         setProducts(fetchedProducts);
       } catch (err) {
         console.error('Error fetching collection catalog:', err);

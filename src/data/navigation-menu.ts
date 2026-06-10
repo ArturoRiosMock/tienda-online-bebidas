@@ -4,9 +4,10 @@
  * de colecciones en Shopify (mr-brown-mayoreo.myshopify.com).
  *
  * Handles especiales:
- *   - "Todos"     → redirige a /productos (todos los productos)
- *   - "espumosos" → colección virtual (merge de vino-blanco-espumoso, vino-rosado-espumoso, vino-tinto-espumoso)
- *   - "jerez"     → carga por tag "Jerez" (no hay colección en Shopify)
+ *   - "Todos"        → redirige a /productos (todos los productos)
+ *   - parentHandle   → colección virtual (merge de sus subcategorías en collectionRoutes.ts)
+ *   - "espumosos"    → colección virtual (merge de vino-blanco-espumoso, vino-rosado-espumoso, vino-tinto-espumoso)
+ *   - "jerez"        → carga por tag "Jerez" (no hay colección en Shopify)
  */
 
 export interface MenuLink {
