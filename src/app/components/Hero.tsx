@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
+import heroSlide1 from '@/assets/hero-slideshow-1.jpg';
 
 interface HeroProps {
   onShopNowClick: () => void;
@@ -23,7 +24,7 @@ export const Hero = ({ onShopNowClick }: HeroProps) => {
   const allSlides: Slide[] = [
     {
       id: 1,
-      image: 'https://images-ext-1.discordapp.net/external/D5lSwL5mjlIjTiYkGlwgZcQ4Y1tJxRvPsMnDQ5dwgjI/%3Fformat%3Dwebp%26v%3D1717249074%26width%3D1200/https/bebify.mx/cdn/shop/files/Slideshow_1.jpg?format=webp',
+      image: heroSlide1,
       title: 'La Plataforma de Bebidas B2B',
       subtitle: 'Centraliza tus compras de bebidas con acceso a más de 2,000 productos de más de 200 proveedores',
       badge: 'B2B',
