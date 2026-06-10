@@ -518,6 +518,20 @@ export const REMOVE_FROM_CART = `
 
 // === BLOG ===
 
+/** Lista los blogs disponibles en la tienda. */
+export const GET_BLOGS = `
+  query GetBlogs($first: Int!) {
+    blogs(first: $first) {
+      edges {
+        node {
+          handle
+          title
+        }
+      }
+    }
+  }
+`;
+
 /**
  * Lista artículos del blog principal de Shopify.
  * Si no se pasa `blogHandle`, se usa el primer blog disponible (Shopify crea

@@ -1,12 +1,20 @@
-import { shopifyClient, GET_ARTICLES, GET_ALL_ARTICLES, GET_ARTICLE_BY_HANDLE } from './queries';
+import {
+  shopifyClient,
+  GET_ARTICLES,
+  GET_ALL_ARTICLES,
+  GET_ARTICLE_BY_HANDLE,
+  GET_BLOGS,
+} from './queries';
 import type { BlogArticle, ShopifyArticle } from './types';
 
 /**
- * Handle del blog principal en Shopify. Por defecto Shopify crea uno con
- * handle "news"; si tu tienda usa otro handle, ajústalo aquí o pásalo
- * explícitamente a las funciones.
+ * Handle del blog por defecto en Shopify (suele llamarse "news").
+ * Solo se usa como fallback al resolver un artículo por handle.
  */
 export const DEFAULT_BLOG_HANDLE = 'news';
+
+/** Si se define, limita el listado a un solo blog (opcional). */
+const BLOG_HANDLE_FILTER = import.meta.env.VITE_SHOPIFY_BLOG_HANDLE as string | undefined;
 
 /** Convierte la respuesta cruda de Shopify al tipo usado por la UI. */
 function toBlogArticle(node: ShopifyArticle): BlogArticle {
@@ -27,71 +35,125 @@ function toBlogArticle(node: ShopifyArticle): BlogArticle {
   };
 }
 
+function sortArticles(items: BlogArticle[], first: number): BlogArticle[] {
+  return [...items]
+    .sort(
+      (a, b) =>
+        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    )
+    .slice(0, first);
+}
+
+async function getBlogHandles(): Promise<string[]> {
+  try {
+    const data: any = await shopifyClient.request(GET_BLOGS, { first: 20 });
+    const edges = data?.blogs?.edges as { node: { handle: string } }[] | undefined;
+    const handles = (edges ?? []).map((e) => e.node.handle);
+    if (handles.length) return handles;
+  } catch (error) {
+    console.warn('[Shopify] No se pudieron listar los blogs:', error);
+  }
+  return [DEFAULT_BLOG_HANDLE];
+}
+
+/** Recorre cada blog y fusiona sus artículos (fallback fiable). */
+async function fetchArticlesFromAllBlogs(first: number): Promise<BlogArticle[]> {
+  const handles = await getBlogHandles();
+  const byId = new Map<string, BlogArticle>();
+
+  for (const blogHandle of handles) {
+    try {
+      const data: any = await shopifyClient.request(GET_ARTICLES, {
+        first,
+        blogHandle,
+      });
+      const edges = data?.blog?.articles?.edges as { node: ShopifyArticle }[] | undefined;
+      for (const { node } of edges ?? []) {
+        byId.set(node.id, toBlogArticle({
+          ...node,
+          blog: { handle: blogHandle, title: data.blog?.title ?? blogHandle },
+        }));
+      }
+    } catch (error) {
+      console.warn(`[Shopify] No se pudo cargar el blog "${blogHandle}":`, error);
+    }
+  }
+
+  return sortArticles([...byId.values()], first);
+}
+
 /**
- * Devuelve los artículos publicados, ordenados del más nuevo al más antiguo.
- * Intenta primero el blog principal (`DEFAULT_BLOG_HANDLE`); si no existe o
- * no devuelve resultados, hace fallback a `articles` global (todos los blogs).
+ * Devuelve los artículos publicados de todos los blogs (o de uno si hay filtro),
+ * ordenados del más nuevo al más antiguo.
  */
 export async function getArticles(
   first: number = 12,
-  blogHandle: string = DEFAULT_BLOG_HANDLE
+  blogHandle?: string
 ): Promise<BlogArticle[]> {
-  try {
-    const data: any = await shopifyClient.request(GET_ARTICLES, { first, blogHandle });
-    const edges = data?.blog?.articles?.edges as { node: ShopifyArticle }[] | undefined;
+  const filterBlog = blogHandle ?? BLOG_HANDLE_FILTER;
 
-    if (edges?.length) {
-      return edges.map((e) => toBlogArticle({ ...e.node, blog: { handle: blogHandle, title: data.blog.title } }));
+  if (filterBlog) {
+    try {
+      const data: any = await shopifyClient.request(GET_ARTICLES, {
+        first,
+        blogHandle: filterBlog,
+      });
+      const edges = data?.blog?.articles?.edges as { node: ShopifyArticle }[] | undefined;
+      if (edges?.length) {
+        return edges.map((e) =>
+          toBlogArticle({
+            ...e.node,
+            blog: { handle: filterBlog, title: data.blog.title },
+          })
+        );
+      }
+    } catch (error) {
+      console.warn(`[Shopify] No se pudo cargar el blog "${filterBlog}":`, error);
     }
-  } catch (error) {
-    console.warn(`[Shopify] No se pudo cargar el blog "${blogHandle}", probando articles global…`, error);
   }
 
   try {
     const data: any = await shopifyClient.request(GET_ALL_ARTICLES, { first });
     const edges = data?.articles?.edges as { node: ShopifyArticle }[] | undefined;
-    return (edges ?? []).map((e) => toBlogArticle(e.node));
-  } catch (error) {
-    console.error('[Shopify] Error obteniendo artículos:', error);
-    return [];
-  }
-}
-
-/**
- * Busca un artículo por su handle. Si no se conoce el blog, se itera sobre los
- * artículos globales hasta encontrarlo (sólo se hace cuando el blog principal
- * no contiene el handle solicitado).
- */
-export async function getArticleByHandle(
-  articleHandle: string,
-  blogHandle: string = DEFAULT_BLOG_HANDLE
-): Promise<BlogArticle | null> {
-  try {
-    const data: any = await shopifyClient.request(GET_ARTICLE_BY_HANDLE, {
-      blogHandle,
-      articleHandle,
-    });
-    const node = data?.blog?.articleByHandle as ShopifyArticle | null | undefined;
-    if (node) {
-      return toBlogArticle({
-        ...node,
-        blog: { handle: blogHandle, title: data.blog.title },
-      });
+    if (edges?.length) {
+      return edges.map((e) => toBlogArticle(e.node));
     }
   } catch (error) {
     console.warn(
-      `[Shopify] No se encontró el artículo "${articleHandle}" en el blog "${blogHandle}". Probando búsqueda global…`,
+      '[Shopify] Query global de artículos no disponible, usando blogs individuales…',
       error
     );
   }
 
-  try {
-    const fallback = await getArticles(50);
-    return fallback.find((a) => a.handle === articleHandle) ?? null;
-  } catch (error) {
-    console.error('[Shopify] Error en fallback de artículos:', error);
-    return null;
+  return fetchArticlesFromAllBlogs(first);
+}
+
+/**
+ * Busca un artículo por handle en todos los blogs de la tienda.
+ */
+export async function getArticleByHandle(articleHandle: string): Promise<BlogArticle | null> {
+  const blogHandles = await getBlogHandles();
+  const handlesToTry = [...new Set([DEFAULT_BLOG_HANDLE, ...blogHandles])];
+
+  for (const blogHandle of handlesToTry) {
+    try {
+      const data: any = await shopifyClient.request(GET_ARTICLE_BY_HANDLE, {
+        blogHandle,
+        articleHandle,
+      });
+      const node = data?.blog?.articleByHandle as ShopifyArticle | null | undefined;
+      if (node) {
+        return toBlogArticle({
+          ...node,
+          blog: { handle: blogHandle, title: data.blog.title },
+        });
+      }
+    } catch {
+      // Probar el siguiente blog
+    }
   }
+
+  return null;
 }
 
 /** Formatea la fecha al estilo "5 de mayo de 2026" en español. */

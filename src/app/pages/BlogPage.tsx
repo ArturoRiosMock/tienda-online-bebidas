@@ -21,9 +21,14 @@ export const BlogPage: React.FC = () => {
   useEffect(() => {
     let active = true;
     setLoading(true);
+    setArticles([]);
     getArticles(24)
       .then((data) => {
         if (active) setArticles(data);
+      })
+      .catch((err) => {
+        console.error('[Blog] Error cargando artículos:', err);
+        if (active) setArticles([]);
       })
       .finally(() => {
         if (active) setLoading(false);
