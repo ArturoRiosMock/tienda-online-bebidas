@@ -21,6 +21,33 @@ const resolveCustomerAccessToken = (accessToken?: string | null): string | undef
   return accessToken;
 };
 
+// Llama al backend de mayoreo. Devuelve la URL de pago (invoiceUrl) si el
+// cliente tiene precios de mayoreo, o null para usar el checkout normal.
+const tryWholesaleCheckout = async (
+  cart: ShopifyCart,
+  customerAccessToken: string,
+): Promise<string | null> => {
+  try {
+    const lines = (cart.lines?.edges ?? []).map((edge) => ({
+      merchandiseId: edge.node.merchandise.id,
+      quantity: edge.node.quantity,
+    }));
+    if (lines.length === 0) return null;
+
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customerAccessToken, lines }),
+    });
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    return data?.wholesale && data?.invoiceUrl ? (data.invoiceUrl as string) : null;
+  } catch {
+    return null;
+  }
+};
+
 export const useShopifyCart = () => {
   const { user } = useAuth();
   const [cart, setCart] = useState<ShopifyCart | null>(null);
@@ -190,6 +217,18 @@ export const useShopifyCart = () => {
     setLoading(true);
 
     try {
+      // Si el cliente está logueado, intentamos el flujo de mayoreo: el backend
+      // calcula los precios de mayoreo (SAMI) y crea un Draft Order con los
+      // descuentos. Si el cliente no tiene grupo de mayoreo, se usa el checkout
+      // normal de Shopify.
+      if (customerAccessToken) {
+        const wholesaleUrl = await tryWholesaleCheckout(cart, customerAccessToken);
+        if (wholesaleUrl) {
+          window.location.href = wholesaleUrl;
+          return true;
+        }
+      }
+
       let checkoutUrl = cart.checkoutUrl;
 
       if (customerAccessToken) {
