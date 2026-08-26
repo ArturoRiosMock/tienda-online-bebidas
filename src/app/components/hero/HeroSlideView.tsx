@@ -2,6 +2,7 @@ import React from 'react';
 import type { HeroSlide } from '@/types/homeContent';
 import { AlcoholWarning } from '@/app/components/AlcoholWarning';
 import { HeroOverlay } from '@/app/components/hero/HeroOverlay';
+import { DEFAULT_HERO_BG } from '@/app/components/hero/heroPosition';
 
 interface HeroSlideViewProps {
   slide: HeroSlide;
@@ -28,6 +29,7 @@ export function HeroSlideView({ slide, onActivate, onShopNowClick }: HeroSlideVi
   return (
     <div
       className={clickable ? 'relative w-full h-full cursor-pointer' : 'relative w-full h-full'}
+      style={{ backgroundColor: slide.bgColor || DEFAULT_HERO_BG }}
       onClick={onActivate}
       role={clickable ? 'button' : undefined}
       tabIndex={clickable ? 0 : undefined}

@@ -32,3 +32,6 @@ npm-debug.log*
 public/uploads/home/*
 !public/uploads/home/.gitkeep
 .env*
+
+# Dump local de imágenes Shopify CDN
+shopify-images/

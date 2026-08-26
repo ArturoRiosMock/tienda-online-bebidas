@@ -79,6 +79,34 @@
     ],
     "quote": "Bebidas premium con la experiencia Mr. Brown."
   },
+  "aboutPage": {
+    "tagline": "HOUSE OF SPIRITS",
+    "badge": "Quiénes Somos",
+    "headline": "Curadores de experiencias únicas en bebidas premium",
+    "image": "/sobre_nosotros.jpg",
+    "imageAlt": "Mr. Brown equipo",
+    "storyTitle": "Nuestra Historia",
+    "paragraphs": [
+      "Mr. Brown nació en 2018 de algo simple: un grupo de amigos que compartía la misma pasión por las bebidas y quería crear algo diferente. No solo vender, sino curar experiencias.",
+      "Desde el primer día, nuestra obsesión ha sido la calidad — desde la selección de cada producto hasta la ejecución de cada evento. Vinos, mixología, barras libres, eventos corporativos o sociales: lo que sea que necesites para que el momento valga la pena, ahí estamos.",
+      "Más de 6 años después, seguimos siendo ese mismo equipo apasionado, solo que con mucho más recorrido."
+    ],
+    "features": [
+      { "title": "Desde 2018", "description": "Con una visión clara de calidad e innovación" },
+      { "title": "Bebidas Premium", "description": "Selección única de las mejores marcas del mundo" },
+      { "title": "Eventos", "description": "Corporativos, sociales, barras libres y más" },
+      { "title": "Entrega CDMX", "description": "Rápida y segura en Ciudad de México" }
+    ],
+    "quote": "Más que vender bebidas, entregamos experiencias.",
+    "contact": {
+      "email": "hola@mrbrown.com.mx",
+      "shippingTitle": "Envío",
+      "shippingDescription": "Encuentra tus bebidas favoritas con envío en 24 horas dentro de CDMX y Valle de Bravo.",
+      "facebook": "https://www.facebook.com/profile.php?id=100076305783446",
+      "instagram": "https://www.instagram.com/mrbrown.mx/",
+      "tiktok": "https://www.tiktok.com/@mrbrown.com.mx"
+    }
+  },
   "benefits": [
     {
       "icon": "🚚",

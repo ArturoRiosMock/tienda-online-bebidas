@@ -1,18 +1,23 @@
 import React from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { readableTextColor } from '@/app/utils/readableTextColor';
+import { DEFAULT_CTA_COLOR } from '@/app/components/hero/heroPosition';
 
 const CTA_CLASS =
-  'bg-[#0c3c1f] text-white px-8 py-3 rounded-lg hover:bg-[#0a3019] transition-colors font-bold text-sm inline-flex items-center gap-2 group';
+  'px-8 py-3 rounded-lg transition-opacity hover:opacity-90 font-bold text-sm inline-flex items-center gap-2 group';
 
 interface HeroCtaProps {
   buttonText: string;
   buttonHref?: string;
+  buttonColor?: string;
   onShopNowClick: () => void;
 }
 
-export function HeroCta({ buttonText, buttonHref, onShopNowClick }: HeroCtaProps) {
+export function HeroCta({ buttonText, buttonHref, buttonColor, onShopNowClick }: HeroCtaProps) {
   const href = (buttonHref || '').trim();
+  const background = buttonColor || DEFAULT_CTA_COLOR;
+  const style = { backgroundColor: background, color: readableTextColor(background) };
 
   const label = (
     <>
@@ -30,7 +35,7 @@ export function HeroCta({ buttonText, buttonHref, onShopNowClick }: HeroCtaProps
 
   if (!href) {
     return (
-      <button type="button" onClick={handleShopNow} className={CTA_CLASS}>
+      <button type="button" onClick={handleShopNow} className={CTA_CLASS} style={style}>
         {label}
       </button>
     );
@@ -38,14 +43,20 @@ export function HeroCta({ buttonText, buttonHref, onShopNowClick }: HeroCtaProps
 
   if (/^https?:\/\//i.test(href)) {
     return (
-      <a href={href} className={CTA_CLASS} rel="noopener noreferrer" onClick={stopBubble}>
+      <a
+        href={href}
+        className={CTA_CLASS}
+        style={style}
+        rel="noopener noreferrer"
+        onClick={stopBubble}
+      >
         {label}
       </a>
     );
   }
 
   return (
-    <Link to={href} className={CTA_CLASS} onClick={stopBubble}>
+    <Link to={href} className={CTA_CLASS} style={style} onClick={stopBubble}>
       {label}
     </Link>
   );

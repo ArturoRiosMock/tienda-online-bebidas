@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import type { HeroSlide } from '@/types/homeContent';
 import { HeroCta } from '@/app/components/hero/HeroCta';
+import { horizontalClass, verticalClass } from '@/app/components/hero/heroPosition';
 
 interface HeroOverlayProps {
   slide: HeroSlide;
@@ -10,8 +11,10 @@ interface HeroOverlayProps {
 
 export function HeroOverlay({ slide, showText, onShopNowClick }: HeroOverlayProps) {
   return (
-    <div className="absolute inset-0 flex items-end pb-8">
-      <div className="container mx-auto px-4 md:px-8 lg:px-16">
+    <div className={`absolute inset-0 flex ${verticalClass(slide.buttonPosition)}`}>
+      <div
+        className={`container mx-auto flex px-4 md:px-8 lg:px-16 ${horizontalClass(slide.buttonPosition)}`}
+      >
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -38,6 +41,7 @@ export function HeroOverlay({ slide, showText, onShopNowClick }: HeroOverlayProp
             <HeroCta
               buttonText={slide.buttonText}
               buttonHref={slide.buttonHref}
+              buttonColor={slide.buttonColor}
               onShopNowClick={onShopNowClick}
             />
           )}

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, PartyPopper, Loader2 } from 'lucide-react';
 import {
@@ -10,23 +10,15 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/app/components/ui/dialog';
-import { RadioGroup, RadioGroupItem } from '@/app/components/ui/radio-group';
-import { Label } from '@/app/components/ui/label';
-import { Input } from '@/app/components/ui/input';
+import { RadioGroup } from '@/app/components/ui/radio-group';
+import { EventFields } from '@/app/components/purchase/EventFields';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/app/components/ui/select';
+  PurchaseTypeChoice,
+  type PurchaseType,
+} from '@/app/components/purchase/PurchaseTypeChoice';
+import type { EventFormData } from '@/app/components/purchase/eventForm.types';
 
-export interface EventFormData {
-  eventType: string;
-  schoolName: string;
-  graduateName: string;
-  tableNumber: string;
-}
+export type { EventFormData };
 
 interface PurchaseTypeDialogProps {
   open: boolean;
@@ -34,9 +26,8 @@ interface PurchaseTypeDialogProps {
   onConfirm: (eventData: EventFormData | null) => Promise<void>;
   loading: boolean;
   error?: string | null;
+  onLeaveToQuote?: () => void;
 }
-
-type PurchaseType = 'personal' | 'evento';
 
 export const PurchaseTypeDialog = ({
   open,
@@ -44,6 +35,7 @@ export const PurchaseTypeDialog = ({
   onConfirm,
   loading,
   error,
+  onLeaveToQuote,
 }: PurchaseTypeDialogProps) => {
   const [purchaseType, setPurchaseType] = useState<PurchaseType>('personal');
 
@@ -52,7 +44,7 @@ export const PurchaseTypeDialog = ({
     control,
     reset,
     formState: { errors },
-  } = useForm<EventFormData>();
+  } = useForm<EventFormData>({ shouldUnregister: true });
 
   useEffect(() => {
     if (open) {
@@ -65,6 +57,12 @@ export const PurchaseTypeDialog = ({
     setPurchaseType('personal');
     reset();
     onClose();
+  };
+
+  const handleLeaveToQuote = () => {
+    setPurchaseType('personal');
+    reset();
+    (onLeaveToQuote ?? onClose)();
   };
 
   const handleContinue = () => {
@@ -92,51 +90,18 @@ export const PurchaseTypeDialog = ({
           onValueChange={(v) => setPurchaseType(v as PurchaseType)}
           className="grid grid-cols-2 gap-3 mt-2"
         >
-          <label
-            htmlFor="personal"
-            className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 cursor-pointer transition-all ${
-              purchaseType === 'personal'
-                ? 'border-[#0c3c1f] bg-[#0c3c1f]/5'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
-          >
-            <RadioGroupItem value="personal" id="personal" className="sr-only" />
-            <ShoppingBag
-              className={`w-8 h-8 ${
-                purchaseType === 'personal' ? 'text-[#0c3c1f]' : 'text-gray-400'
-              }`}
-            />
-            <span
-              className={`text-sm font-semibold ${
-                purchaseType === 'personal' ? 'text-[#0c3c1f]' : 'text-gray-600'
-              }`}
-            >
-              Compra Personal
-            </span>
-          </label>
-
-          <label
-            htmlFor="evento"
-            className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 cursor-pointer transition-all ${
-              purchaseType === 'evento'
-                ? 'border-[#0c3c1f] bg-[#0c3c1f]/5'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
-          >
-            <RadioGroupItem value="evento" id="evento" className="sr-only" />
-            <PartyPopper
-              className={`w-8 h-8 ${
-                purchaseType === 'evento' ? 'text-[#0c3c1f]' : 'text-gray-400'
-              }`}
-            />
-            <span
-              className={`text-sm font-semibold ${
-                purchaseType === 'evento' ? 'text-[#0c3c1f]' : 'text-gray-600'
-              }`}
-            >
-              Compra para Evento
-            </span>
-          </label>
+          <PurchaseTypeChoice
+            value="personal"
+            selected={purchaseType}
+            Icon={ShoppingBag}
+            label="Compra Personal"
+          />
+          <PurchaseTypeChoice
+            value="evento"
+            selected={purchaseType}
+            Icon={PartyPopper}
+            label="Compra para Evento"
+          />
         </RadioGroup>
 
         <AnimatePresence mode="wait">
@@ -149,148 +114,20 @@ export const PurchaseTypeDialog = ({
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className="overflow-hidden"
             >
-              <div className="space-y-4 pt-2 pb-1">
-                {/* Tipo de evento */}
-                <div className="space-y-2">
-                  <Label className="text-[#212121] font-semibold text-sm">
-                    Tipo de evento: <span className="text-red-500">*</span>
-                  </Label>
-                  <Controller
-                    name="eventType"
-                    control={control}
-                    rules={{ required: 'Selecciona el tipo de evento' }}
-                    render={({ field }) => (
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className={
-                            errors.eventType ? 'border-red-500' : ''
-                          }
-                        >
-                          <SelectValue placeholder="-- Por favor seleccione --" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="graduacion">
-                            Graduación
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                  {errors.eventType && (
-                    <p className="text-red-500 text-xs">
-                      {errors.eventType.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Nombre de la escuela */}
-                <div className="space-y-2">
-                  <Label className="text-[#212121] font-semibold text-sm">
-                    Nombre de la escuela:{' '}
-                    <span className="text-red-500">*</span>
-                  </Label>
-                  <Controller
-                    name="schoolName"
-                    control={control}
-                    rules={{ required: 'El nombre de la escuela es obligatorio' }}
-                    render={({ field }) => (
-                      <Select
-                        value={field.value ?? ''}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger
-                          className={errors.schoolName ? 'border-red-500' : ''}
-                        >
-                          <SelectValue placeholder="-- Por favor seleccione --" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Colegio Irlandes Femenil">
-                            Colegio Irlandes Femenil
-                          </SelectItem>
-                          <SelectItem value="Ibero Ingenieria Quimica">
-                            Ibero Ingenieria Quimica
-                          </SelectItem>
-                          <SelectItem value="Prepa Tec Zona Esmeralda">
-                            Prepa Tec Zona Esmeralda
-                          </SelectItem>
-                          <SelectItem value="Alexander Bain">
-                            Alexander Bain
-                          </SelectItem>
-                          <SelectItem value="Del Bosque">Del Bosque</SelectItem>
-                          <SelectItem value="Humanitree">Humanitree</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                  {errors.schoolName && (
-                    <p className="text-red-500 text-xs">
-                      {errors.schoolName.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Nombre del graduado */}
-                <div className="space-y-2">
-                  <Label className="text-[#212121] font-semibold text-sm">
-                    Nombre del graduado:{' '}
-                    <span className="text-red-500">*</span>
-                  </Label>
-                  <Controller
-                    name="graduateName"
-                    control={control}
-                    rules={{ required: 'El nombre del graduado es obligatorio' }}
-                    render={({ field }) => (
-                      <Input
-                        placeholder="Ejemplo: Juan Pérez"
-                        value={field.value ?? ''}
-                        onChange={field.onChange}
-                        onBlur={field.onBlur}
-                        className={errors.graduateName ? 'border-red-500' : ''}
-                      />
-                    )}
-                  />
-                  {errors.graduateName && (
-                    <p className="text-red-500 text-xs">
-                      {errors.graduateName.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Número de mesa */}
-                <div className="space-y-2">
-                  <Label className="text-[#212121] font-semibold text-sm">
-                    Número de mesa: <span className="text-red-500">*</span>
-                  </Label>
-                  <Controller
-                    name="tableNumber"
-                    control={control}
-                    rules={{ required: 'El número de mesa es obligatorio' }}
-                    render={({ field }) => (
-                      <Input
-                        placeholder="Ejemplo: 5 o N/A"
-                        value={field.value ?? ''}
-                        onChange={field.onChange}
-                        onBlur={field.onBlur}
-                        className={errors.tableNumber ? 'border-red-500' : ''}
-                      />
-                    )}
-                  />
-                  {errors.tableNumber && (
-                    <p className="text-red-500 text-xs">
-                      {errors.tableNumber.message}
-                    </p>
-                  )}
-                </div>
-              </div>
+              <EventFields
+                control={control}
+                errors={errors}
+                onQuoteNavigate={handleLeaveToQuote}
+              />
             </motion.div>
           )}
         </AnimatePresence>
 
         {error && (
-          <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
+          <p
+            className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700"
+            role="alert"
+          >
             {error}
           </p>
         )}

@@ -49,6 +49,13 @@ export function mergeContent(remote: Partial<HomeContent>): HomeContent {
       ...remote.about,
       features: remote.about?.features ?? DEFAULTS.about.features,
     },
+    aboutPage: {
+      ...DEFAULTS.aboutPage,
+      ...remote.aboutPage,
+      paragraphs: remote.aboutPage?.paragraphs ?? DEFAULTS.aboutPage.paragraphs,
+      features: remote.aboutPage?.features ?? DEFAULTS.aboutPage.features,
+      contact: { ...DEFAULTS.aboutPage.contact, ...remote.aboutPage?.contact },
+    },
     benefits: remote.benefits ?? DEFAULTS.benefits,
     carousels: { ...DEFAULTS.carousels, ...remote.carousels },
   };
