@@ -27,7 +27,13 @@ function EntryIcon({ entry }: { entry: CatalogEntry }) {
   return <Icon className="h-5 w-5 shrink-0 text-[#0c3c1f]" aria-hidden />;
 }
 
-export function MegaMenuPanel({ entries, onSelectCategory }: MegaMenuPanelProps) {
+export function MegaMenuPanel({
+  entries,
+  viewAllLabel,
+  viewAllHandle,
+  onSelectCategory,
+  onViewAll,
+}: MegaMenuPanelProps) {
   const clickables = entries.filter((e) => e.type !== 'heading');
   const gridColsClass =
     clickables.length > 8 ? 'grid-cols-3' : clickables.length > 4 ? 'grid-cols-2' : 'grid-cols-2';
@@ -64,6 +70,16 @@ export function MegaMenuPanel({ entries, onSelectCategory }: MegaMenuPanelProps)
           );
         })}
       </div>
+      {viewAllLabel && viewAllHandle ? (
+        <button
+          type="button"
+          role="menuitem"
+          onClick={() => onViewAll(viewAllHandle)}
+          className="mt-3 flex min-h-[44px] w-full items-center justify-center rounded-xl border border-[#0c3c1f]/25 bg-[#0c3c1f]/5 px-4 py-2.5 text-sm font-semibold text-[#0c3c1f] transition-colors hover:bg-[#0c3c1f]/10"
+        >
+          {viewAllLabel}
+        </button>
+      ) : null}
     </div>
   );
 }

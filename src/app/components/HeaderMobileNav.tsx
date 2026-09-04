@@ -75,14 +75,14 @@ export function HeaderMobileNav({
             <button
               type="button"
               onClick={() => onCategoryClick('Todos')}
-              className="mb-2 flex min-h-[48px] w-full items-center rounded-xl px-4 text-left text-sm font-semibold text-[#0c3c1f] transition-colors hover:bg-gray-100 active:bg-gray-200"
+              className="mb-2 flex min-h-[48px] w-full items-center rounded-xl border border-gray-200 bg-gray-50/50 px-4 text-left text-sm font-semibold text-[#0c3c1f] transition-colors hover:bg-gray-100 active:bg-gray-200"
             >
               Todos los productos
             </button>
             <button
               type="button"
               onClick={goBlog}
-              className="mb-2 flex min-h-[48px] w-full items-center rounded-xl px-4 text-left text-sm font-semibold text-[#0c3c1f] transition-colors hover:bg-gray-100 active:bg-gray-200"
+              className="mb-2 flex min-h-[48px] w-full items-center rounded-xl border border-gray-200 bg-gray-50/50 px-4 text-left text-sm font-semibold text-[#0c3c1f] transition-colors hover:bg-gray-100 active:bg-gray-200"
             >
               Blog
             </button>

@@ -37,7 +37,7 @@ export const MainLayout: React.FC = () => {
       <CookieConsentProvider>
         <CartProvider>
           <WishlistProvider>
-            <div className="min-h-screen bg-gray-50 flex flex-col overflow-x-hidden max-w-[100vw]">
+            <div className="min-h-screen bg-gray-50 flex flex-col overflow-x-clip max-w-[100vw]">
               <a
                 href="#main-content"
                 className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[300] focus:bg-[#0c3c1f] focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#FDB93A]"
