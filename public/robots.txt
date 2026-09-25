@@ -3,7 +3,7 @@
 User-agent: *
 Allow: /
 
-# Rotas administrativas y API interna
+# Rutas administrativas y API interna
 Disallow: /admin/
 Disallow: /api/
 
@@ -11,9 +11,8 @@ Disallow: /api/
 Disallow: /cart/
 Disallow: /checkouts/
 
-# Rutas legadas en el patrón Shopify (redirigen a las rutas en español)
-Disallow: /products/
-Disallow: /collections/
-Disallow: /policies/
+# Nota: las rutas legacy de Shopify (/products/, /collections/, /policies/)
+# ya no están bloqueadas. Devuelven 308 a las rutas en español y Googlebot
+# debe poder seguir esos redirects para consolidar el índice.
 
 Sitemap: https://www.mrbrown.com.mx/sitemap.xml
