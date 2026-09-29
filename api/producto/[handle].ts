@@ -246,6 +246,10 @@ function removeMetaIfExists(html: string, attr: 'name' | 'property', name: strin
   return html.replace(regex, '\n');
 }
 
+function isValidIndexHtml(html: string): boolean {
+  return html.includes('<div id="root">') && html.includes('</head>');
+}
+
 function injectProductMetas(html: string, product: ProductData): string {
   const canonical = `${SITE_URL}/producto/${product.handle}`;
   const fullTitle = buildFullTitle(product);
@@ -256,9 +260,8 @@ function injectProductMetas(html: string, product: ProductData): string {
 
   const escapedTitle = escapeHtml(fullTitle);
   const escapedCanonical = escapeHtml(canonical);
-  const escapedImage = escapeHtml(ogImage);
-  const escapedImageAlt = escapeHtml(`${product.name} — Mr. Brown`);
   const jsonLdString = escapeJsonLd(JSON.stringify(jsonLd));
+  const imageAlt = `${product.name} — Mr. Brown`;
 
   // Replace <title>
   html = html.replace(/<title>[^<]*<\/title>/i, `<title>${escapedTitle}</title>`);
@@ -275,13 +278,13 @@ function injectProductMetas(html: string, product: ProductData): string {
   // Replace meta description
   html = replaceOrInsertMeta(html, 'name', 'description', description);
 
-  // Replace Open Graph metas
+  // Replace Open Graph metas (replaceOrInsertMeta already escapes content)
   html = replaceOrInsertMeta(html, 'property', 'og:type', 'product');
   html = replaceOrInsertMeta(html, 'property', 'og:title', fullTitle);
   html = replaceOrInsertMeta(html, 'property', 'og:description', description);
   html = replaceOrInsertMeta(html, 'property', 'og:url', canonical);
   html = replaceOrInsertMeta(html, 'property', 'og:image', ogImage);
-  html = replaceOrInsertMeta(html, 'property', 'og:image:alt', escapedImageAlt);
+  html = replaceOrInsertMeta(html, 'property', 'og:image:alt', imageAlt);
 
   // Remove og:image:width and og:image:height (product images have unknown dimensions)
   html = removeMetaIfExists(html, 'property', 'og:image:width');
@@ -291,7 +294,7 @@ function injectProductMetas(html: string, product: ProductData): string {
   html = replaceOrInsertMeta(html, 'name', 'twitter:title', fullTitle);
   html = replaceOrInsertMeta(html, 'name', 'twitter:description', description);
   html = replaceOrInsertMeta(html, 'name', 'twitter:image', ogImage);
-  html = replaceOrInsertMeta(html, 'name', 'twitter:image:alt', `${product.name} — Mr. Brown`);
+  html = replaceOrInsertMeta(html, 'name', 'twitter:image:alt', imageAlt);
 
   // Inject product-specific OG metas
   html = replaceOrInsertMeta(
@@ -422,6 +425,21 @@ export default async function handler(req: Request): Promise<Response> {
       fetchIndexHtml(req),
     ]);
 
+    // Validate HTML before injecting metas - avoid modifying login/error pages
+    if (!isValidIndexHtml(indexHtml)) {
+      console.error(
+        '[producto-ssr] Invalid index.html received (missing div#root or </head>). ' +
+          'This may happen in Vercel Preview with Protection enabled.'
+      );
+      return new Response(indexHtml, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        },
+      });
+    }
+
     if (!product) {
       return new Response(indexHtml, {
         status: 404,
@@ -446,6 +464,10 @@ export default async function handler(req: Request): Promise<Response> {
 
     try {
       const html = await fetchIndexHtml(req);
+      // Also validate in error fallback path
+      if (!isValidIndexHtml(html)) {
+        console.error('[producto-ssr] Invalid HTML in error fallback path');
+      }
       return new Response(html, {
         status: 200,
         headers: {
