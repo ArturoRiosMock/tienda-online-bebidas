@@ -60,6 +60,14 @@
       "destination": "/api/producto/:handle"
     },
     {
+      "source": "/productos",
+      "destination": "/api/pagina?path=/productos"
+    },
+    {
+      "source": "/contacto",
+      "destination": "/api/pagina?path=/contacto"
+    },
+    {
       "source": "/((?!api/|.*\\..*).*)",
       "destination": "/index.html"
     }

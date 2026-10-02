@@ -211,11 +211,35 @@ function buildProductJsonLd(product: ProductData): object {
   return schema;
 }
 
+/**
+ * Elimina sufijos de marca duplicados del título de origen.
+ * Ejemplos de sufijos a limpiar: "| Mr. Brown", "| Bebify", "| Mr."
+ */
+function cleanTitleSuffix(title: string): string {
+  // Patrones de sufijos a eliminar (orden importa: más específicos primero)
+  const suffixPatterns = [
+    /\s*\|\s*Mr\.\s*Brown$/i,
+    /\s*\|\s*Bebify$/i,
+    /\s*\|\s*Mr\.?$/i,
+  ];
+  
+  let cleaned = title;
+  for (const pattern of suffixPatterns) {
+    cleaned = cleaned.replace(pattern, '');
+  }
+  
+  return cleaned.trim();
+}
+
 function buildFullTitle(product: ProductData): string {
-  const baseTitle = product.seoTitle || product.name;
+  const rawTitle = product.seoTitle || product.name;
+  const baseTitle = cleanTitleSuffix(rawTitle);
+  
+  // Si después de limpiar el título ya contiene el nombre del sitio, no añadir sufijo
   if (baseTitle.includes(SITE_NAME)) {
     return baseTitle;
   }
+  
   return `${baseTitle}${TITLE_SUFFIX}`;
 }
 
